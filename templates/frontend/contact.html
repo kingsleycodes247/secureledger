@@ -1,0 +1,195 @@
+{% extends 'frontend/contactbase.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}Contact - Secure Ledger{% endblock %}
+
+{% block content %}
+
+<!-- ═══ HERO ═══ -->
+<section class="hero-contact pt-16">
+    <!-- Hero background image with dark + green overlay -->
+<div class="hero-image-layer">
+  <img src="{% static 'images/contact-hero.webp' %}" alt="Contact Hero Background">
+  <div class="hero-image-overlay"></div>
+</div>
+
+  <div class="grid-overlay absolute inset-0"></div>
+  <div class="absolute top-10 right-0 w-80 h-80 rounded-full pointer-events-none" style="background:radial-gradient(circle,rgba(0,200,150,.07),transparent 70%)"></div>
+  <div class="absolute bottom-0 left-0 w-60 h-60 rounded-full pointer-events-none" style="background:radial-gradient(circle,rgba(0,200,150,.05),transparent 70%)"></div>
+
+  <!-- Decorative monitor silhouettes -->
+  <div class="absolute right-0 top-16 bottom-0 w-1/2 opacity-10 pointer-events-none hidden lg:flex items-end justify-end overflow-hidden">
+    <div class="flex gap-4 items-end pb-0">
+      <div class="w-40 h-28 rounded-xl border border-primary/30" style="background:rgba(0,200,150,.04)"></div>
+      <div class="w-56 h-36 rounded-xl border border-primary/25" style="background:rgba(0,200,150,.06)"></div>
+    </div>
+  </div>
+  <div class="relative z-10 text-center px-4 py-24 sm:py-32">
+    <div class="flex items-center justify-center gap-2 mb-6">
+      <a href="{% url 'frontend:home' %}" class="text-slate-500 text-sm hover:text-primary transition">Home</a>
+      <i class="fas fa-chevron-right text-slate-600 text-xs"></i>
+      <span class="text-primary text-sm font-semibold">Contact Us</span>
+    </div>
+    <span class="tag-badge px-4 py-1.5 rounded-full inline-block mb-5 uppercase">Contact Us</span>
+    <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight">
+      Get In <span class="gradient-text">Touch</span>
+    </h1>
+    <p class="text-slate-400 mt-5 max-w-xl mx-auto text-base leading-relaxed">
+      Whether you're ready to invest, need help recovering lost assets, or just have a question... our team is here for you 24/7.
+    </p>
+  </div>
+</section>
+
+<!-- ═══ CONTACT FORM + INFO ═══ -->
+<section class="py-16 lg:py-24" id="contact-form">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="contact-wrapper fade-up">
+      <div class="grid lg:grid-cols-5">
+
+        <!-- Left info panel -->
+        <div class="contact-info-panel lg:col-span-2">
+          <span class="tag-badge px-4 py-1.5 rounded-full inline-block mb-5 uppercase">Get In Touch</span>
+          <h2 class="font-display font-bold text-3xl text-white leading-tight mb-4">Let's Collaborate<br>With Us</h2>
+          <p class="text-slate-400 text-sm leading-relaxed mb-8">Whether you're facing a current threat, planning your investment strategy, or need to recover lost assets — our experts are standing by to help you.</p>
+
+          <!-- Contact details -->
+          <div class="space-y-5 mb-10">
+            <div class="contact-detail-row">
+              <div class="contact-icon"><i class="fas fa-phone text-dark text-lg"></i></div>
+              <div>
+                <div class="text-slate-500 text-xs uppercase tracking-wide mb-0.5">Phone</div>
+                <div class="text-white font-semibold">+1 (415) 800-0000</div>
+              </div>
+            </div>
+            <div class="contact-detail-row">
+              <div class="contact-icon"><i class="fas fa-envelope text-dark text-lg"></i></div>
+              <div>
+                <div class="text-slate-500 text-xs uppercase tracking-wide mb-0.5">Email</div>
+                <div class="text-white font-semibold">support@secureledger.com</div>
+              </div>
+            </div>
+            <div class="contact-detail-row">
+              <div class="contact-icon"><i class="fas fa-location-dot text-dark text-lg"></i></div>
+              <div>
+                <div class="text-slate-500 text-xs uppercase tracking-wide mb-0.5">Address</div>
+                <div class="text-white font-semibold">101 Market Street, Suite 800<br>San Francisco, CA 94105, USA</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Social -->
+          <div>
+            <div class="text-slate-500 text-xs uppercase tracking-wide mb-3">Follow Us</div>
+            <div class="flex gap-3">
+              <a href="#" class="w-10 h-10 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-facebook-f"></i></a>
+              <a href="#" class="w-10 h-10 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-x-twitter"></i></a>
+              <a href="#" class="w-10 h-10 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-instagram"></i></a>
+              <a href="#" class="w-10 h-10 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-youtube"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right form -->
+        <div class="p-8 lg:p-10 lg:col-span-3">
+          <h3 class="font-display font-bold text-2xl text-white mb-7">Send Us A Message</h3>
+          <!-- {% csrf_token %} -->
+          <div class="space-y-4">
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">First Name</label>
+                <input type="text" name="first_name" placeholder="First Name" class="form-input">
+              </div>
+              <div>
+                <label class="block text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">Last Name</label>
+                <input type="text" name="last_name" placeholder="Last Name" class="form-input">
+              </div>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">Email Address</label>
+                <input type="email" name="email" placeholder="Enter Email Address" class="form-input">
+              </div>
+              <div>
+                <label class="block text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">Phone Number</label>
+                <input type="tel" name="phone" placeholder="Phone Number" class="form-input">
+              </div>
+            </div>
+            <div>
+              <label class="block text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">Subject</label>
+              <div class="relative">
+                <select name="subject" class="form-input" style="-webkit-appearance:none;appearance:none;padding-right:2.5rem">
+                  <option value="" disabled selected>Select a subject</option>
+                  <option>Investment Enquiry</option>
+                  <option>Asset Recovery</option>
+                  <option>Quick Loans</option>
+                  <option>Technical Support</option>
+                  <option>Partnership</option>
+                  <option>Other</option>
+                </select>
+                <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs pointer-events-none"></i>
+              </div>
+            </div>
+            <div>
+              <label class="block text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">Your Message</label>
+              <textarea name="message" placeholder="Your Message" class="form-input"></textarea>
+            </div>
+            <button type="submit" onclick="handleSubmit(event)" class="bg-primary text-dark font-bold px-8 py-3.5 rounded-xl glow-btn inline-flex items-center gap-2 text-base" id="submitBtn">
+              <i class="fas fa-paper-plane text-sm"></i> Submit Message
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ QUICK LINKS SECTION ═══ -->
+<section class="py-10 pb-20">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid sm:grid-cols-3 gap-5 fade-up">
+      <!-- FAQs -->
+      <div class="quick-card">
+        <div class="quick-icon"><i class="fas fa-circle-question text-primary text-2xl"></i></div>
+        <h3 class="font-display font-bold text-white text-lg mb-2">FAQs</h3>
+        <p class="text-primary text-sm leading-relaxed mb-5">Browse our structured collection of commonly asked questions to find quick answers about investing with SecureLedger.</p>
+        <a href="{% url 'frontend:services' %}#faqs" class="bg-primary text-dark font-bold px-5 py-2.5 rounded-full glow-btn inline-flex items-center gap-2 text-sm">
+          Browse FAQs <i class="fas fa-arrow-up-right-from-square text-xs"></i>
+        </a>
+      </div>
+      <!-- Contact -->
+      <div class="quick-card" style="border-color:rgba(0,200,150,.3);background:linear-gradient(135deg,rgba(0,200,150,.08),rgba(0,200,150,.03))">
+        <div class="quick-icon" style="background:rgba(0,200,150,.15)"><i class="fas fa-headset text-primary text-2xl"></i></div>
+        <h3 class="font-display font-bold text-white text-lg mb-2">Contact Us</h3>
+        <p class="text-primary text-sm leading-relaxed mb-5">Have questions about investing or need to schedule a consultation? Our team is here to help 24/7.</p>
+        <a href="{% url 'frontend:contact' %}#contact-form" class="bg-primary text-dark font-bold px-5 py-2.5 rounded-full glow-btn inline-flex items-center gap-2 text-sm">
+          Reach Out <i class="fas fa-arrow-up-right-from-square text-xs"></i>
+        </a>
+      </div>
+      <!-- Blog -->
+      <div class="quick-card">
+        <div class="quick-icon"><i class="fas fa-newspaper text-primary text-2xl"></i></div>
+        <h3 class="font-display font-bold text-white text-lg mb-2">Latest Articles</h3>
+        <p class="text-primary text-sm leading-relaxed mb-5">Read the newest investment insights, market analysis, and cybersecurity news published by our expert team.</p>
+        <a href="#" class="bg-primary text-dark font-bold px-5 py-2.5 rounded-full glow-btn inline-flex items-center gap-2 text-sm">
+          Read Our Blog <i class="fas fa-arrow-up-right-from-square text-xs"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MAP ═══ -->
+<section class="pb-20">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="map-wrap fade-up">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.086995937571!2d-122.39788068468195!3d37.79252017975769!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80858062b8fffe05%3A0x8cfe75b8aff59280!2s101%20Market%20St%2C%20San%20Francisco%2C%20CA%2094105!5e0!3m2!1sen!2sus!4v1622000000000!5m2!1sen!2sus"
+        width="100%" height="400" style="border:0;display:block;filter:invert(90%) hue-rotate(160deg) brightness(0.8) contrast(1.1);"
+        allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

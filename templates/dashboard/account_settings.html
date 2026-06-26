@@ -1,0 +1,211 @@
+{% extends 'dashboard/base.html' %}
+{% load humanize %}
+{% block title %}Account Settings{% endblock %}
+{% block content %}
+<div style="max-width:900px">
+  <div style="margin-bottom:1.5rem">
+    <h1 class="font-display font-bold text-white" style="font-size:1.4rem">Account Settings</h1>
+    <p style="color:#475569;font-size:.85rem;margin-top:.25rem">Manage your profile, security, and notification preferences.</p>
+  </div>
+
+  <!-- Tabs -->
+  <div style="display:flex;gap:.5rem;margin-bottom:1.5rem;border-bottom:1px solid rgba(0,200,150,.1);padding-bottom:.5rem" id="tabs">
+    <button class="tab-btn active" onclick="showTab('profile',this)" style="background:rgba(0,200,150,.12);border:1px solid rgba(0,200,150,.3);color:#00C896;font-size:.8rem;font-weight:600;padding:.5rem 1rem;border-radius:.5rem;cursor:pointer">Profile Info</button>
+    <button class="tab-btn" onclick="showTab('security',this)" style="background:transparent;border:1px solid rgba(255,255,255,.07);color:#64748B;font-size:.8rem;font-weight:600;padding:.5rem 1rem;border-radius:.5rem;cursor:pointer">Security</button>
+    <button class="tab-btn" onclick="showTab('notifications',this)" style="background:transparent;border:1px solid rgba(255,255,255,.07);color:#64748B;font-size:.8rem;font-weight:600;padding:.5rem 1rem;border-radius:.5rem;cursor:pointer">Notifications</button>
+    <button class="tab-btn" onclick="showTab('referral',this)" style="background:transparent;border:1px solid rgba(255,255,255,.07);color:#64748B;font-size:.8rem;font-weight:600;padding:.5rem 1rem;border-radius:.5rem;cursor:pointer">Referral Code</button>
+    <button class="tab-btn" onclick="showTab('danger',this)" style="background:transparent;border:1px solid rgba(239,68,68,.2);color:#EF4444;font-size:.8rem;font-weight:600;padding:.5rem 1rem;border-radius:.5rem;cursor:pointer">Danger Zone</button>
+  </div>
+
+  <!-- Profile Tab -->
+  <div id="tab-profile">
+    <div class="panel">
+      <div class="panel-header"><div class="panel-title"><i class="fas fa-id-card" style="color:#00C896;margin-right:.4rem"></i>Personal Information</div></div>
+      <div style="padding:1.5rem">
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}<input type="hidden" name="action" value="update_profile">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+            <div><label class="form-input-label">First Name</label>{{ profile_form.first_name }}</div>
+            <div><label class="form-input-label">Last Name</label>{{ profile_form.last_name }}</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+            <div><label class="form-input-label">Email Address</label><input class="form-input" value="{{ request.user.email }}" disabled style="opacity:.5;cursor:not-allowed"><p style="color:#475569;font-size:.7rem;margin-top:.3rem">Email cannot be changed.</p></div>
+            <div><label class="form-input-label">Phone Number</label>{{ profile_form.phone }}</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+            <div><label class="form-input-label">Country</label>{{ profile_form.country }}</div>
+            <div><label class="form-input-label">City</label>{{ profile_form.city }}</div>
+          </div>
+          <div style="margin-bottom:1rem"><label class="form-input-label">Bio</label>{{ profile_form.bio }}</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+            <div><label class="form-input-label">Address</label>{{ profile_form.address }}</div>
+            <div><label class="form-input-label">Zip Code</label>{{ profile_form.zip_code }}</div>
+          </div>
+          <div style="margin-bottom:1.5rem"><label class="form-input-label">Date of Birth</label>{{ profile_form.date_of_birth }}</div>
+          <div style="margin-bottom:1.5rem">
+            <label class="form-input-label">Avatar</label>{{ profile_form.avatar }}
+          </div>
+          {% if profile_form.errors %}<div class="alert alert-error" style="margin-bottom:1rem"><i class="fas fa-exclamation-circle flex-shrink-0"></i><div>{% for field in profile_form %}{% for e in field.errors %}<p>{{ e }}</p>{% endfor %}{% endfor %}</div></div>{% endif %}
+          <button type="submit" class="glow-btn" style="background:#00C896;color:#080E14;font-weight:700;font-size:.88rem;padding:.75rem 2rem;border:none;border-radius:.65rem;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem">
+            <i class="fas fa-save"></i> Save Profile
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Security Tab -->
+  <div id="tab-security" style="display:none">
+    <div class="panel">
+      <div class="panel-header"><div class="panel-title"><i class="fas fa-lock" style="color:#00C896;margin-right:.4rem"></i>Change Password</div></div>
+      <div style="padding:1.5rem">
+        <form method="POST">
+          {% csrf_token %}<input type="hidden" name="action" value="change_password">
+          <div style="margin-bottom:1rem"><label class="form-input-label">Current Password</label>{{ password_form.old_password }}</div>
+          <div style="margin-bottom:1rem"><label class="form-input-label">New Password</label>{{ password_form.new_password1 }}</div>
+          <div style="margin-bottom:1.5rem"><label class="form-input-label">Confirm New Password</label>{{ password_form.new_password2 }}</div>
+          {% if password_form.errors %}<div class="alert alert-error" style="margin-bottom:1rem"><i class="fas fa-exclamation-circle flex-shrink-0"></i><div>{% for field in password_form %}{% for e in field.errors %}<p>{{ e }}</p>{% endfor %}{% endfor %}</div></div>{% endif %}
+          <button type="submit" style="background:linear-gradient(135deg,#EF4444,#DC2626);color:#fff;font-weight:700;font-size:.88rem;padding:.75rem 2rem;border:none;border-radius:.65rem;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;box-shadow:0 0 18px rgba(239,68,68,.25)">
+            <i class="fas fa-key"></i> Update Password
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notifications Tab -->
+  <div id="tab-notifications" style="display:none">
+    <div class="panel">
+      <div class="panel-header"><div class="panel-title"><i class="fas fa-bell" style="color:#00C896;margin-right:.4rem"></i>Notification Preferences</div></div>
+      <div style="padding:1.5rem">
+        <form method="POST">
+          {% csrf_token %}<input type="hidden" name="action" value="update_profile">
+          <div style="display:flex;flex-direction:column;gap:1rem">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem;background:#111D2B;border:1px solid rgba(0,200,150,.1);border-radius:.75rem">
+              <div><div style="color:#E2E8F0;font-weight:600;font-size:.88rem">Email Notifications</div><div style="color:#475569;font-size:.75rem;margin-top:.2rem">Receive deposit, withdrawal & profit alerts by email</div></div>
+              <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer">
+                <input type="checkbox" name="email_notifications" {% if profile.email_notifications %}checked{% endif %} style="opacity:0;width:0;height:0">
+                <span style="position:absolute;inset:0;background:rgba(0,200,150,.15);border:1px solid rgba(0,200,150,.3);border-radius:99px;transition:all .3s" class="slider-track"></span>
+              </label>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem;background:#111D2B;border:1px solid rgba(0,200,150,.1);border-radius:.75rem">
+              <div><div style="color:#E2E8F0;font-weight:600;font-size:.88rem">SMS Notifications</div><div style="color:#475569;font-size:.75rem;margin-top:.2rem">Receive SMS alerts for critical account activity</div></div>
+              <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer">
+                <input type="checkbox" name="sms_notifications" {% if profile.sms_notifications %}checked{% endif %} style="opacity:0;width:0;height:0">
+                <span style="position:absolute;inset:0;background:rgba(0,200,150,.15);border:1px solid rgba(0,200,150,.3);border-radius:99px;transition:all .3s" class="slider-track"></span>
+              </label>
+            </div>
+          </div>
+          <button type="submit" class="glow-btn" style="background:#00C896;color:#080E14;font-weight:700;font-size:.88rem;padding:.75rem 2rem;border:none;border-radius:.65rem;cursor:pointer;margin-top:1.25rem;display:inline-flex;align-items:center;gap:.5rem">
+            <i class="fas fa-save"></i> Save Preferences
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Referral Tab -->
+  <div id="tab-referral" style="display:none">
+    <div class="panel">
+      <div class="panel-header"><div class="panel-title"><i class="fas fa-link" style="color:#00C896;margin-right:.4rem"></i>Your Referral Details</div></div>
+      <div style="padding:1.5rem">
+        <div style="background:#111D2B;border:1px solid rgba(0,200,150,.15);border-radius:.875rem;padding:1.5rem;margin-bottom:1.25rem">
+          <div style="color:#475569;font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.4rem">Referral Code</div>
+          <div style="display:flex;align-items:center;gap:.75rem">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:700;color:#00C896;letter-spacing:.1em">{{ request.user.referral_code }}</span>
+            <button onclick="navigator.clipboard.writeText('{{ request.user.referral_code }}');this.innerHTML='<i class=\'fas fa-check\'></i> Copied!';setTimeout(()=>this.innerHTML='<i class=\'fas fa-copy\'></i> Copy',2000)" style="background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.25);color:#00C896;font-size:.75rem;font-weight:600;padding:.35rem .8rem;border-radius:.4rem;cursor:pointer"><i class="fas fa-copy"></i> Copy</button>
+          </div>
+        </div>
+        <div style="background:#111D2B;border:1px solid rgba(0,200,150,.15);border-radius:.875rem;padding:1.5rem">
+          <div style="color:#475569;font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.4rem">Referral Link</div>
+          <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:#94A3B8;word-break:break-all">{{ request.build_absolute_uri }}auth/register/?ref={{ request.user.referral_code }}</span>
+            <button onclick="navigator.clipboard.writeText(window.location.origin+'/auth/register/?ref={{ request.user.referral_code }}');this.innerHTML='<i class=\'fas fa-check\'></i> Copied!';setTimeout(()=>this.innerHTML='<i class=\'fas fa-copy\'></i> Copy Link',2000)" style="background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.25);color:#00C896;font-size:.75rem;font-weight:600;padding:.35rem .8rem;border-radius:.4rem;cursor:pointer;white-space:nowrap"><i class="fas fa-copy"></i> Copy Link</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-top:1.25rem">
+          <div style="background:#111D2B;border:1px solid rgba(0,200,150,.1);border-radius:.75rem;padding:1rem;text-align:center">
+            <div class="font-display font-bold" style="color:#00C896;font-size:1.4rem">{{ request.user.referrals.count }}</div>
+            <div style="color:#475569;font-size:.72rem;margin-top:.2rem">Total Referrals</div>
+          </div>
+          <div style="background:#111D2B;border:1px solid rgba(0,200,150,.1);border-radius:.75rem;padding:1rem;text-align:center">
+            <div class="font-display font-bold" style="color:#F59E0B;font-size:1.4rem">10%</div>
+            <div style="color:#475569;font-size:.72rem;margin-top:.2rem">Bonus Rate</div>
+          </div>
+          <div style="background:#111D2B;border:1px solid rgba(0,200,150,.1);border-radius:.75rem;padding:1rem;text-align:center">
+            <div class="font-display font-bold" style="color:#8B5CF6;font-size:1.4rem">${{ profile.total_referral_bonus|floatformat:2|intcomma }}</div>
+            <div style="color:#475569;font-size:.72rem;margin-top:.2rem">Total Earned</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+ <!-- Danger Zone Tab -->
+  <div id="tab-danger" style="display:none">
+    <div class="panel" style="border-color:rgba(239,68,68,.3)">
+      <div class="panel-header" style="border-bottom-color:rgba(239,68,68,.15)">
+        <div class="panel-title" style="color:#EF4444"><i class="fas fa-triangle-exclamation" style="margin-right:.4rem"></i>Delete Account</div>
+      </div>
+      <div style="padding:1.5rem">
+        <div style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:.75rem;padding:1.25rem;margin-bottom:1.5rem">
+          <h4 style="color:#FCA5A5;font-weight:700;font-size:.9rem;margin:0 0 .5rem">This action is permanent and cannot be undone.</h4>
+          <p style="color:#94A3B8;font-size:.82rem;line-height:1.6;margin:0">
+            Deleting your account will permanently remove your profile, investment history, transaction records,
+            referral data, and all associated information from our database. You will not be able to recover this data.
+          </p>
+        </div>
+ 
+        <form method="POST" action="{% url 'dashboard:delete_account' %}" id="deleteForm">
+          {% csrf_token %}
+          <div style="margin-bottom:1rem">
+            <label class="form-input-label" style="color:#FCA5A5">Confirm Your Password</label>
+            <input type="password" name="confirm_password" class="form-input" placeholder="Enter your password" required style="border-color:rgba(239,68,68,.2)">
+          </div>
+          <div style="margin-bottom:1.5rem">
+            <label class="form-input-label" style="color:#FCA5A5">Type <strong>DELETE</strong> to confirm</label>
+            <input type="text" name="confirm_text" class="form-input" placeholder="DELETE" required style="border-color:rgba(239,68,68,.2)" oninput="checkDeleteText(this.value)">
+          </div>
+          <button type="submit" id="deleteBtn" disabled style="background:rgba(239,68,68,.3);color:#fff;font-weight:700;font-size:.88rem;padding:.75rem 2rem;border:none;border-radius:.65rem;cursor:not-allowed;display:inline-flex;align-items:center;gap:.5rem;opacity:.5;transition:all .3s">
+            <i class="fas fa-trash"></i> Permanently Delete My Account
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+function showTab(name,btn){
+  document.querySelectorAll('[id^="tab-"]').forEach(t=>t.style.display='none');
+  document.getElementById('tab-'+name).style.display='block';
+  document.querySelectorAll('.tab-btn').forEach(b=>{b.style.background='transparent';b.style.border='1px solid rgba(255,255,255,.07)';b.style.color='#64748B'});
+  btn.style.background='rgba(0,200,150,.12)';btn.style.border='1px solid rgba(0,200,150,.3)';btn.style.color='#00C896';
+}
+// Auto-open security tab if password errors
+{% if password_form.errors %}showTab('security',document.querySelectorAll('.tab-btn')[1]);{% endif %}
+
+  function checkDeleteText(val){
+    const btn = document.getElementById('deleteBtn');
+    if (val.trim().toUpperCase() === 'DELETE') {
+      btn.disabled = false;
+      btn.style.background = 'linear-gradient(135deg,#EF4444,#DC2626)';
+      btn.style.cursor = 'pointer';
+      btn.style.opacity = '1';
+    } else {
+      btn.disabled = true;
+      btn.style.background = 'rgba(239,68,68,.3)';
+      btn.style.cursor = 'not-allowed';
+      btn.style.opacity = '.5';
+    }
+  }
+ 
+  document.getElementById('deleteForm')?.addEventListener('submit', function(e){
+    if (!confirm('Are you absolutely sure? This will permanently delete your account and all data.')) {
+      e.preventDefault();
+    }
+  });
+</script>
+{% endblock %}

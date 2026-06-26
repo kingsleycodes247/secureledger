@@ -1,0 +1,14 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Email Verified – SecureLedger</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<meta http-equiv="refresh" content="5;url={% url 'accounts:login' %}">
+<style>*{box-sizing:border-box}body{margin:0;background:#080E14;color:#E2E8F0;font-family:'Inter',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem}.card{background:#0D1620;border:1px solid rgba(0,200,150,.3);border-radius:1.25rem;padding:2.5rem;max-width:460px;width:100%;text-align:center}</style></head>
+<body><div class="card">
+  <div style="width:80px;height:80px;border-radius:50%;background:rgba(0,200,150,.15);border:2px solid #00C896;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;font-size:2.2rem;box-shadow:0 0 30px rgba(0,200,150,.3)">✅</div>
+  <h1 style="font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:800;color:#fff;margin:0 0 .75rem">Email Verified!</h1>
+  <p style="color:#475569;font-size:.9rem;line-height:1.7;margin:0 0 1.5rem">Your email has been verified successfully, <strong style="color:#00C896">{{ user.first_name }}</strong>. You can now sign in to SecureLedger.</p>
+  <p style="color:#334155;font-size:.8rem;margin:0 0 1.25rem">Redirecting to login in 5 seconds…</p>
+  <a href="{% url 'accounts:login' %}" style="background:#00C896;color:#080E14;font-weight:700;font-size:.9rem;padding:.8rem 2rem;border-radius:99px;text-decoration:none;display:inline-block;box-shadow:0 0 20px rgba(0,200,150,.4)">Sign In Now →</a>
+</div></body></html>

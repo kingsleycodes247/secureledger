@@ -1,0 +1,190 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Services – SecureLedger</title>
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  
+<link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+<link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/logo.png' %}">
+<link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/logo.png' %}">
+  <style>
+    *,*::before,*::after{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{background:#080E14;color:#E2E8F0;font-family:'Inter',sans-serif;margin:0;padding:0}
+    .gradient-text{background:linear-gradient(135deg,#00C896,#00E5B0,#4FFFCF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .glow-btn{box-shadow:0 0 20px rgba(0,200,150,.4);transition:box-shadow .3s,transform .2s}
+    .glow-btn:hover{box-shadow:0 0 35px rgba(0,200,150,.65);transform:translateY(-2px)}
+    .tag-badge{border:1px solid rgba(0,200,150,.4);background:rgba(0,200,150,.08);color:#00C896;font-size:.7rem;letter-spacing:.12em;font-weight:600}
+    .nav-glass{background:rgba(8,14,20,.88);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,200,150,.1)}
+    .section-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(0,200,150,.3),transparent)}
+    .grid-overlay{background-image:linear-gradient(rgba(0,200,150,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,150,.5) 1px,transparent 1px);background-size:50px 50px;opacity:.04;pointer-events:none}
+    /* Hero */
+    .hero-services{position:relative;min-height:55vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(160deg,#0A1E18,#0D1C28,#080E14)}
+    /* Service cards */
+    .svc-card{background:#0D1620;border:1px solid rgba(0,200,150,.12);border-radius:1.25rem;transition:all .3s}
+    .svc-card:hover{border-color:rgba(0,200,150,.45);transform:translateY(-5px);box-shadow:0 20px 50px rgba(0,200,150,.08)}
+    .svc-icon-wrap{width:64px;height:64px;border-radius:50%;background:#1a1a2e;border:2px solid rgba(0,200,150,.15);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem}
+    /* What we offer */
+    .offer-panel{background:linear-gradient(135deg,#0A1E18,#0D1620);border:1px solid rgba(0,200,150,.18);border-radius:1.25rem}
+    .offer-mini-icon{width:52px;height:52px;border-radius:50%;background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.2);display:flex;align-items:center;justify-content:center}
+    /* Image grid */
+    .img-grid-top{border-radius:1.25rem;overflow:hidden;border:1px solid rgba(0,200,150,.18);background:linear-gradient(160deg,#0A1E18,#0D1C28);aspect-ratio:4/3;position:relative}
+    .img-grid-bottom-left{border-radius:1rem;overflow:hidden;border:2px solid #00C896;background:linear-gradient(135deg,#0A1E18,#080E14);aspect-ratio:3/4;position:relative;display:flex;align-items:center;justify-content:center}
+    .img-grid-bottom-right{border-radius:1rem;overflow:hidden;border:1px solid rgba(0,200,150,.18);background:linear-gradient(135deg,#0D1C28,#0A1E18);aspect-ratio:3/4;position:relative;display:flex;align-items:center;justify-content:center}
+    /* Journey / Timeline */
+    .journey-section{background:#0D1620}
+    .journey-line{width:3px;background:linear-gradient(180deg,#00C896,rgba(0,200,150,.2));border-radius:2px}
+    .journey-dot{width:36px;height:36px;border-radius:50%;background:#0D1620;border:2px solid #00C896;color:#00C896;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.85rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;z-index:10}
+    .journey-card{background:#111D2B;border:1px solid rgba(0,200,150,.15);border-radius:1rem;padding:1.5rem;flex:1}
+    .journey-card h4{color:#00C896;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.05rem;margin-bottom:.5rem}
+    /* FAQs */
+    .faq-item{background:#0D1620;border:1px solid rgba(0,200,150,.12);border-radius:1rem;overflow:hidden;transition:border-color .3s}
+    .faq-item.open{border-color:rgba(0,200,150,.4)}
+    .faq-btn{width:100%;display:flex;align-items:center;justify-content:space-between;padding:1.1rem 1.4rem;background:transparent;border:none;color:#E2E8F0;font-family:'Inter',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;text-align:left;gap:1rem}
+    .faq-icon{width:30px;height:30px;border-radius:50%;border:1.5px solid rgba(0,200,150,.35);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .3s;color:#00C896}
+    .faq-item.open .faq-icon{background:#00C896;border-color:#00C896;color:#080E14}
+    .faq-body{max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s ease;padding:0 1.4rem}
+    .faq-body.open{max-height:300px;padding-bottom:1.2rem}
+    /* Stat boxes */
+    .stat-box{background:#0D1620;border:1px solid rgba(0,200,150,.18);border-radius:1rem;padding:1.5rem}
+    /* Recovery cards */
+    .recovery-card{background:linear-gradient(135deg,#0D1620,#0A1E18);border:1px solid rgba(0,200,150,.15);border-radius:1.25rem;transition:all .3s}
+    .recovery-card:hover{border-color:rgba(0,200,150,.45);transform:translateY(-3px)}
+    /* Footer */
+    .footer-input{background:#080E14;border:1px solid rgba(0,200,150,.2);color:#E2E8F0}
+    .footer-input:focus{outline:none;border-color:rgba(0,200,150,.5)}
+    .footer-input::placeholder{color:#4A5568}
+    /* Mobile menu */
+    .mobile-menu-panel{background:rgba(8,14,20,.98);border-bottom:1px solid rgba(0,200,150,.18)}
+    /* Fade */
+    .fade-up{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+    .fade-up.visible{opacity:1;transform:translateY(0)}
+    @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+    @keyframes pulse-ring{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}}
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav class="nav-glass fixed top-0 left-0 right-0 z-50" id="navbar">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16 lg:h-20">
+      <a href="{% url 'frontend:home' %}" class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-lg bg-primary flex items-center justify-center glow-btn">
+          <i class="fas fa-shield-halved text-dark text-base"></i>
+        </div>
+        <span class="font-display font-bold text-xl text-white">Secure<span class="text-primary">Ledger</span></span>
+      </a>
+      <div class="hidden lg:flex items-center gap-8">
+        <a href="{% url 'frontend:home' %}" class="text-slate-400 hover:text-primary transition text-sm font-medium uppercase tracking-wide">Home</a>
+        <a href="{% url 'frontend:about' %}" class="text-slate-400 hover:text-primary transition text-sm font-medium uppercase tracking-wide">About</a>
+        <a href="{% url 'frontend:services' %}" class="text-primary text-sm font-semibold uppercase tracking-wide">Services</a>
+        <a href="{% url 'frontend:home' %}#plans" class="text-slate-400 hover:text-primary transition text-sm font-medium uppercase tracking-wide">Plans</a>
+        <a href="{% url 'frontend:contact' %}" class="text-slate-400 hover:text-primary transition text-sm font-medium uppercase tracking-wide">Contact</a>
+      </div>
+      <div class="hidden lg:flex items-center gap-3">
+        <a href="{% url 'accounts:login' %}" class="text-slate-300 text-sm font-semibold border border-slate-700 hover:border-primary/50 hover:text-primary px-4 py-2 rounded-full transition">Sign In</a>
+        <a href="{% url 'frontend:contact' %}" class="bg-primary text-dark font-bold text-sm px-5 py-2.5 rounded-full glow-btn flex items-center gap-2">
+          <i class="fas fa-phone text-xs"></i> Get In Touch
+        </a>
+      </div>
+      <button id="hamburger" class="lg:hidden text-slate-300 hover:text-primary p-2" onclick="toggleMenu()">
+        <i class="fas fa-bars text-xl" id="hamburger-icon"></i>
+      </button>
+    </div>
+  </div>
+  <div id="mobile-menu" class="mobile-menu-panel hidden lg:hidden px-4 py-4 space-y-2">
+    <a href="{% url 'frontend:home' %}" class="block text-slate-300 hover:text-primary py-2.5 font-medium border-b border-slate-800">Home</a>
+    <a href="{% url 'frontend:about' %}" class="block text-slate-300 hover:text-primary py-2.5 font-medium border-b border-slate-800">About</a>
+    <a href="{% url 'frontend:services' %}" class="block text-primary py-2.5 font-semibold border-b border-slate-800">Services</a>
+    <a href="{% url 'frontend:home' %}#plans" class="block text-slate-300 hover:text-primary py-2.5 font-medium border-b border-slate-800">Plans</a>
+    <a href="{% url 'frontend:contact' %}" class="block text-slate-300 hover:text-primary py-2.5 font-medium border-b border-slate-800">Contact</a>
+    <div class="pt-3 flex flex-col gap-2">
+      <a href="{% url 'accounts:login' %}" class="w-full text-center text-primary border border-primary/40 py-2.5 rounded-full font-semibold text-sm">Sign In</a>
+      <a href="{% url 'accounts:register' %}" class="w-full text-center bg-primary text-dark font-bold py-2.5 rounded-full text-sm">Get Started</a>
+    </div>
+  </div>
+</nav>
+
+ <!-- Page content -->
+  <main class="page-body">
+    {% block content %}{% endblock %}
+  </main>
+
+
+  
+<!-- ═══ FOOTER ═══ -->
+<footer class="pt-16 pb-8" style="background:#0D1620;border-top:1px solid rgba(0,200,150,.12)">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+      <div>
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-9 h-9 rounded-lg bg-primary flex items-center justify-center"><i class="fas fa-shield-halved text-dark"></i></div>
+          <span class="font-display font-bold text-xl text-white">Secure<span class="text-primary">Ledger</span></span>
+        </div>
+        <p class="text-slate-500 text-sm leading-relaxed mb-5">SecureLedger is a modern investment and digital asset protection platform dedicated to growing and securing wealth for investors worldwide.</p>
+        <div class="flex gap-3">
+          <a href="#" class="w-9 h-9 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-facebook-f text-sm"></i></a>
+          <a href="#" class="w-9 h-9 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-x-twitter text-sm"></i></a>
+          <a href="#" class="w-9 h-9 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-instagram text-sm"></i></a>
+          <a href="#" class="w-9 h-9 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-youtube text-sm"></i></a>
+        </div>
+      </div>
+      <div>
+        <div class="tag-badge px-3 py-1 rounded-full inline-block mb-4 uppercase text-xs">Pages</div>
+        <ul class="space-y-3">
+          <li><a href="{% url 'frontend:home' %}" class="text-slate-400 hover:text-primary transition text-sm flex items-center gap-2"><i class="fas fa-circle-check text-primary text-xs"></i>Home</a></li>
+          <li><a href="{% url 'frontend:about' %}" class="text-slate-400 hover:text-primary transition text-sm flex items-center gap-2"><i class="fas fa-circle-check text-primary text-xs"></i>About</a></li>
+          <li><a href="{% url 'frontend:services' %}" class="text-primary text-sm flex items-center gap-2 font-semibold"><i class="fas fa-circle-check text-primary text-xs"></i>Services</a></li>
+          <li><a href="{% url 'frontend:home' %}#plans" class="text-slate-400 hover:text-primary transition text-sm flex items-center gap-2"><i class="fas fa-circle-check text-primary text-xs"></i>Plans</a></li>
+          <li><a href="{% url 'frontend:services' %}#faqs" class="text-slate-400 hover:text-primary transition text-sm flex items-center gap-2"><i class="fas fa-circle-check text-primary text-xs"></i>FAQ</a></li>
+          <li><a href="{% url 'frontend:contact' %}" class="text-slate-400 hover:text-primary transition text-sm flex items-center gap-2"><i class="fas fa-circle-check text-primary text-xs"></i>Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="tag-badge px-3 py-1 rounded-full inline-block mb-4 uppercase text-xs">Get In Touch</div>
+        <div class="space-y-4 text-sm">
+          <div><div class="text-slate-500 text-xs uppercase tracking-wide mb-1">Address</div><div class="text-slate-300">101 Market Street, Suite 800<br>San Francisco, CA 94105, USA</div></div>
+          <div><div class="text-slate-500 text-xs uppercase tracking-wide mb-1">Support</div><div class="text-slate-300">support@secureledger.com</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="tag-badge px-3 py-1 rounded-full inline-block mb-4 uppercase text-xs">Get The Latest Insight</div>
+        <p class="text-slate-500 text-sm mb-2">Join Our Newsletter</p>
+        <div class="flex">
+          <input type="email" placeholder="Email Address" class="footer-input flex-1 text-sm px-4 py-2.5 rounded-l-xl outline-none">
+          <button class="bg-primary text-dark px-4 py-2.5 rounded-r-xl font-bold hover:bg-primary-dark transition"><i class="fas fa-paper-plane text-sm"></i></button>
+        </div>
+        <div class="mt-5 space-y-3">
+          <div><div class="tag-badge px-3 py-1 rounded-full inline-block text-xs mb-1">Address</div><div class="text-slate-400 text-xs">101 Market St, San Francisco, CA 94105</div></div>
+          <div><div class="tag-badge px-3 py-1 rounded-full inline-block text-xs mb-1">Support</div><div class="text-slate-400 text-xs">support@secureledger.com</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="section-divider mb-6"></div>
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-500 text-xs">
+      <span>© 2026 SecureLedger Investment Corp. All rights reserved.</span>
+      <div class="flex gap-4">
+        <a href="#" class="hover:text-primary transition">Privacy Policy</a>
+        <a href="#" class="hover:text-primary transition">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function toggleMenu(){const m=document.getElementById('mobile-menu'),i=document.getElementById('hamburger-icon'),o=m.classList.toggle('hidden');i.className=o?'fas fa-bars text-xl':'fas fa-xmark text-xl'}
+  function toggleFaq(btn){const item=btn.closest('.faq-item'),body=item.querySelector('.faq-body'),icon=item.querySelector('.faq-icon i'),isOpen=item.classList.contains('open');document.querySelectorAll('.faq-item.open').forEach(el=>{el.classList.remove('open');el.querySelector('.faq-body').classList.remove('open');el.querySelector('.faq-icon i').className='fas fa-plus text-xs'});if(!isOpen){item.classList.add('open');body.classList.add('open');icon.className='fas fa-minus text-xs'}}
+  const io=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('visible');io.unobserve(x.target)}})},{threshold:.12});
+  document.querySelectorAll('.fade-up').forEach(el=>io.observe(el));
+  window.addEventListener('scroll',()=>{document.getElementById('navbar').style.boxShadow=window.scrollY>40?'0 4px 30px rgba(0,0,0,.4)':'none'});
+
+  </script>
+</body>
+</html>

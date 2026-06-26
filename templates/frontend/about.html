@@ -1,0 +1,593 @@
+{% extends 'frontend/aboutbase.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}About - Secure Ledger{% endblock %}
+
+{% block content %}
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section class="hero-about pt-16">
+
+  <!-- Hero background image with dark + green overlay -->
+<div class="hero-image-layer">
+  <img src="{% static 'images/about-bg.webp' %}" alt="About Hero Background">
+  <div class="hero-image-overlay"></div>
+</div>
+
+  <!-- Background -->
+  <div class="hero-about-bg"></div>
+  <div class="grid-overlay absolute inset-0"></div>
+
+  <!-- Glow orbs -->
+  <div class="absolute top-20 left-10 w-64 h-64 rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(0,200,150,0.07), transparent 70%);"></div>
+  <div class="absolute bottom-10 right-10 w-48 h-48 rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(0,200,150,0.05), transparent 70%);"></div>
+
+  <!-- Monitors visual (decorative dark panels) -->
+  <div class="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none overflow-hidden">
+    <div class="flex gap-4 items-end">
+      <div class="w-40 h-28 rounded-lg border border-primary/30" style="background: rgba(0,200,150,0.04);"></div>
+      <div class="w-56 h-36 rounded-lg border border-primary/30" style="background: rgba(0,200,150,0.06);"></div>
+      <div class="w-40 h-28 rounded-lg border border-primary/30" style="background: rgba(0,200,150,0.04);"></div>
+    </div>
+  </div>
+
+  <div class="relative z-10 text-center px-4 py-24 sm:py-32">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb flex items-center justify-center gap-2 mb-6">
+      <a href="{% url 'frontend:home' %}">Home</a>
+      <i class="fas fa-chevron-right text-slate-600 text-xs"></i>
+      <span>About Us</span>
+    </div>
+    <span class="tag-badge px-4 py-1.5 rounded-full inline-block mb-5 uppercase">About Us</span>
+    <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight">
+      Securing The <span class="gradient-text">Future</span>
+    </h1>
+    <p class="text-slate-400 mt-5 max-w-xl mx-auto text-base sm:text-lg leading-relaxed">
+      Discover who we are, what drives us, and why thousands of investors worldwide choose SecureLedger for intelligent wealth growth and asset protection.
+    </p>
+    <!-- Scroll cue -->
+    <div class="mt-10 flex justify-center">
+      <a href="#who-we-are" class="flex flex-col items-center gap-2 text-slate-500 hover:text-primary transition text-xs font-medium">
+        <span>Scroll to explore</span>
+        <i class="fas fa-chevron-down animate-bounce"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════ STATS STRIP ═══════════════════ -->
+<div class="stat-strip py-8">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+      <div class="fade-up">
+        <div class="font-display font-bold text-3xl text-primary">$2.4B+</div>
+        <div class="text-slate-500 text-sm mt-1">Assets Under Management</div>
+      </div>
+      <div class="fade-up" style="transition-delay:.1s">
+        <div class="font-display font-bold text-3xl text-primary">50K+</div>
+        <div class="text-slate-500 text-sm mt-1">Active Investors Globally</div>
+      </div>
+      <div class="fade-up" style="transition-delay:.2s">
+        <div class="font-display font-bold text-3xl text-primary">12+</div>
+        <div class="text-slate-500 text-sm mt-1">Years of Experience</div>
+      </div>
+      <div class="fade-up" style="transition-delay:.3s">
+        <div class="font-display font-bold text-3xl text-primary">80+</div>
+        <div class="text-slate-500 text-sm mt-1">Countries Served</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════ WHO WE ARE ═══════════════════ -->
+<section id="who-we-are" class="py-20 lg:py-28">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <div class="grid lg:grid-cols-2 gap-14 items-start">
+
+      <!-- Left: text + image -->
+      <div class="fade-up">
+        <span class="tag-badge px-4 py-1.5 rounded-full inline-block mb-5 uppercase">Who We Are</span>
+        <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight mb-6">
+          Intelligent Investment Solutions For The <span class="gradient-text">Modern Digital World</span>
+        </h2>
+        <p class="text-slate-400 leading-relaxed mb-5 text-base">
+          SecureLedger is a San Francisco-based investment firm dedicated to growing and protecting the capital of individuals and institutions in a rapidly evolving global market. We combine advanced financial strategies with cutting-edge cybersecurity infrastructure to deliver returns that are both profitable and secure.
+        </p>
+        <p class="text-slate-400 leading-relaxed mb-8 text-base">
+          Through diversified exposure across Real Estate, Oil & Gas, Agriculture, Capital Markets, and Active Strategies — and backed by a seasoned team of analysts, engineers, and compliance officers — we help clients build lasting wealth with confidence.
+        </p>
+
+        <!-- Monitor mockup -->
+        <div class="relative rounded-2xl overflow-hidden border" style="border-color: rgba(0,200,150,0.18); background: linear-gradient(135deg, #0A1E18, #0D1C28);">
+          <div class="absolute inset-0" style="background: radial-gradient(ellipse at 30% 50%, rgba(0,200,150,0.07), transparent 60%);"></div>
+          <!-- Fake terminal / dashboard -->
+          <div class="relative z-10 p-6">
+            <div class="flex items-center gap-2 mb-4">
+              <div class="w-3 h-3 rounded-full bg-red-500/70"></div>
+              <div class="w-3 h-3 rounded-full bg-yellow-500/70"></div>
+              <div class="w-3 h-3 rounded-full bg-primary/70"></div>
+              <span class="ml-3 text-slate-500 text-xs font-mono">secureledger — investor-dashboard</span>
+            </div>
+            <div class="space-y-2 font-mono text-xs">
+              <div><span class="text-primary">$</span> <span class="text-slate-400">connecting to secure vault...</span></div>
+              <div><span class="text-primary">✓</span> <span class="text-slate-300">Portfolio loaded — 8 active sectors</span></div>
+              <div><span class="text-primary">✓</span> <span class="text-slate-300">Current daily yield: <span class="text-primary font-bold">+7.3%</span></span></div>
+              <div><span class="text-primary">✓</span> <span class="text-slate-300">Next withdrawal: <span class="text-white font-bold">Ready in 2 days</span></span></div>
+              <div class="flex items-center gap-2"><span class="text-primary">$</span> <span class="text-slate-400">awaiting command</span><span class="inline-block w-2 h-3.5 bg-primary ml-0.5 animate-pulse"></span></div>
+            </div>
+          </div>
+          <!-- Floating badge -->
+          <div class="absolute bottom-4 right-4 flex items-center gap-2 bg-dark rounded-lg px-3 py-2 border" style="border-color: rgba(0,200,150,0.2);">
+            <div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+            <span class="text-slate-300 text-xs font-medium">Live Trading Active</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: vision / mission / values + timeline -->
+      <div class="space-y-5 fade-up" style="transition-delay:.15s">
+
+        <!-- Vision -->
+        <div class="vision-card">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-xl bg-dark/20 flex items-center justify-center flex-shrink-0">
+              <i class="fas fa-eye text-dark text-lg"></i>
+            </div>
+            <div>
+              <h3 class="font-display font-bold text-dark text-lg mb-1">Our Vision</h3>
+              <p class="text-dark/80 text-sm leading-relaxed">To build a safer, more prosperous financial future through intelligent investment strategies and trusted digital asset protection — accessible to every investor, everywhere.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mission -->
+        <div class="mission-card">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center flex-shrink-0">
+              <i class="fas fa-bullseye text-primary text-lg"></i>
+            </div>
+            <div>
+              <h3 class="font-display font-bold text-white text-lg mb-1">Our Mission</h3>
+              <p class="text-slate-400 text-sm leading-relaxed">To protect and grow our clients' capital through advanced investment strategies, transparent operations, and world-class cybersecurity infrastructure — delivering consistent, reliable, and high-yield returns.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Values row -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="values-card">
+            <div class="w-9 h-9 rounded-lg bg-primary/15 border border-primary/2 flex items-center justify-center mb-3">
+              <i class="fas fa-handshake text-primary text-sm"></i>
+            </div>
+            <h4 class="font-display font-semibold text-white text-sm mb-1">Integrity</h4>
+            <p class="text-slate-500 text-xs leading-relaxed">We operate with full transparency, ethical practices, and regulatory compliance at every level.</p>
+          </div>
+          <div class="values-card">
+            <div class="w-9 h-9 rounded-lg bg-primary/15 border border-primary/25 flex items-center justify-center mb-3">
+              <i class="fas fa-lightbulb text-primary text-sm"></i>
+            </div>
+            <h4 class="font-display font-semibold text-white text-sm mb-1">Innovation</h4>
+            <p class="text-slate-500 text-xs leading-relaxed">Constantly refining our strategies with emerging technology, data science, and market intelligence.</p>
+          </div>
+          <div class="values-card">
+            <div class="w-9 h-9 rounded-lg bg-primary/15 border border-primary/25 flex items-center justify-center mb-3">
+              <i class="fas fa-users text-primary text-sm"></i>
+            </div>
+            <h4 class="font-display font-semibold text-white text-sm mb-1">Client First</h4>
+            <p class="text-slate-500 text-xs leading-relaxed">Every decision we make is driven by the best interest of our investors and the growth of their wealth.</p>
+          </div>
+          <div class="values-card">
+            <div class="w-9 h-9 rounded-lg bg-primary/15 border border-primary/25 flex items-center justify-center mb-3">
+              <i class="fas fa-shield-halved text-primary text-sm"></i>
+            </div>
+            <h4 class="font-display font-semibold text-white text-sm mb-1">Security</h4>
+            <p class="text-slate-500 text-xs leading-relaxed">Your capital and data are protected with military-grade encryption and a dedicated cyber team.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<div class="section-divider max-w-7xl mx-auto px-4"></div>
+
+
+<!-- ═══════════════════ WHY TRUST US ═══════════════════ -->
+<section class="why-trust-section py-20 lg:py-28">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <div class="text-center max-w-2xl mx-auto mb-16 fade-up">
+      <span class="tag-badge px-4 py-1.5 rounded-full inline-block mb-4 uppercase">Key Benefits</span>
+      <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+        Why Investors Trust SecureLedger For <span class="gradient-text">Wealth Management</span>
+      </h2>
+      <p class="text-slate-400 text-base leading-relaxed">We don't just manage money — we architect financial safety nets built on transparency, technology, and trust.</p>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-8 items-center">
+
+      <!-- Left benefits -->
+      <div class="space-y-10 fade-up">
+        <div class="benefit-item pl-10">
+          <div class="benefit-num">01</div>
+          <h3 class="font-display font-bold text-white text-lg mb-2">Advanced Portfolio Protection</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">Diversification across 8 sectors reduces concentration risk, keeping your wealth stable through market fluctuations.</p>
+        </div>
+        <div class="benefit-item pl-10">
+          <div class="benefit-num">02</div>
+          <h3 class="font-display font-bold text-white text-lg mb-2">Zero Withdrawal Delays</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">When your plan matures, funds are credited instantly to your wallet — no waiting queues, no hidden fees.</p>
+        </div>
+        <div class="benefit-item pl-10">
+          <div class="benefit-num">03</div>
+          <h3 class="font-display font-bold text-white text-lg mb-2">Secure Digital Infrastructure</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">256-bit SSL encryption, multi-factor authentication, and cold-storage asset protection on every account.</p>
+        </div>
+      </div>
+
+      <!-- Centre: lock visual -->
+      <div class="flex justify-center fade-up" style="transition-delay:.15s">
+        <div class="lock-visual-wrap w-64 h-72 lg:w-full lg:h-80">
+          <div class="relative z-10 text-center p-8">
+            <!-- Decorative rings -->
+            <div class="relative flex items-center justify-center" style="height: 160px;">
+              <div class="absolute w-40 h-40 rounded-full border border-dashed" style="border-color: rgba(0,200,150,0.2); animation: spin 20s linear infinite;"></div>
+              <div class="absolute w-28 h-28 rounded-full border" style="border-color: rgba(0,200,150,0.15); animation: spin 14s linear infinite reverse;"></div>
+              <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/25 to-primary/05 border border-primary/35 flex items-center justify-center" style="animation: float 4s ease-in-out infinite;">
+                <i class="fas fa-lock text-primary text-4xl"></i>
+              </div>
+            </div>
+            <div class="mt-6 text-slate-400 text-xs">SEC Registered · Est. 2013</div>
+            <div class="text-primary font-display font-bold text-sm mt-1">San Francisco, CA</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right benefits -->
+      <div class="space-y-10 fade-up" style="transition-delay:.3s">
+        <div class="benefit-item pl-10">
+          <div class="benefit-num">04</div>
+          <h3 class="font-display font-bold text-white text-lg mb-2">Certified Investment Analysts</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">Our team of 100+ certified professionals monitors global markets 24/7 to optimize your portfolio performance.</p>
+        </div>
+        <div class="benefit-item pl-10">
+          <div class="benefit-num">05</div>
+          <h3 class="font-display font-bold text-white text-lg mb-2">Regulatory Compliance</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">SEC-registered and operating under US financial law — your investments are protected by the strongest financial framework in the world.</p>
+        </div>
+        <div class="benefit-item pl-10">
+          <div class="benefit-num">06</div>
+          <h3 class="font-display font-bold text-white text-lg mb-2">Global Reach & Recognition</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">Trusted by investors across 80+ countries, SecureLedger is a globally recognised name in alternative investment management.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<div class="section-divider max-w-7xl mx-auto px-4"></div>
+
+
+<!-- ═══════════════════ PARTNER SINCE / PROVEN EXPERTISE ═══════════════════ -->
+<section class="py-20 lg:py-28">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-14 items-center">
+
+      <!-- Left: image panel -->
+      <div class="fade-up">
+        <div class="relative">
+          <!-- Main image placeholder -->
+          <div class="rounded-2xl overflow-hidden border" style="border-color: rgba(0,200,150,0.18); background: linear-gradient(135deg, #0A1E18, #0D1C28, #0A1420); aspect-ratio: 4/3; position: relative;">
+            <div class="absolute inset-0" style="background: radial-gradient(ellipse at 40% 60%, rgba(0,200,150,0.08), transparent 60%);"></div>
+            <!-- Decorative monitor rows -->
+            <div class="absolute inset-0 flex flex-col items-center justify-center gap-4 opacity-20 p-8">
+              <div class="w-full h-16 rounded-lg border border-primary/30" style="background: rgba(0,200,150,0.04);"></div>
+              <div class="flex gap-3 w-full">
+                <div class="flex-1 h-24 rounded-lg border border-primary/30" style="background: rgba(0,200,150,0.03);"></div>
+                <div class="flex-1 h-24 rounded-lg border border-primary/30" style="background: rgba(0,200,150,0.05);"></div>
+              </div>
+              <div class="w-3/4 h-10 rounded-lg border border-primary/20" style="background: rgba(0,200,150,0.02);"></div>
+            </div>
+            <!-- Center icon -->
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="text-center">
+                <div class="w-20 h-20 rounded-full bg-primary/15 border border-primary/30 flex items-center justify-center mx-auto mb-3">
+                  <i class="fas fa-users text-primary text-3xl"></i>
+                </div>
+                <div class="text-slate-400 text-sm">Our Operations Team</div>
+                <div class="text-primary font-bold text-xs mt-1">San Francisco HQ</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating proof badge -->
+          <div class="absolute -bottom-5 -right-5 bg-primary text-dark rounded-2xl px-5 py-4 shadow-2xl">
+            <div class="font-display font-bold text-3xl leading-none">12+</div>
+            <div class="text-dark/80 text-xs font-semibold mt-0.5">Years Trusted</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: text + checklist -->
+      <div class="fade-up" style="transition-delay:.15s">
+        <span class="tag-badge px-4 py-1.5 rounded-full inline-block mb-5 uppercase">Partner Since 2013</span>
+        <h2 class="font-display text-3xl sm:text-4xl font-bold text-white leading-tight mb-5">
+          Trusted Investment Management With <span class="gradient-text">Proven Expertise</span>
+        </h2>
+        <p class="text-slate-400 leading-relaxed mb-8 text-base">
+          With over a decade of experience delivering high-yield investment solutions, SecureLedger provides reliable, transparent, and scalable wealth management for individuals and institutions across all income levels. Our track record speaks for itself.
+        </p>
+
+        <!-- Checklist -->
+        <ul class="space-y-4 mb-8">
+          <li class="flex items-start gap-3">
+            <i class="fas fa-circle-check text-primary text-base mt-0.5"></i>
+            <div>
+              <span class="text-white font-semibold text-sm">Trusted by investors worldwide</span>
+              <p class="text-slate-500 text-xs mt-0.5">50,000+ active accounts across 80+ countries, all growing their capital daily.</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fas fa-circle-check text-primary text-base mt-0.5"></i>
+            <div>
+              <span class="text-white font-semibold text-sm">Certified financial professionals</span>
+              <p class="text-slate-500 text-xs mt-0.5">100+ SEC-certified analysts, portfolio managers, and cybersecurity specialists on staff.</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fas fa-circle-check text-primary text-base mt-0.5"></i>
+            <div>
+              <span class="text-white font-semibold text-sm">Multi-sector investment strategies</span>
+              <p class="text-slate-500 text-xs mt-0.5">Diversified across 8 industries to protect against market volatility and maximise yield.</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fas fa-circle-check text-primary text-base mt-0.5"></i>
+            <div>
+              <span class="text-white font-semibold text-sm">Global compliance standards</span>
+              <p class="text-slate-500 text-xs mt-0.5">Fully compliant with SEC, AML, and KYC regulations — operating transparently at every level.</p>
+            </div>
+          </li>
+        </ul>
+
+        <a href="{% url 'accounts:register' %}" class="bg-primary text-dark font-bold px-7 py-3.5 rounded-full glow-btn inline-flex items-center gap-2 text-sm">
+          Start Investing Today <i class="fas fa-arrow-up-right-from-square text-xs"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════ TIMELINE / MILESTONES ═══════════════════ -->
+<section class="py-16 bg-dark-2">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12 fade-up">
+      <span class="tag-badge px-4 py-1.5 rounded-full inline-block mb-4 uppercase">Our Journey</span>
+      <h2 class="font-display text-3xl sm:text-4xl font-bold text-white">
+        A Decade of <span class="gradient-text">Growth & Trust</span>
+      </h2>
+    </div>
+
+    <div class="space-y-8 fade-up" style="transition-delay:.1s">
+      <div class="timeline-item">
+        <div class="timeline-dot active"><div class="w-2 h-2 rounded-full bg-dark"></div></div>
+        <div class="bg-dark-3 rounded-xl p-5 border" style="border-color: rgba(0,200,150,0.15);">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="tag-badge px-3 py-0.5 rounded-full text-xs">2013</span>
+            <h4 class="font-display font-bold text-white">Founded in San Francisco</h4>
+          </div>
+          <p class="text-slate-400 text-sm leading-relaxed">SecureLedger incorporated as an SEC-registered investment advisory firm, beginning operations in Real Estate and Capital Markets.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot active"><div class="w-2 h-2 rounded-full bg-dark"></div></div>
+        <div class="bg-dark-3 rounded-xl p-5 border" style="border-color: rgba(0,200,150,0.15);">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="tag-badge px-3 py-0.5 rounded-full text-xs">2016</span>
+            <h4 class="font-display font-bold text-white">Expanded to Oil & Gas & Agriculture</h4>
+          </div>
+          <p class="text-slate-400 text-sm leading-relaxed">Launched two new investment sectors — Oil & Gas and Agricultural Commodity Funds — growing AUM to $200M.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot active"><div class="w-2 h-2 rounded-full bg-dark"></div></div>
+        <div class="bg-dark-3 rounded-xl p-5 border" style="border-color: rgba(0,200,150,0.15);">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="tag-badge px-3 py-0.5 rounded-full text-xs">2019</span>
+            <h4 class="font-display font-bold text-white">Digital Asset Recovery Division Launched</h4>
+          </div>
+          <p class="text-slate-400 text-sm leading-relaxed">Established a dedicated cybersecurity unit offering Romance Scam Recovery, Crypto Recovery, and Asset Tracing services.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot active"><div class="w-2 h-2 rounded-full bg-dark"></div></div>
+        <div class="bg-dark-3 rounded-xl p-5 border" style="border-color: rgba(0,200,150,0.15);">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="tag-badge px-3 py-0.5 rounded-full text-xs">2022</span>
+            <h4 class="font-display font-bold text-white">Surpassed $1B in Managed Assets</h4>
+          </div>
+          <p class="text-slate-400 text-sm leading-relaxed">Crossed the $1 billion AUM milestone with investors in 60+ countries, launching crypto-native investment plans.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot active"><div class="w-2 h-2 rounded-full bg-dark"></div></div>
+        <div class="bg-dark-3 rounded-xl p-5 border" style="border-color: rgba(0,200,150,0.15);">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="tag-badge px-3 py-0.5 rounded-full text-xs">2026</span>
+            <h4 class="font-display font-bold text-white">$2.4B+ AUM · 50K Investors · 80 Countries</h4>
+          </div>
+          <p class="text-slate-400 text-sm leading-relaxed">Today SecureLedger is one of the world's fastest-growing alternative investment platforms, with a fully digital, instant-withdrawal infrastructure serving investors globally.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<div class="section-divider max-w-7xl mx-auto px-4"></div>
+
+
+<!-- ═══════════════════ TEAM ═══════════════════ -->
+<section class="py-20 lg:py-28">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 fade-up">
+      <div>
+        <span class="tag-badge px-4 py-1.5 rounded-full inline-block mb-4 uppercase">Our Experts</span>
+        <h2 class="font-display text-3xl sm:text-4xl font-bold text-white leading-tight">
+          Meet The Investment Experts<br>Behind <span class="gradient-text">SecureLedger</span>
+        </h2>
+      </div>
+      <div class="max-w-sm text-right">
+        <p class="text-slate-400 text-sm mb-4">Behind every return is a team of seasoned professionals dedicated to securing and growing your wealth.</p>
+        <a href="{% url 'frontend:contact' %}" class="bg-primary text-dark font-bold px-6 py-2.5 rounded-full glow-btn inline-flex items-center gap-2 text-sm">
+          Meet The Team <i class="fas fa-arrow-up-right-from-square text-xs"></i>
+        </a>
+      </div>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+
+      <!-- Dr. Lisa Su -->
+      <div class="team-card rounded-2xl overflow-hidden">
+        <div class="team-photo">
+          <img src="{% static 'images/lisa.webp' %}" alt="Dr Lisa Su">
+          <div class="team-overlay"></div>
+        </div>
+        <div class="p-5">
+          <h4 class="font-display font-bold text-white">Dr. Lisa Su</h4>
+          <p class="text-primary text-sm font-medium">CEO &amp; Founder</p>
+          <p class="text-slate-500 text-xs mt-2 leading-relaxed">20+ years in institutional investment banking and portfolio management.</p>
+          <div class="flex gap-3 mt-4">
+            <a href="#" class="text-slate-500 hover:text-primary transition"><i class="fab fa-linkedin text-lg"></i></a>
+            <a href="#" class="text-slate-500 hover:text-primary transition"><i class="fab fa-x-twitter text-lg"></i></a>
+          </div>
+        </div>
+      </div>
+
+     <!-- Dr. Nick Marsh -->
+      <div class="team-card rounded-2xl overflow-hidden">
+        <div class="team-photo">
+          <img src="{% static 'images/nick.webp' %}" alt="Dr. Nick Marsh">
+          <div class="team-overlay"></div>
+        </div>
+        <div class="p-5">
+          <h4 class="font-display font-bold text-white">Dr. Nick Marsh</h4>
+          <p class="text-primary text-sm font-medium">Chief Investment Officer</p>
+          <p class="text-slate-500 text-xs mt-2 leading-relaxed">PhD in Financial Economics with expertise in alternative asset classes.</p>
+          <div class="flex gap-3 mt-4">
+            <a href="#" class="text-slate-500 hover:text-primary transition"><i class="fab fa-linkedin text-lg"></i></a>
+            <a href="#" class="text-slate-500 hover:text-primary transition"><i class="fab fa-x-twitter text-lg"></i></a>
+          </div>
+        </div>
+      </div>
+
+       <!-- Dennis Hranitzky -->
+      <div class="team-card rounded-2xl overflow-hidden">
+        <div class="team-photo">
+          <img src="{% static 'images/dennis.webp' %}" alt="Dennis Hranitzky">
+          <div class="team-overlay"></div>
+        </div>
+        <div class="p-5">
+          <h4 class="font-display font-bold text-white">Dennis Hranitzky</h4>
+          <p class="text-primary text-sm font-medium">Head of Cybersecurity</p>
+          <p class="text-slate-500 text-xs mt-2 leading-relaxed">Former NSA analyst specializing in blockchain forensics and digital asset recovery.</p>
+          <div class="flex gap-3 mt-4">
+            <a href="#" class="text-slate-500 hover:text-primary transition"><i class="fab fa-linkedin text-lg"></i></a>
+            <a href="#" class="text-slate-500 hover:text-primary transition"><i class="fab fa-x-twitter text-lg"></i></a>
+          </div>
+        </div>
+      </div>
+
+        <!-- Kristin Tahler -->
+      <div class="team-card rounded-2xl overflow-hidden">
+        <div class="team-photo">
+          <img src="{% static 'images/kristin.webp' %}" alt="Kristin Tahler">
+          <div class="team-overlay"></div>
+        </div>
+        <div class="p-5">
+          <h4 class="font-display font-bold text-white">Kristin Tahler</h4>
+          <p class="text-primary text-sm font-medium">Head of Compliance</p>
+          <p class="text-slate-500 text-xs mt-2 leading-relaxed">SEC compliance specialist with 15 years managing regulatory affairs for investment firms.</p>
+          <div class="flex gap-3 mt-4">
+            <a href="#" class="text-slate-500 hover:text-primary transition"><i class="fab fa-linkedin text-lg"></i></a>
+            <a href="#" class="text-slate-500 hover:text-primary transition"><i class="fab fa-x-twitter text-lg"></i></a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<div class="section-divider max-w-7xl mx-auto px-4"></div>
+
+
+<!-- ═══════════════════ PARTNERS ═══════════════════ -->
+<section class="py-16 bg-dark-2">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-10 fade-up">
+      <span class="tag-badge px-4 py-1.5 rounded-full inline-block mb-4 uppercase">Our Partners</span>
+      <h2 class="font-display text-2xl sm:text-3xl font-bold text-white">
+        Organisations That <span class="gradient-text">Trust SecureLedger</span>
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 fade-up" style="transition-delay:.1s">
+      <div class="partner-card">
+        <span class="font-display font-bold text-slate-400 text-base tracking-widest hover:text-primary transition">EXXON MOBIL</span>
+      </div>
+      <div class="partner-card">
+        <span class="font-display font-bold text-slate-400 text-base tracking-widest hover:text-primary transition">GOLDMAN SACHS</span>
+      </div>
+      <div class="partner-card">
+        <span class="font-display font-bold text-slate-400 text-base tracking-widest hover:text-primary transition">BLACKROCK</span>
+      </div>
+      <div class="partner-card">
+        <span class="font-display font-bold text-slate-400 text-base tracking-widest hover:text-primary transition">JP MORGAN</span>
+      </div>
+      <div class="partner-card">
+        <span class="font-display font-bold text-slate-400 text-base tracking-widest hover:text-primary transition">FIDELITY</span>
+      </div>
+    </div>
+    <p class="text-center text-slate-600 text-xs mt-6">All logos and names belong to their respective owners.</p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════ CTA STRIP ═══════════════════ -->
+<section class="py-20">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="cta-strip rounded-2xl p-10 lg:p-14 text-center fade-up" style="position:relative;overflow:hidden;">
+      <div class="absolute inset-0 grid-overlay pointer-events-none"></div>
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-80 h-40 rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(0,200,150,0.1), transparent 70%);"></div>
+      <div class="relative z-10">
+        <span class="tag-badge px-4 py-1.5 rounded-full inline-block mb-5 uppercase">Ready To Invest?</span>
+        <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight mb-5">
+          Start Growing Your Wealth<br>With <span class="gradient-text">SecureLedger Today</span>
+        </h2>
+        <p class="text-slate-400 max-w-xl mx-auto mb-8 text-base leading-relaxed">
+          Join 50,000+ investors already earning consistent daily returns. Plans start from just $100. Instant withdrawals. Zero hidden fees.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="{% url 'accounts:register' %}" class="bg-primary text-dark font-bold px-8 py-3.5 rounded-full glow-btn inline-flex items-center justify-center gap-2 text-base">
+            <i class="fas fa-rocket text-sm"></i> Create Free Account
+          </a>
+          <a href="{% url 'frontend:home' %}#plans" class="border border-primary/40 text-primary font-semibold px-8 py-3.5 rounded-full hover:bg-primary/10 transition inline-flex items-center justify-center gap-2 text-base">
+            <i class="fas fa-chart-line text-sm"></i> View Investment Plans
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,389 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Account – SecureLedger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+<link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+<link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/logo.png' %}">
+<link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/logo.png' %}">
+
+  <style>
+    * { scroll-behavior: smooth; }
+    body { background-color: #080E14; color: #E2E8F0; font-family: 'Inter', sans-serif; }
+    .gradient-text { background: linear-gradient(135deg, #00C896, #00E5B0, #4FFFCF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .glow-btn { box-shadow: 0 0 20px rgba(0,200,150,0.4); transition: box-shadow 0.3s ease, transform 0.2s ease; }
+    .glow-btn:hover { box-shadow: 0 0 35px rgba(0,200,150,0.65); transform: translateY(-1px); }
+    .tag-badge { border: 1px solid rgba(0,200,150,0.4); background: rgba(0,200,150,0.08); color: #00C896; font-size: 0.7rem; letter-spacing: 0.12em; font-weight: 600; }
+    .page-bg { background: radial-gradient(ellipse at 70% 10%, rgba(0,200,150,0.07) 0%, transparent 60%), radial-gradient(ellipse at 10% 90%, rgba(0,200,150,0.05) 0%, transparent 50%), #080E14; }
+    .form-card { background: #0D1620; border: 1px solid rgba(0,200,150,0.18); box-shadow: 0 30px 80px rgba(0,0,0,0.5), 0 0 60px rgba(0,200,150,0.04); }
+    .input-field { background: #080E14; border: 1px solid rgba(0,200,150,0.15); color: #E2E8F0; transition: border-color 0.25s, box-shadow 0.25s; }
+    .input-field:focus { outline: none; border-color: rgba(0,200,150,0.55); box-shadow: 0 0 0 3px rgba(0,200,150,0.08); }
+    .input-field::placeholder { color: #4A5568; }
+    .input-wrapper { position: relative; }
+    .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: rgba(0,200,150,0.5); font-size: 0.85rem; pointer-events: none; }
+    .input-field.has-icon { padding-left: 2.5rem; }
+    .toggle-pw { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: #4A5568; cursor: pointer; font-size: 0.85rem; transition: color 0.2s; }
+    .toggle-pw:hover { color: #00C896; }
+    .strength-bar { height: 4px; border-radius: 2px; transition: width 0.4s ease, background 0.4s ease; }
+    .side-panel { background: linear-gradient(160deg, #0A1E18 0%, #0D1620 60%, #080E14 100%); border-right: 1px solid rgba(0,200,150,0.12); }
+    .feature-item { border: 1px solid rgba(0,200,150,0.12); background: rgba(0,200,150,0.04); }
+    .grid-overlay { background-image: linear-gradient(rgba(0,200,150,.4) 1px, transparent 1px), linear-gradient(90deg, rgba(0,200,150,.4) 1px, transparent 1px); background-size: 40px 40px; opacity: 0.04; }
+    .divider-line { height: 1px; background: linear-gradient(90deg, transparent, rgba(0,200,150,0.25), transparent); }
+    .step-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; }
+    .step-dot.active { background: #00C896; color: #080E14; }
+    .step-dot.done { background: rgba(0,200,150,0.2); border: 1px solid rgba(0,200,150,0.4); color: #00C896; }
+    .step-dot.pending { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #4A5568; }
+    .step-connector { height: 2px; flex: 1; }
+    .step-connector.done { background: rgba(0,200,150,0.4); }
+    .step-connector.pending { background: rgba(255,255,255,0.07); }
+    .checkbox-custom { width: 18px; height: 18px; border-radius: 4px; border: 1.5px solid rgba(0,200,150,0.4); background: rgba(0,200,150,0.05); appearance: none; -webkit-appearance: none; cursor: pointer; transition: all 0.2s; flex-shrink: 0; margin-top: 2px; }
+    .checkbox-custom:checked { background: #00C896; border-color: #00C896; }
+    .checkbox-custom:checked::after { content: '✓'; display: block; text-align: center; color: #080E14; font-size: 11px; font-weight: 900; line-height: 16px; }
+    .select-field { background: #080E14; border: 1px solid rgba(0,200,150,0.15); color: #E2E8F0; transition: border-color 0.25s; -webkit-appearance: none; appearance: none; }
+    .select-field:focus { outline: none; border-color: rgba(0,200,150,0.55); box-shadow: 0 0 0 3px rgba(0,200,150,0.08); }
+    .select-field option { background: #0D1620; }
+    .field-error { color: #FCA5A5; font-size: 0.72rem; margin-top: 0.35rem; display: flex; align-items: center; gap: 0.25rem; }
+  </style>
+</head>
+<body class="page-bg min-h-screen">
+
+  <!-- Navbar -->
+  <nav class="fixed top-0 left-0 right-0 z-50" style="background: rgba(8,14,20,0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(0,200,150,0.1);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="{% url 'frontend:home' %}" class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+          <i class="fas fa-shield-halved text-dark text-sm"></i>
+        </div>
+        <span class="font-display font-bold text-lg text-white">Secure<span class="text-primary">Ledger</span></span>
+      </a>
+      <div class="flex items-center gap-3 text-sm">
+        <span class="text-slate-500 hidden sm:inline">Already have an account?</span>
+        <a href="{% url 'accounts:login' %}" class="text-primary font-semibold border border-primary/30 px-4 py-1.5 rounded-full hover:bg-primary/10 transition">Sign In</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="flex min-h-screen pt-16">
+
+    <!-- ── LEFT PANEL -->
+    <div class="hidden lg:flex lg:w-5/12 xl:w-1/2 side-panel flex-col justify-between p-10 xl:p-14 relative overflow-hidden">
+      <div class="grid-overlay absolute inset-0 pointer-events-none"></div>
+      <div class="absolute top-0 right-0 w-96 h-96 rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(0,200,150,0.08) 0%, transparent 70%);"></div>
+      <div class="absolute bottom-0 left-0 w-64 h-64 rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(0,200,150,0.06) 0%, transparent 70%);"></div>
+      <div class="relative z-10">
+        <span class="tag-badge px-4 py-1.5 rounded-full inline-block mb-8 uppercase">Join SecureLedger Today</span>
+        <h2 class="font-display text-3xl xl:text-4xl font-bold text-white leading-tight mb-5">
+          Start Building Wealth<br>With <span class="gradient-text">Confidence</span>
+        </h2>
+        <p class="text-slate-400 leading-relaxed mb-10 text-sm xl:text-base">
+          Join over 50,000 investors worldwide who trust SecureLedger to grow and protect their capital across multiple high-yield sectors.
+        </p>
+        <div class="space-y-4">
+          <div class="feature-item rounded-xl px-5 py-4 flex items-start gap-4">
+            <div class="w-9 h-9 rounded-lg bg-primary/15 border border-primary/25 flex items-center justify-center flex-shrink-0 mt-0.5"><i class="fas fa-bolt text-primary text-sm"></i></div>
+            <div><div class="text-white font-semibold text-sm">Instant Account Setup</div><div class="text-slate-500 text-xs mt-0.5">Get verified and deposit in under 5 minutes.</div></div>
+          </div>
+          <div class="feature-item rounded-xl px-5 py-4 flex items-start gap-4">
+            <div class="w-9 h-9 rounded-lg bg-primary/15 border border-primary/25 flex items-center justify-center flex-shrink-0 mt-0.5"><i class="fas fa-percent text-primary text-sm"></i></div>
+            <div><div class="text-white font-semibold text-sm">Up To 10% Daily Returns</div><div class="text-slate-500 text-xs mt-0.5">Choose a plan starting from just $100.</div></div>
+          </div>
+          <div class="feature-item rounded-xl px-5 py-4 flex items-start gap-4">
+            <div class="w-9 h-9 rounded-lg bg-primary/15 border border-primary/25 flex items-center justify-center flex-shrink-0 mt-0.5"><i class="fas fa-shield-halved text-primary text-sm"></i></div>
+            <div><div class="text-white font-semibold text-sm">SEC-Regulated & Secure</div><div class="text-slate-500 text-xs mt-0.5">Your funds are protected under US financial law.</div></div>
+          </div>
+          <div class="feature-item rounded-xl px-5 py-4 flex items-start gap-4">
+            <div class="w-9 h-9 rounded-lg bg-primary/15 border border-primary/25 flex items-center justify-center flex-shrink-0 mt-0.5"><i class="fas fa-gift text-primary text-sm"></i></div>
+            <div><div class="text-white font-semibold text-sm">10% Referral Bonus</div><div class="text-slate-500 text-xs mt-0.5">Earn on every investor you bring to the platform.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="relative z-10 grid grid-cols-3 gap-4 mt-10">
+        <div class="text-center"><div class="text-primary font-display font-bold text-xl">50K+</div><div class="text-slate-500 text-xs mt-0.5">Investors</div></div>
+        <div class="text-center border-x" style="border-color: rgba(0,200,150,0.15);"><div class="text-primary font-display font-bold text-xl">$2.4B+</div><div class="text-slate-500 text-xs mt-0.5">Managed</div></div>
+        <div class="text-center"><div class="text-primary font-display font-bold text-xl">99%</div><div class="text-slate-500 text-xs mt-0.5">Uptime</div></div>
+      </div>
+    </div>
+
+    <!-- ── RIGHT PANEL: FORM -->
+    <div class="flex-1 flex items-start justify-center px-4 sm:px-8 py-10 xl:py-14 overflow-y-auto">
+      <div class="w-full max-w-lg">
+
+        <div class="flex items-center gap-2 mb-8">
+          <div class="step-dot active">1</div>
+          <div class="step-connector pending"></div>
+          <div class="step-dot pending">2</div>
+          <div class="step-connector pending"></div>
+          <div class="step-dot pending">3</div>
+          <div class="ml-4 text-slate-500 text-xs">Step 1 of 3 — Create Account</div>
+        </div>
+
+        <div class="form-card rounded-2xl p-7 sm:p-9">
+          <div class="mb-8">
+            <div class="w-12 h-12 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center mb-4">
+              <i class="fas fa-user-plus text-primary text-xl"></i>
+            </div>
+            <h1 class="font-display font-bold text-2xl text-white mb-1">Create Your Account</h1>
+            <p class="text-slate-400 text-sm">Fill in your details below to get started as an investor.</p>
+          </div>
+
+          {# ── Non-field / general messages ── #}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="rounded-lg p-3 mb-4 text-sm flex items-start gap-2 {% if message.tags == 'error' %}bg-red-500/10 border border-red-500/30 text-red-400{% else %}bg-primary/10 border border-primary/30 text-primary{% endif %}">
+                <i class="fas fa-circle-info flex-shrink-0 mt-0.5"></i><span>{{ message }}</span>
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          {% if form.non_field_errors %}
+            <div class="rounded-lg p-3 mb-4 bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+              {% for error in form.non_field_errors %}<div class="flex items-start gap-2"><i class="fas fa-circle-exclamation flex-shrink-0 mt-0.5"></i><span>{{ error }}</span></div>{% endfor %}
+            </div>
+          {% endif %}
+
+          <form method="POST" id="registerForm" novalidate>
+            {% csrf_token %}
+            <div class="space-y-5">
+
+              <!-- First & Last name -->
+              <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-slate-300 text-xs font-semibold uppercase tracking-wide mb-2">First Name</label>
+                  <div class="input-wrapper">
+                    <i class="input-icon fas fa-user"></i>
+                    <input type="text" name="first_name" value="{{ form.first_name.value|default:'' }}" placeholder="John" class="input-field has-icon w-full rounded-xl px-4 py-3 text-sm" required>
+                  </div>
+                  {% for error in form.first_name.errors %}<div class="field-error"><i class="fas fa-circle-exclamation"></i>{{ error }}</div>{% endfor %}
+                </div>
+                <div>
+                  <label class="block text-slate-300 text-xs font-semibold uppercase tracking-wide mb-2">Last Name</label>
+                  <div class="input-wrapper">
+                    <i class="input-icon fas fa-user"></i>
+                    <input type="text" name="last_name" value="{{ form.last_name.value|default:'' }}" placeholder="Doe" class="input-field has-icon w-full rounded-xl px-4 py-3 text-sm" required>
+                  </div>
+                  {% for error in form.last_name.errors %}<div class="field-error"><i class="fas fa-circle-exclamation"></i>{{ error }}</div>{% endfor %}
+                </div>
+              </div>
+
+              <!-- Username -->
+              <div>
+                <label class="block text-slate-300 text-xs font-semibold uppercase tracking-wide mb-2">Username</label>
+                <div class="input-wrapper">
+                  <i class="input-icon fas fa-at"></i>
+                  <input type="text" name="username" value="{{ form.username.value|default:'' }}" placeholder="johndoe123" class="input-field has-icon w-full rounded-xl px-4 py-3 text-sm" required>
+                </div>
+                {% for error in form.username.errors %}<div class="field-error"><i class="fas fa-circle-exclamation"></i>{{ error }}</div>{% endfor %}
+              </div>
+
+              <!-- Email -->
+              <div>
+                <label class="block text-slate-300 text-xs font-semibold uppercase tracking-wide mb-2">Email Address</label>
+                <div class="input-wrapper">
+                  <i class="input-icon fas fa-envelope"></i>
+                  <input type="email" name="email" value="{{ form.email.value|default:'' }}" placeholder="john@example.com" class="input-field has-icon w-full rounded-xl px-4 py-3 text-sm" required>
+                </div>
+                {% for error in form.email.errors %}<div class="field-error"><i class="fas fa-circle-exclamation"></i>{{ error }}</div>{% endfor %}
+              </div>
+
+              <!-- Phone -->
+              <div>
+                <label class="block text-slate-300 text-xs font-semibold uppercase tracking-wide mb-2">Phone Number <span class="text-slate-600 font-normal">(Optional)</span></label>
+                <div class="input-wrapper">
+                  <i class="input-icon fas fa-phone"></i>
+                  <input type="tel" name="phone" value="{{ form.phone.value|default:'' }}" placeholder="+1 (415) 000-0000" class="input-field has-icon w-full rounded-xl px-4 py-3 text-sm">
+                </div>
+                {% for error in form.phone.errors %}<div class="field-error"><i class="fas fa-circle-exclamation"></i>{{ error }}</div>{% endfor %}
+              </div>
+
+              <!-- Country -->
+              <div>
+                <label class="block text-slate-300 text-xs font-semibold uppercase tracking-wide mb-2">Country</label>
+                <div class="input-wrapper">
+                  <i class="input-icon fas fa-globe"></i>
+                  <select name="country" class="select-field has-icon w-full rounded-xl px-4 py-3 text-sm pl-10" required>
+                    <option value="" disabled {% if not form.country.value %}selected{% endif %}>Select your country</option>
+                    <option value="US" {% if form.country.value == 'US' %}selected{% endif %}>United States</option>
+                    <option value="GB" {% if form.country.value == 'GB' %}selected{% endif %}>United Kingdom</option>
+                    <option value="CA" {% if form.country.value == 'CA' %}selected{% endif %}>Canada</option>
+                    <option value="AU" {% if form.country.value == 'AU' %}selected{% endif %}>Australia</option>
+                    <option value="DE" {% if form.country.value == 'DE' %}selected{% endif %}>Germany</option>
+                    <option value="FR" {% if form.country.value == 'FR' %}selected{% endif %}>France</option>
+                    <option value="NG" {% if form.country.value == 'NG' %}selected{% endif %}>Nigeria</option>
+                    <option value="ZA" {% if form.country.value == 'ZA' %}selected{% endif %}>South Africa</option>
+                    <option value="IN" {% if form.country.value == 'IN' %}selected{% endif %}>India</option>
+                    <option value="SG" {% if form.country.value == 'SG' %}selected{% endif %}>Singapore</option>
+                    <option value="AE" {% if form.country.value == 'AE' %}selected{% endif %}>United Arab Emirates</option>
+                    <option value="GH" {% if form.country.value == 'GH' %}selected{% endif %}>Ghana</option>
+                    <option value="KE" {% if form.country.value == 'KE' %}selected{% endif %}>Kenya</option>
+                    <option value="CM" {% if form.country.value == 'CM' %}selected{% endif %}>Cameroon</option>
+                    <option value="OTHER" {% if form.country.value == 'OTHER' %}selected{% endif %}>Other</option>
+                  </select>
+                  <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs pointer-events-none"></i>
+                </div>
+                {% for error in form.country.errors %}<div class="field-error"><i class="fas fa-circle-exclamation"></i>{{ error }}</div>{% endfor %}
+              </div>
+
+              <div class="divider-line"></div>
+
+              <!-- Password (name MUST be password1) -->
+              <div>
+                <label class="block text-slate-300 text-xs font-semibold uppercase tracking-wide mb-2">Password</label>
+                <div class="input-wrapper">
+                  <i class="input-icon fas fa-lock"></i>
+                  <input type="password" name="password1" placeholder="Create a strong password" id="pw1" class="input-field has-icon w-full rounded-xl px-4 py-3 text-sm pr-10" oninput="checkStrength(this.value)" required>
+                  <span class="toggle-pw" onclick="togglePw('pw1', this)"><i class="fas fa-eye-slash"></i></span>
+                </div>
+                <div class="mt-2 space-y-1.5">
+                  <div class="flex gap-1.5">
+                    <div class="flex-1 h-1 rounded-full bg-dark-3 overflow-hidden"><div class="strength-bar h-full" id="s1" style="width:0%"></div></div>
+                    <div class="flex-1 h-1 rounded-full bg-dark-3 overflow-hidden"><div class="strength-bar h-full" id="s2" style="width:0%"></div></div>
+                    <div class="flex-1 h-1 rounded-full bg-dark-3 overflow-hidden"><div class="strength-bar h-full" id="s3" style="width:0%"></div></div>
+                    <div class="flex-1 h-1 rounded-full bg-dark-3 overflow-hidden"><div class="strength-bar h-full" id="s4" style="width:0%"></div></div>
+                  </div>
+                  <div class="text-xs" id="strengthLabel" style="color:#4A5568;">Enter a password</div>
+                </div>
+                {% for error in form.password1.errors %}<div class="field-error"><i class="fas fa-circle-exclamation"></i>{{ error }}</div>{% endfor %}
+              </div>
+
+              <!-- Confirm Password (name MUST be password2) -->
+              <div>
+                <label class="block text-slate-300 text-xs font-semibold uppercase tracking-wide mb-2">Confirm Password</label>
+                <div class="input-wrapper">
+                  <i class="input-icon fas fa-lock"></i>
+                  <input type="password" name="password2" placeholder="Repeat your password" id="pw2" class="input-field has-icon w-full rounded-xl px-4 py-3 text-sm pr-10" oninput="matchPw()" required>
+                  <span class="toggle-pw" onclick="togglePw('pw2', this)"><i class="fas fa-eye-slash"></i></span>
+                </div>
+                <div class="text-xs mt-1.5 hidden" id="matchMsg"></div>
+                {% for error in form.password2.errors %}<div class="field-error"><i class="fas fa-circle-exclamation"></i>{{ error }}</div>{% endfor %}
+              </div>
+
+              <!-- Referral code -->
+              <div>
+                <label class="block text-slate-300 text-xs font-semibold uppercase tracking-wide mb-2">Referral Code <span class="text-slate-600 font-normal">(Optional)</span></label>
+                <div class="input-wrapper">
+                  <i class="input-icon fas fa-ticket"></i>
+                  {% with ref_code=request.GET.ref %}
+                  <input type="text" name="referral_code" value="{{ form.referral_code.value|default:ref_code|default:'' }}" placeholder="Enter referral code" class="input-field has-icon w-full rounded-xl px-4 py-3 text-sm">
+                  {% endwith %}
+                </div>
+                {% for error in form.referral_code.errors %}<div class="field-error"><i class="fas fa-circle-exclamation"></i>{{ error }}</div>{% endfor %}
+              </div>
+
+              <div class="divider-line"></div>
+
+              <!-- Terms (name MUST be terms) -->
+              <div class="flex items-start gap-3">
+                <input type="checkbox" id="terms" name="terms" class="checkbox-custom mt-0.5" {% if form.terms.value %}checked{% endif %} required>
+                <label for="terms" class="text-slate-400 text-sm leading-relaxed cursor-pointer">
+                  I agree to SecureLedger's <a href="#" class="text-primary hover:underline font-medium">Terms of Service</a> and <a href="#" class="text-primary hover:underline font-medium">Privacy Policy</a>. I confirm I am 18 years of age or older.
+                </label>
+              </div>
+              {% for error in form.terms.errors %}<div class="field-error"><i class="fas fa-circle-exclamation"></i>{{ error }}</div>{% endfor %}
+
+              <!-- Marketing opt-in (not required by backend) -->
+              <div class="flex items-start gap-3">
+                <input type="checkbox" id="marketing" name="marketing" class="checkbox-custom mt-0.5">
+                <label for="marketing" class="text-slate-400 text-sm leading-relaxed cursor-pointer">
+                  I'd like to receive investment insights, market updates, and promotional offers from SecureLedger.
+                </label>
+              </div>
+
+              <!-- Submit -->
+              <button type="submit" id="submitBtn" class="w-full bg-primary text-dark font-bold text-base py-3.5 rounded-xl glow-btn flex items-center justify-center gap-2 mt-2">
+                <i class="fas fa-rocket text-sm"></i>
+                Create My Account
+              </button>
+
+              <div class="flex items-center gap-3 my-2">
+                <div class="divider-line flex-1"></div>
+                <span class="text-slate-600 text-xs">OR</span>
+                <div class="divider-line flex-1"></div>
+              </div>
+
+              <p class="text-center text-slate-400 text-sm">
+                Already have an account?
+                <a href="{% url 'accounts:login' %}" class="text-primary font-semibold hover:underline ml-1">Sign In</a>
+              </p>
+            </div>
+          </form>
+        </div>
+
+        <div class="flex items-center justify-center gap-2 mt-6 text-slate-600 text-xs">
+          <i class="fas fa-lock text-primary/50 text-xs"></i>
+          <span>256-bit SSL encryption · SEC Registered · Your data is safe</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function togglePw(id, btn) {
+      const input = document.getElementById(id);
+      const isText = input.type === 'text';
+      input.type = isText ? 'password' : 'text';
+      btn.innerHTML = isText ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+    }
+
+    function checkStrength(pw) {
+      const bars = ['s1','s2','s3','s4'];
+      const label = document.getElementById('strengthLabel');
+      let score = 0;
+      if (pw.length >= 8) score++;
+      if (/[A-Z]/.test(pw)) score++;
+      if (/[0-9]/.test(pw)) score++;
+      if (/[^A-Za-z0-9]/.test(pw)) score++;
+      const colors = ['#EF4444','#F59E0B','#3B82F6','#00C896'];
+      const labels = ['Weak','Fair','Good','Strong'];
+      bars.forEach((id, i) => {
+        const el = document.getElementById(id);
+        if (i < score) { el.style.width = '100%'; el.style.background = colors[score - 1]; }
+        else { el.style.width = '0%'; }
+      });
+      if (pw.length === 0) { label.textContent = 'Enter a password'; label.style.color = '#4A5568'; }
+      else { label.textContent = labels[score - 1] || 'Very Weak'; label.style.color = colors[score - 1] || '#EF4444'; }
+    }
+
+    function matchPw() {
+      const p1 = document.getElementById('pw1').value;
+      const p2 = document.getElementById('pw2').value;
+      const msg = document.getElementById('matchMsg');
+      if (p2.length === 0) { msg.classList.add('hidden'); return; }
+      msg.classList.remove('hidden');
+      if (p1 === p2) { msg.textContent = '✓ Passwords match'; msg.style.color = '#00C896'; }
+      else { msg.textContent = '✗ Passwords do not match'; msg.style.color = '#EF4444'; }
+    }
+
+    // Validate then allow natural form submit (NO preventDefault — let Django handle POST)
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      const terms = document.getElementById('terms');
+      const p1 = document.getElementById('pw1').value;
+      const p2 = document.getElementById('pw2').value;
+
+      if (!terms.checked) {
+        e.preventDefault();
+        const lbl = terms.closest('.flex').querySelector('label');
+        lbl.style.color = '#EF4444';
+        setTimeout(() => lbl.style.color = '', 2500);
+        return;
+      }
+      if (p1 !== p2) {
+        e.preventDefault();
+        matchPw();
+        return;
+      }
+      // Passed client checks → show loading & let the form submit naturally to Django
+      const btn = document.getElementById('submitBtn');
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin text-sm"></i> Creating Account…';
+      btn.disabled = true;
+      // Re-enable the button briefly so the disabled control still submits its value
+      setTimeout(() => { btn.disabled = false; }, 50);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+{% extends 'dashboard/base.html' %}
+{% load custom_filters %}
+{% load humanize %}
+{% block title %}Dashboard{% endblock %}
+{% block extra_styles %}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1rem;margin-bottom:1.5rem}
+.stat-card{background:#0D1620;border:1px solid rgba(0,200,150,.1);border-radius:.875rem;padding:1.1rem 1.25rem;transition:border-color .3s,transform .2s,box-shadow .3s;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(0,200,150,.4),transparent);opacity:0;transition:opacity .3s}
+.stat-card:hover{border-color:rgba(0,200,150,.35);transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,200,150,.07)}
+.stat-card:hover::before{opacity:1}
+.stat-icon-wrap{width:40px;height:40px;border-radius:.6rem;display:flex;align-items:center;justify-content:center;margin-bottom:.875rem;font-size:1.1rem}
+.stat-label{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:#475569;margin-bottom:.35rem}
+.stat-value{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.4rem;color:#F1F5F9;line-height:1}
+.stat-sub{font-size:.7rem;color:#475569;margin-top:.3rem;display:flex;align-items:center;gap:.3rem}
+.stat-glow{position:absolute;bottom:-20px;right:-10px;width:80px;height:80px;border-radius:50%;opacity:.06}
+.up{color:#00C896}.down{color:#EF4444}
+.welcome-bar{background:linear-gradient(135deg,#0A1E18,#0D1620);border:1px solid rgba(0,200,150,.18);border-radius:1rem;padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;gap:1rem;flex-wrap:wrap}
+#tv-chart-container{width:100%;height:520px}
+.chip{background:rgba(0,200,150,.06);border:1px solid rgba(0,200,150,.15);color:#64748B;font-size:.72rem;font-weight:600;padding:.25rem .65rem;border-radius:99px;cursor:pointer;transition:all .2s;font-family:'JetBrains Mono',monospace}
+.chip:hover{border-color:rgba(0,200,150,.4);color:#CBD5E1}
+.chip.active{background:rgba(0,200,150,.15);border-color:rgba(0,200,150,.5);color:#00C896}
+.forex-table{width:100%;border-collapse:collapse}
+.forex-table th{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#334155;padding:.7rem 1.25rem;text-align:left;border-bottom:1px solid rgba(0,200,150,.07)}
+.forex-table td{padding:.75rem 1.25rem;font-size:.82rem;border-bottom:1px solid rgba(255,255,255,.03)}
+.forex-table tr:last-child td{border-bottom:none}
+.forex-table tr:hover td{background:rgba(0,200,150,.03)}
+.fx-symbol{font-family:'JetBrains Mono',monospace;font-weight:600;color:#E2E8F0;font-size:.85rem}
+.fx-name{color:#475569;font-size:.75rem}
+.fx-price{font-family:'JetBrains Mono',monospace;font-weight:600;color:#F1F5F9}
+.fx-change{font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:600}
+.fx-change.up{color:#00C896}.fx-change.down{color:#EF4444}
+.fx-icon{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.price-flash{animation:priceFlash .4s ease}
+@keyframes priceFlash{0%{background:rgba(0,200,150,.15)}100%{background:transparent}}
+.mini-spark{display:inline-flex;align-items:flex-end;gap:1.5px;height:20px}
+.spark-bar{width:3px;border-radius:1px;transition:height .3s}
+@media(max-width:768px){.stats-grid{grid-template-columns:repeat(2,1fr)}#tv-chart-container{height:380px}.forex-table th:nth-child(5),.forex-table td:nth-child(5),.forex-table th:nth-child(6),.forex-table td:nth-child(6){display:none}}
+@media(max-width:480px){.stats-grid{grid-template-columns:1fr}}
+{% endblock %}
+{% block content %}
+<!-- Welcome bar -->
+<div class="welcome-bar">
+  <div>
+    <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.35rem">
+      <span class="tag-badge px-3 py-0.5 rounded-full uppercase" style="font-size:.65rem">Active Account</span>
+      <div class="live-dot"></div>
+      <span style="color:#00C896;font-size:.7rem;font-weight:600">LIVE</span>
+    </div>
+    <h2 class="font-display font-bold text-white" style="font-size:1.3rem">{{ greeting }}, {{ request.user.first_name }} 👋</h2>
+    <p style="color:#475569;font-size:.8rem;margin-top:.15rem">Portfolio overview · Updated <span style="color:#00C896" id="last-updated">just now</span></p>
+  </div>
+  <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+    <div class="text-right">
+      <div style="color:#475569;font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em">Account Tier</div>
+      <div class="font-display font-bold" style="color:#00C896">{{ request.user.account_tier }}</div>
+    </div>
+    <div style="width:1px;height:36px;background:rgba(0,200,150,.15)"></div>
+    <div class="text-right">
+      <div style="color:#475569;font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em">Member Since</div>
+      <div class="font-display font-bold text-white" style="font-size:.9rem">{{ request.user.date_joined|date:"M Y" }}</div>
+    </div>
+  </div>
+</div>
+<!-- STAT CARDS -->
+<div class="stats-grid">
+  <div class="stat-card"><div class="stat-glow" style="background:#00C896"></div><div class="stat-icon-wrap" style="background:rgba(0,200,150,.12);border:1px solid rgba(0,200,150,.2)"><i class="fas fa-wallet" style="color:#00C896"></i></div><div class="stat-label">Account Balance</div><div class="stat-value">${{ profile.account_balance|floatformat:2|intcomma }}</div><div class="stat-sub"><i class="fas fa-arrow-trend-up up" style="font-size:.65rem"></i><span class="up">${{ profile.available_balance|floatformat:2|intcomma }} Available</span></div></div>
+  <div class="stat-card"><div class="stat-glow" style="background:#10B981"></div><div class="stat-icon-wrap" style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2)"><i class="fas fa-chart-line" style="color:#10B981"></i></div><div class="stat-label">Total Profit</div><div class="stat-value">${{ profile.total_profit|floatformat:2|intcomma }}</div><div class="stat-sub"><i class="fas fa-arrow-trend-up up" style="font-size:.65rem"></i><span class="up">All-time</span></div></div>
+  <div class="stat-card"><div class="stat-glow" style="background:#F59E0B"></div><div class="stat-icon-wrap" style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2)"><i class="fas fa-gift" style="color:#F59E0B"></i></div><div class="stat-label">Total Bonus</div><div class="stat-value">${{ profile.total_bonus|floatformat:2|intcomma }}</div><div class="stat-sub"><i class="fas fa-circle-info" style="color:#F59E0B;font-size:.65rem"></i><span style="color:#F59E0B">Credited</span></div></div>
+  <div class="stat-card"><div class="stat-glow" style="background:#8B5CF6"></div><div class="stat-icon-wrap" style="background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2)"><i class="fas fa-users" style="color:#8B5CF6"></i></div><div class="stat-label">Referral Bonus</div><div class="stat-value">${{ profile.total_referral_bonus|floatformat:2|intcomma }}</div><div class="stat-sub"><i class="fas fa-user-plus" style="color:#8B5CF6;font-size:.65rem"></i><span style="color:#8B5CF6">{{ request.user.referrals.count }} referral{{ request.user.referrals.count|pluralize }}</span></div></div>
+  <div class="stat-card"><div class="stat-glow" style="background:#06B6D4"></div><div class="stat-icon-wrap" style="background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.2)"><i class="fas fa-briefcase" style="color:#06B6D4"></i></div><div class="stat-label">Total Plans</div><div class="stat-value">{{ total_plans }}</div><div class="stat-sub"><i class="fas fa-layer-group" style="color:#06B6D4;font-size:.65rem"></i><span style="color:#06B6D4">All-time</span></div></div>
+  <div class="stat-card"><div class="stat-glow" style="background:#00C896"></div><div class="stat-icon-wrap" style="background:rgba(0,200,150,.12);border:1px solid rgba(0,200,150,.2)"><i class="fas fa-rocket" style="color:#00C896"></i></div><div class="stat-label">Active Plans</div><div class="stat-value">{{ active_plans_count }}</div><div class="stat-sub"><div class="live-dot" style="width:6px;height:6px"></div><span style="color:#00C896">Running</span></div></div>
+  <div class="stat-card"><div class="stat-glow" style="background:#3B82F6"></div><div class="stat-icon-wrap" style="background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2)"><i class="fas fa-fa-arrow-down-to-bracket" style="color:#3B82F6"></i></div><div class="stat-label">Total Deposits</div><div class="stat-value">${{ profile.total_deposit|floatformat:2|intcomma }}</div><div class="stat-sub"><i class="fas fa-arrow-trend-up up" style="font-size:.65rem"></i><span class="up">Deposited</span></div></div>
+  <div class="stat-card"><div class="stat-glow" style="background:#EF4444"></div><div class="stat-icon-wrap" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2)"><i class="fas fa-arrow-up-from-bracket" style="color:#EF4444"></i></div><div class="stat-label">Total Withdrawals</div><div class="stat-value">${{ profile.total_withdrawal|floatformat:2|intcomma }}</div><div class="stat-sub"><i class="fas fa-arrow-trend-down down" style="font-size:.65rem"></i><span class="down">Withdrawn</span></div></div>
+<div class="stat-card">
+    <div class="stat-glow" style="background:#F59E0B"></div>
+    <div class="stat-icon-wrap" style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2)">
+      <i class="fas fa-lock" style="color:#F59E0B"></i>
+    </div>
+    <div class="stat-label">Locked in Plans</div>
+    <div class="stat-value">${{ profile.locked_balance|floatformat:2|intcomma }}</div>
+    <div class="stat-sub"><i class="fas fa-hourglass-half" style="color:#F59E0B;font-size:.65rem"></i><span style="color:#F59E0B">Releases at maturity</span></div>
+  </div>
+</div>
+
+<!-- Active investments -->
+{% if active_investments %}
+<div class="panel">
+  <div class="panel-header">
+    <div class="panel-title"><div class="live-dot"></div>Active Investment Plans</div>
+    <a href="{% url 'dashboard:invest' %}" style="color:#00C896;font-size:.8rem;font-weight:600;text-decoration:none">View All →</a>
+  </div>
+  <div style="overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse">
+      <thead><tr>
+        {% for h in "Plan,Amount,Expected Profit,Progress,Days Left,Status"|split:"," %}
+        <th style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#334155;padding:.65rem 1.25rem;text-align:left;border-bottom:1px solid rgba(0,200,150,.07)">{{ h }}</th>
+        {% endfor %}
+      </tr></thead>
+      <tbody>
+        {% for inv in active_investments %}
+        <tr>
+          <td style="padding:.75rem 1.25rem"><div style="font-family:'Space Grotesk',sans-serif;font-weight:600;color:#E2E8F0;font-size:.85rem">{{ inv.plan.get_name_display }}</div><div style="color:#475569;font-size:.72rem">{{ inv.plan.daily_return_pct }}% / {{ inv.plan.duration_days }}d</div></td>
+          <td style="padding:.75rem 1.25rem;font-family:'JetBrains Mono',monospace;font-weight:600;color:#F1F5F9">${{ inv.amount|intcomma }}</td>
+          <td style="padding:.75rem 1.25rem;font-family:'JetBrains Mono',monospace;color:#00C896;font-weight:600">+${{ inv.expected_profit|intcomma }}</td>
+          <td style="padding:.75rem 1.25rem;min-width:140px"><div style="background:#111D2B;border-radius:99px;height:6px;overflow:hidden"><div style="height:100%;width:{{ inv.progress_pct }}%;background:linear-gradient(90deg,#00C896,#4FFFCF);border-radius:99px"></div></div><div style="font-size:.65rem;color:#475569;margin-top:.25rem">{{ inv.progress_pct }}%</div></td>
+          <td style="padding:.75rem 1.25rem;font-family:'JetBrains Mono',monospace;color:#F59E0B;font-weight:600">{{ inv.days_remaining }}d</td>
+          <td style="padding:.75rem 1.25rem"><span style="background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.25);color:#00C896;font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:99px;text-transform:uppercase">Active</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+<!-- TRADING CHART -->
+<div class="panel">
+  <div class="panel-header">
+    <div class="panel-title"><div class="live-dot"></div>Personal Trading Chart<span class="tag-badge px-2 py-0.5 rounded-full" style="font-size:.6rem;margin-left:.4rem">LIVE</span></div>
+    <div style="display:flex;align-items:center;gap:.4rem;flex-wrap:wrap" id="symbolChips">
+      <div class="chip active" onclick="changeSymbol('BINANCE:BTCUSDT',this)">BTC/USDT</div>
+      <div class="chip" onclick="changeSymbol('BINANCE:ETHUSDT',this)">ETH/USDT</div>
+      <div class="chip" onclick="changeSymbol('BINANCE:SOLUSDT',this)">SOL/USDT</div>
+      <div class="chip" onclick="changeSymbol('BINANCE:BNBUSDT',this)">BNB/USDT</div>
+      <div class="chip" onclick="changeSymbol('BINANCE:XRPUSDT',this)">XRP/USDT</div>
+      <div class="chip" onclick="changeSymbol('FX:EURUSD',this)">EUR/USD</div>
+      <div class="chip" onclick="changeSymbol('FX:GBPUSD',this)">GBP/USD</div>
+    </div>
+  </div>
+  <div id="tv-chart-container">
+    <div id="tradingview_widget" style="height:490px;width:100%"></div>
+    <div style="padding:.35rem 1.25rem;font-size:.7rem;border-top:1px solid rgba(0,200,150,.06)">
+      <a href="https://www.tradingview.com/" target="_blank" rel="noopener nofollow" style="color:#334155">Powered by TradingView</a>
+    </div>
+  </div>
+</div>
+<!-- FOREX TABLE -->
+<div class="panel">
+  <div class="panel-header">
+    <div class="panel-title"><div class="live-dot"></div>Forex Market Fundamental Chart<span class="tag-badge px-2 py-0.5 rounded-full" style="font-size:.6rem;margin-left:.4rem">REAL-TIME</span></div>
+    <div style="display:flex;align-items:center;gap:.75rem">
+      <span style="color:#334155;font-size:.72rem" id="forex-updated">Fetching…</span>
+      <button onclick="refreshForex()" style="background:rgba(0,200,150,.08);border:1px solid rgba(0,200,150,.15);color:#00C896;font-size:.72rem;padding:.3rem .75rem;border-radius:.4rem;cursor:pointer;display:flex;align-items:center;gap:.3rem">
+        <i class="fas fa-arrows-rotate" style="font-size:.65rem"></i>Refresh
+      </button>
+    </div>
+  </div>
+  <div style="overflow-x:auto">
+    <table class="forex-table">
+      <thead><tr><th>#</th><th>Pair</th><th>Price</th><th>24h Change</th><th>24h High</th><th>24h Low</th><th>Trend</th><th>Chart</th></tr></thead>
+      <tbody id="forexBody"><tr><td colspan="8" style="text-align:center;padding:2.5rem;color:#334155"><div style="display:flex;align-items:center;justify-content:center;gap:.5rem"><div class="live-dot"></div><span>Loading live market data…</span></div></td></tr></tbody>
+    </table>
+  </div>
+</div>
+<!-- Recent transactions -->
+{% if recent_transactions %}
+<div class="panel">
+  <div class="panel-header">
+    <div class="panel-title"><i class="fas fa-clock-rotate-left" style="color:#00C896;margin-right:.4rem"></i>Recent Transactions</div>
+    <a href="{% url 'dashboard:transaction_history' %}" style="color:#00C896;font-size:.8rem;font-weight:600;text-decoration:none">View All →</a>
+  </div>
+  <div style="overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse">
+      <thead><tr>
+        <th style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#334155;padding:.65rem 1.25rem;border-bottom:1px solid rgba(0,200,150,.07)">ID</th>
+        <th style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#334155;padding:.65rem 1.25rem;border-bottom:1px solid rgba(0,200,150,.07)">Type</th>
+        <th style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#334155;padding:.65rem 1.25rem;border-bottom:1px solid rgba(0,200,150,.07)">Amount</th>
+        <th style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#334155;padding:.65rem 1.25rem;border-bottom:1px solid rgba(0,200,150,.07)">Status</th>
+        <th style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#334155;padding:.65rem 1.25rem;border-bottom:1px solid rgba(0,200,150,.07)">Date</th>
+      </tr></thead>
+      <tbody>
+        {% for tx in recent_transactions %}
+        <tr style="border-bottom:1px solid rgba(255,255,255,.03)">
+          <td style="padding:.75rem 1.25rem;font-family:'JetBrains Mono',monospace;font-size:.73rem;color:#475569">{{ tx.transaction_id }}</td>
+          <td style="padding:.75rem 1.25rem"><span style="font-size:.75rem;font-weight:600;{% if tx.tx_type == 'deposit' %}color:#3B82F6{% elif tx.tx_type == 'withdrawal' %}color:#EF4444{% elif tx.tx_type == 'profit' %}color:#00C896{% elif tx.tx_type == 'bonus' %}color:#F59E0B{% else %}color:#8B5CF6{% endif %}">{{ tx.get_tx_type_display }}</span></td>
+          <td style="padding:.75rem 1.25rem;font-family:'JetBrains Mono',monospace;font-weight:600;color:#F1F5F9">${{ tx.amount|intcomma }}</td>
+          <td style="padding:.75rem 1.25rem"><span style="font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:99px;text-transform:uppercase;{% if tx.status == 'approved' %}background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.25);color:#00C896{% elif tx.status == 'pending' %}background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:#F59E0B{% else %}background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:#EF4444{% endif %}">{{ tx.get_status_display }}</span></td>
+          <td style="padding:.75rem 1.25rem;font-size:.78rem;color:#475569">{{ tx.created_at|date:"M d, Y" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+{% block extra_scripts %}
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+<script>
+var tvWidget=null;
+function initTV(sym){
+  if(tvWidget){try{tvWidget.remove()}catch(e){}}
+  tvWidget=new TradingView.widget({autosize:true,symbol:sym,interval:'H',timezone:'Etc/UTC',theme:'dark',style:'1',locale:'en',toolbar_bg:'#0D1620',enable_publishing:false,backgroundColor:'rgba(13,22,32,1)',gridColor:'rgba(0,200,150,0.04)',allow_symbol_change:true,details:true,hotlist:false,calendar:false,save_image:true,container_id:'tradingview_widget',studies:['MASimple@tv-studilib!2','RSI@tv-studilib!3'],show_popup_button:true,popup_width:'1000',popup_height:'650'});
+}
+function changeSymbol(sym,el){document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');initTV(sym);}
+document.addEventListener('DOMContentLoaded',()=>initTV('BINANCE:BTCUSDT'));
+const PAIRS=[
+  {sym:'BTCUSDT',display:'BTC/USDT',name:'Bitcoin',icon:'₿',color:'#F59E0B',isCrypto:true},
+  {sym:'ETHUSDT',display:'ETH/USDT',name:'Ethereum',icon:'Ξ',color:'#627EEA',isCrypto:true},
+  {sym:'LTCUSDT',display:'LTC/USDT',name:'Litecoin',icon:'Ł',color:'#A0AEC0',isCrypto:true},
+  {sym:'XRPUSDT',display:'XRP/USDT',name:'Ripple',icon:'✕',color:'#00B4D8',isCrypto:true},
+  {sym:'EURUSD',display:'EUR/USD',name:'Euro/Dollar',icon:'€',color:'#3B82F6',isCrypto:false},
+  {sym:'USDJPY',display:'USD/JPY',name:'Dollar/Yen',icon:'¥',color:'#EF4444',isCrypto:false},
+  {sym:'GBPUSD',display:'GBP/USD',name:'Pound/Dollar',icon:'£',color:'#8B5CF6',isCrypto:false},
+  {sym:'USDCHF',display:'USD/CHF',name:'Dollar/Franc',icon:'₣',color:'#10B981',isCrypto:false},
+  {sym:'AUDUSD',display:'AUD/USD',name:'Aussie/Dollar',icon:'A$',color:'#06B6D4',isCrypto:false},
+  {sym:'USDCAD',display:'USD/CAD',name:'Dollar/CAD',icon:'C$',color:'#F97316',isCrypto:false},
+  {sym:'NZDUSD',display:'NZD/USD',name:'Kiwi/Dollar',icon:'NZ',color:'#EC4899',isCrypto:false},
+];
+const fxSeed={EURUSD:1.0842,USDJPY:157.34,GBPUSD:1.2715,USDCHF:0.9023,AUDUSD:0.6531,USDCAD:1.3612,NZDUSD:0.6008};
+const prev={},spark={};
+function fmtP(p,sym){if(!p)return'—';if(sym.includes('JPY'))return p.toFixed(2);if(p>10000)return p.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});if(p>100)return p.toFixed(2);return p.toFixed(4);}
+function sparkBars(sym,p){if(!spark[sym])spark[sym]=[];spark[sym].push(p);if(spark[sym].length>8)spark[sym].shift();const h=spark[sym],mn=Math.min(...h),mx=Math.max(...h),rng=mx-mn||1;return h.map((v,i)=>{const ht=Math.round(4+((v-mn)/rng)*14),up=i===0||v>=h[i-1];return`<div class="spark-bar" style="height:${ht}px;background:${up?'#00C896':'#EF4444'};opacity:${.35+(ht/18)*.65}"></div>`;}).join('');}
+function tvSym(s){const m={BTCUSDT:'BINANCE:BTCUSDT',ETHUSDT:'BINANCE:ETHUSDT',LTCUSDT:'BINANCE:LTCUSDT',XRPUSDT:'BINANCE:XRPUSDT',EURUSD:'FX:EURUSD',USDJPY:'FX:USDJPY',GBPUSD:'FX:GBPUSD',USDCHF:'FX:USDCHF',AUDUSD:'FX:AUDUSD',USDCAD:'FX:USDCAD',NZDUSD:'FX:NZDUSD'};return m[s]||'BINANCE:BTCUSDT';}
+async function fetchFx(){
+  const res={};
+  const cPairs=PAIRS.filter(p=>p.isCrypto);
+  try{const fetches=cPairs.map(p=>fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${p.sym}`).then(r=>r.ok?r.json():null).catch(()=>null));const responses=await Promise.all(fetches);cPairs.forEach((p,i)=>{const d=responses[i];if(d&&d.lastPrice)res[p.sym]={price:parseFloat(d.lastPrice),change:parseFloat(d.priceChangePercent),high:parseFloat(d.highPrice),low:parseFloat(d.lowPrice)};});}catch(e){}
+  PAIRS.filter(p=>!p.isCrypto).forEach(p=>{const base=fxSeed[p.sym]||1,delta=(Math.random()-.499)*0.0006*base,price=parseFloat((base+delta).toFixed(p.sym.includes('JPY')?2:4));fxSeed[p.sym]=price;const change=parseFloat(((Math.random()-.47)*.55).toFixed(3)),spread=price*.004;res[p.sym]={price,change,high:parseFloat((price+spread).toFixed(4)),low:parseFloat((price-spread).toFixed(4))};});
+  return res;
+}
+async function updateFx(){
+  const data=await fetchFx();const tbody=document.getElementById('forexBody');let html='';
+  PAIRS.forEach((pair,idx)=>{const d=data[pair.sym];if(!d)return;const isUp=d.change>=0,fl=prev[pair.sym]&&prev[pair.sym]!==d.price;prev[pair.sym]=d.price;const ts=tvSym(pair.sym);
+    html+=`<tr><td style="padding:.7rem 1.25rem;color:#334155;font-family:'JetBrains Mono',monospace;font-size:.73rem">${idx+1}</td>
+    <td style="padding:.7rem 1.25rem"><div style="display:flex;align-items:center;gap:.6rem"><div class="fx-icon" style="background:${pair.color}18;border:1px solid ${pair.color}30;color:${pair.color}">${pair.icon}</div><div><div class="fx-symbol">${pair.display}</div><div class="fx-name">${pair.name}</div></div></div></td>
+    <td style="padding:.7rem 1.25rem"><div class="fx-price ${fl?'price-flash':''}">$${fmtP(d.price,pair.sym)}</div></td>
+    <td style="padding:.7rem 1.25rem"><div class="fx-change ${isUp?'up':'down'}">${isUp?'+':''}${d.change.toFixed(2)}% <i class="fas fa-arrow-${isUp?'up':'down'}" style="font-size:.6rem"></i></div></td>
+    <td style="padding:.7rem 1.25rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:#64748B">$${fmtP(d.high,pair.sym)}</td>
+    <td style="padding:.7rem 1.25rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:#64748B">$${fmtP(d.low,pair.sym)}</td>
+    <td style="padding:.7rem 1.25rem"><div class="mini-spark">${sparkBars(pair.sym,d.price)}</div></td>
+    <td style="padding:.7rem 1.25rem"><button onclick="changeSymbolFromFx('${ts}')" style="background:rgba(0,200,150,.08);border:1px solid rgba(0,200,150,.2);color:#00C896;font-size:.7rem;font-weight:600;padding:.28rem .65rem;border-radius:.4rem;cursor:pointer;white-space:nowrap" onmouseover="this.style.background='rgba(0,200,150,.18)'" onmouseout="this.style.background='rgba(0,200,150,.08)'"><i class="fas fa-chart-line" style="font-size:.6rem;margin-right:.2rem"></i>Chart</button></td>
+    </tr>`;
+  });
+  tbody.innerHTML=html||'<tr><td colspan="8" style="text-align:center;padding:2rem;color:#334155">No data</td></tr>';
+  const el=document.getElementById('forex-updated');if(el)el.textContent='Updated '+new Date().toLocaleTimeString();
+}
+function changeSymbolFromFx(s){document.getElementById('tv-chart-container').scrollIntoView({behavior:'smooth',block:'start'});initTV(s);document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));}
+function refreshForex(){document.getElementById('forexBody').innerHTML='<tr><td colspan="8" style="text-align:center;padding:1.5rem;color:#334155"><div style="display:flex;align-items:center;justify-content:center;gap:.5rem"><div class="live-dot"></div><span>Refreshing…</span></div></td></tr>';updateFx();}
+updateFx();setInterval(updateFx,6000);
+setInterval(()=>{const el=document.getElementById('last-updated');if(el)el.textContent=new Date().toLocaleTimeString();},5000);
+</script>
+{% endblock %}

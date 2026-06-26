@@ -1,0 +1,56 @@
+{% extends 'adminpanel/base.html' %}
+{% load humanize %}
+{% block title %}Transactions{% endblock %}
+{% block heading %}Transactions{% endblock %}
+{% block content %}
+<div class="panel">
+  <div class="panel-header">
+    <div class="panel-title"><i class="fas fa-money-bill-transfer" style="color:#00C896"></i>All Transactions ({{ transactions.count }})</div>
+    <form method="GET" style="display:flex;gap:.5rem;flex-wrap:wrap">
+      <select name="type" class="filter-select" onchange="this.form.submit()">
+        <option value="all" {% if tx_type == 'all' %}selected{% endif %}>All Types</option>
+        <option value="deposit" {% if tx_type == 'deposit' %}selected{% endif %}>Deposit</option>
+        <option value="withdrawal" {% if tx_type == 'withdrawal' %}selected{% endif %}>Withdrawal</option>
+        <option value="profit" {% if tx_type == 'profit' %}selected{% endif %}>Profit</option>
+        <option value="bonus" {% if tx_type == 'bonus' %}selected{% endif %}>Bonus</option>
+        <option value="referral_bonus" {% if tx_type == 'referral_bonus' %}selected{% endif %}>Referral Bonus</option>
+      </select>
+      <select name="status" class="filter-select" onchange="this.form.submit()">
+        <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Status</option>
+        <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+        <option value="approved" {% if status_filter == 'approved' %}selected{% endif %}>Approved</option>
+        <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>Rejected</option>
+      </select>
+    </form>
+  </div>
+  <div style="overflow-x:auto">
+    <table>
+      <thead><tr><th>ID</th><th>User</th><th>Type</th><th>Amount</th><th>Method</th><th>Wallet / Note</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+      <tbody>
+        {% for tx in transactions %}
+        <tr>
+          <td style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:#475569">{{ tx.transaction_id }}</td>
+          <td style="color:#94A3B8;font-size:.78rem">{{ tx.user.email|truncatechars:20 }}</td>
+          <td style="text-transform:capitalize;color:#CBD5E1">{{ tx.get_tx_type_display }}</td>
+          <td style="font-family:'JetBrains Mono',monospace;font-weight:600;color:{% if tx.tx_type == 'withdrawal' %}#EF4444{% else %}#00C896{% endif %}">${{ tx.amount|intcomma }}</td>
+          <td style="color:#94A3B8;font-size:.78rem">{{ tx.payment_method|default:"—" }}</td>
+          <td style="color:#475569;font-size:.72rem;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ tx.wallet_address|default:tx.note|default:"—"|truncatechars:24 }}</td>
+          <td>{% if tx.status == 'approved' %}<span class="badge badge-green">Approved</span>{% elif tx.status == 'pending' %}<span class="badge badge-amber">Pending</span>{% else %}<span class="badge badge-red">Rejected</span>{% endif %}</td>
+          <td style="color:#475569;font-size:.75rem;white-space:nowrap">{{ tx.created_at|date:"M d, H:i" }}</td>
+          <td>
+            {% if tx.status == 'pending' %}
+            <div style="display:flex;gap:.35rem">
+              <form method="POST" action="{% url 'adminpanel:transaction_action' tx.id %}"><input type="hidden" name="action" value="approve">{% csrf_token %}<button class="btn btn-approve" title="Approve"><i class="fas fa-check"></i></button></form>
+              <form method="POST" action="{% url 'adminpanel:transaction_action' tx.id %}"><input type="hidden" name="action" value="reject">{% csrf_token %}<button class="btn btn-reject" title="Reject" onclick="return confirm('Reject this transaction?')"><i class="fas fa-xmark"></i></button></form>
+            </div>
+            {% else %}<span style="color:#334155;font-size:.75rem">—</span>{% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="9" style="text-align:center;padding:3rem;color:#334155"><i class="fas fa-money-bill-transfer" style="font-size:2rem;display:block;margin-bottom:.75rem;opacity:.3"></i>No transactions found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

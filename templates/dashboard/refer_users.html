@@ -1,0 +1,66 @@
+{% extends 'dashboard/base.html' %}
+{% load humanize %}
+{% block title %}Refer Users{% endblock %}
+{% block content %}
+<div style="margin-bottom:1.5rem"><h1 class="font-display font-bold text-white" style="font-size:1.4rem">Refer Users</h1><p style="color:#475569;font-size:.85rem;margin-top:.25rem">Earn 10% bonus on every investor you bring to SecureLedger.</p></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem">
+  <div class="panel" style="margin-bottom:0;padding:1.1rem 1.25rem"><div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#475569;margin-bottom:.35rem">Total Referrals</div><div class="font-display font-bold" style="font-size:1.8rem;color:#00C896">{{ referral_count }}</div></div>
+  <div class="panel" style="margin-bottom:0;padding:1.1rem 1.25rem"><div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#475569;margin-bottom:.35rem">Total Earned</div><div class="font-display font-bold" style="font-size:1.8rem;color:#8B5CF6">${{ referral_earnings|floatformat:2|intcomma }}</div></div>
+  <div class="panel" style="margin-bottom:0;padding:1.1rem 1.25rem"><div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#475569;margin-bottom:.35rem">Bonus Rate</div><div class="font-display font-bold" style="font-size:1.8rem;color:#F59E0B">10%</div></div>
+</div>
+<div class="panel" style="margin-bottom:1.5rem">
+  <div class="panel-header"><div class="panel-title"><i class="fas fa-link" style="color:#00C896;margin-right:.4rem"></i>Your Referral Tools</div></div>
+  <div style="padding:1.5rem;display:flex;flex-direction:column;gap:1rem">
+    <div style="background:#111D2B;border:1px solid rgba(0,200,150,.15);border-radius:.875rem;padding:1.25rem">
+      <div style="color:#475569;font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.5rem">Referral Code</div>
+      <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:800;color:#00C896;letter-spacing:.15em">{{ referral_code }}</span>
+        <button onclick="copyCode()" id="copyCodeBtn" style="background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.25);color:#00C896;font-size:.78rem;font-weight:600;padding:.4rem .9rem;border-radius:.4rem;cursor:pointer"><i class="fas fa-copy" style="margin-right:.3rem"></i>Copy Code</button>
+      </div>
+    </div>
+    <div style="background:#111D2B;border:1px solid rgba(0,200,150,.15);border-radius:.875rem;padding:1.25rem">
+      <div style="color:#475569;font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.5rem">Referral Link</div>
+      <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:.8rem;color:#94A3B8;word-break:break-all;flex:1" id="refLink">{{ referral_url }}</span>
+        <button onclick="copyLink()" id="copyLinkBtn" style="background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.25);color:#00C896;font-size:.78rem;font-weight:600;padding:.4rem .9rem;border-radius:.4rem;cursor:pointer;white-space:nowrap"><i class="fas fa-copy" style="margin-right:.3rem"></i>Copy Link</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+      <a href="https://twitter.com/intent/tweet?text=Join+SecureLedger+and+start+earning+daily+returns!&url={{ referral_url|urlencode }}" target="_blank" style="background:#1DA1F2;color:#fff;font-size:.8rem;font-weight:600;padding:.5rem 1rem;border-radius:.5rem;text-decoration:none;display:flex;align-items:center;gap:.4rem"><i class="fab fa-x-twitter"></i>Share on X</a>
+      <a href="https://wa.me/?text=Join+SecureLedger:+{{ referral_url|urlencode }}" target="_blank" style="background:#25D366;color:#fff;font-size:.8rem;font-weight:600;padding:.5rem 1rem;border-radius:.5rem;text-decoration:none;display:flex;align-items:center;gap:.4rem"><i class="fab fa-whatsapp"></i>Share on WhatsApp</a>
+      <a href="https://t.me/share/url?url={{ referral_url|urlencode }}&text=Join+SecureLedger" target="_blank" style="background:#0088CC;color:#fff;font-size:.8rem;font-weight:600;padding:.5rem 1rem;border-radius:.5rem;text-decoration:none;display:flex;align-items:center;gap:.4rem"><i class="fab fa-telegram"></i>Share on Telegram</a>
+    </div>
+  </div>
+</div>
+<div class="panel">
+  <div class="panel-header"><div class="panel-title"><i class="fas fa-users" style="color:#00C896;margin-right:.4rem"></i>My Referrals</div></div>
+  <div style="overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse">
+      <thead><tr>
+        <th style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#334155;padding:.65rem 1.25rem;border-bottom:1px solid rgba(0,200,150,.07);text-align:left">Name</th>
+        <th style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#334155;padding:.65rem 1.25rem;border-bottom:1px solid rgba(0,200,150,.07);text-align:left">Email</th>
+        <th style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#334155;padding:.65rem 1.25rem;border-bottom:1px solid rgba(0,200,150,.07);text-align:left">Joined</th>
+        <th style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#334155;padding:.65rem 1.25rem;border-bottom:1px solid rgba(0,200,150,.07);text-align:left">Status</th>
+      </tr></thead>
+      <tbody>
+        {% for ref in referrals %}
+        <tr style="border-bottom:1px solid rgba(255,255,255,.03)">
+          <td style="padding:.75rem 1.25rem;color:#E2E8F0;font-weight:500;font-size:.85rem">{{ ref.get_full_name }}</td>
+          <td style="padding:.75rem 1.25rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:#475569">{{ ref.email }}</td>
+          <td style="padding:.75rem 1.25rem;font-size:.78rem;color:#475569">{{ ref.date_joined|date:"M d, Y" }}</td>
+          <td style="padding:.75rem 1.25rem"><span style="font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:99px;text-transform:uppercase;{% if ref.is_email_verified %}background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.25);color:#00C896{% else %}background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:#F59E0B{% endif %}">{% if ref.is_email_verified %}Verified{% else %}Pending{% endif %}</span></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" style="text-align:center;padding:3rem;color:#334155"><i class="fas fa-user-plus" style="font-size:2rem;margin-bottom:.75rem;display:block;opacity:.3"></i>No referrals yet. Share your link to get started!</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+function copyCode(){const btn=document.getElementById('copyCodeBtn');navigator.clipboard.writeText('{{ referral_code }}');btn.innerHTML='<i class="fas fa-check" style="margin-right:.3rem"></i>Copied!';setTimeout(()=>btn.innerHTML='<i class="fas fa-copy" style="margin-right:.3rem"></i>Copy Code',2000);}
+function copyLink(){const btn=document.getElementById('copyLinkBtn');navigator.clipboard.writeText(document.getElementById('refLink').textContent.trim());btn.innerHTML='<i class="fas fa-check" style="margin-right:.3rem"></i>Copied!';setTimeout(()=>btn.innerHTML='<i class="fas fa-copy" style="margin-right:.3rem"></i>Copy Link',2000);}
+</script>
+{% endblock %}

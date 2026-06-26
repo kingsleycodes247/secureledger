@@ -1,0 +1,12 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Link Expired – SecureLedger</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>*{box-sizing:border-box}body{margin:0;background:#080E14;color:#E2E8F0;font-family:'Inter',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem}.card{background:#0D1620;border:1px solid rgba(239,68,68,.25);border-radius:1.25rem;padding:2.5rem;max-width:460px;width:100%;text-align:center}</style></head>
+<body><div class="card">
+  <div style="font-size:3rem;margin-bottom:1.25rem">⏰</div>
+  <h1 style="font-family:'Space Grotesk',sans-serif;font-size:1.4rem;font-weight:800;color:#fff;margin:0 0 .75rem">Verification Link Expired</h1>
+  <p style="color:#475569;font-size:.88rem;line-height:1.7;margin:0 0 1.5rem">The link for <strong style="color:#EF4444">{{ user_email }}</strong> has expired. Request a fresh one below.</p>
+  <a href="{% url 'accounts:registration_pending' %}" style="background:#00C896;color:#080E14;font-weight:700;font-size:.9rem;padding:.8rem 2rem;border-radius:99px;text-decoration:none;display:inline-block">Request New Link</a>
+</div></body></html>

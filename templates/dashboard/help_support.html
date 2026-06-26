@@ -1,0 +1,89 @@
+{% extends 'dashboard/base.html' %}
+{% load custom_filters %}
+{% load humanize %}
+{% block title %}Help & Support{% endblock %}
+{% block content %}
+<div style="margin-bottom:1.5rem"><h1 class="font-display font-bold text-white" style="font-size:1.4rem">Help & Support</h1><p style="color:#475569;font-size:.85rem;margin-top:.25rem">Submit a support ticket or browse FAQs. We respond within 24 hours.</p></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;margin-bottom:1.5rem">
+  <div class="panel" style="margin-bottom:0;padding:1rem 1.25rem"><div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#475569;margin-bottom:.35rem">Open Tickets</div><div class="font-display font-bold" style="font-size:1.6rem;color:#F59E0B">{{ open_count }}</div></div>
+  <div class="panel" style="margin-bottom:0;padding:1rem 1.25rem"><div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#475569;margin-bottom:.35rem">Total Tickets</div><div class="font-display font-bold" style="font-size:1.6rem;color:#00C896">{{ tickets.count }}</div></div>
+  <div class="panel" style="margin-bottom:0;padding:1rem 1.25rem;display:flex;flex-direction:column;justify-content:center"><a href="mailto:support@secureledger.com" style="color:#00C896;font-weight:600;font-size:.85rem;text-decoration:none;display:flex;align-items:center;gap:.4rem"><i class="fas fa-envelope" style="font-size:.8rem"></i>Email Support</a><div style="color:#475569;font-size:.72rem;margin-top:.2rem">support@secureledger.com</div></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start">
+  <!-- Submit ticket -->
+  <div class="panel">
+    <div class="panel-header"><div class="panel-title"><i class="fas fa-ticket" style="color:#00C896;margin-right:.4rem"></i>Submit a Ticket</div></div>
+    <div style="padding:1.5rem">
+      <form method="POST">
+        {% csrf_token %}
+        <div style="margin-bottom:1rem"><label class="form-input-label">Subject Category</label>{{ form.subject }}</div>
+        <div style="margin-bottom:1rem"><label class="form-input-label">Priority</label>{{ form.priority }}</div>
+        <div style="margin-bottom:1.25rem"><label class="form-input-label">Message</label>{{ form.message }}</div>
+        {% if form.errors %}<div class="alert alert-error" style="margin-bottom:1rem"><i class="fas fa-exclamation-circle flex-shrink-0"></i><div>Please fill in all required fields.</div></div>{% endif %}
+        <button type="submit" class="glow-btn" style="background:#00C896;color:#080E14;font-weight:700;font-size:.88rem;padding:.75rem 2rem;border:none;border-radius:.65rem;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem">
+          <i class="fas fa-paper-plane"></i> Submit Ticket
+        </button>
+      </form>
+    </div>
+  </div>
+  <!-- Quick FAQs -->
+  <div class="panel">
+    <div class="panel-header"><div class="panel-title"><i class="fas fa-circle-question" style="color:#00C896;margin-right:.4rem"></i>Quick FAQs</div></div>
+    <div style="padding:1rem">
+      {% for faq in "How do I make a deposit?,How long until my plan matures?,How do I withdraw my earnings?,What is the referral bonus?,How do I reset my password?"|split:"," %}
+      <div style="border-bottom:1px solid rgba(0,200,150,.06);padding:.875rem .5rem;cursor:pointer" onclick="this.querySelector('.faq-ans').style.display=this.querySelector('.faq-ans').style.display==='block'?'none':'block';this.querySelector('i').classList.toggle('fa-chevron-down');this.querySelector('i').classList.toggle('fa-chevron-up')">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem">
+          <span style="color:#E2E8F0;font-size:.83rem;font-weight:500">{{ forloop.counter }}. {{ faq }}</span>
+          <i class="fas fa-chevron-down" style="color:#475569;font-size:.65rem;flex-shrink:0"></i>
+        </div>
+        <div class="faq-ans" style="display:none;color:#475569;font-size:.8rem;margin-top:.5rem;line-height:1.6">
+          {% if forloop.counter == 1 %}Go to Invest → select a plan → enter amount → choose payment method → confirm. Your plan activates once the deposit is confirmed by our team.
+          {% elif forloop.counter == 2 %}Plans mature based on their duration (7–14 days). Your profit is automatically credited to your account balance when the plan ends.
+          {% elif forloop.counter == 3 %}Go to Withdraw from the top navbar → enter amount and wallet address → submit. Withdrawals are processed instantly once approved.
+          {% elif forloop.counter == 4 %}You earn 10% of every investment made by someone who registers using your referral code or link. Bonuses are credited instantly.
+          {% else %}Click "Forgot Password" on the login page → enter your email → follow the reset link sent to your inbox.{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<!-- Ticket history -->
+<div class="panel" style="margin-top:1.5rem">
+  <div class="panel-header"><div class="panel-title"><i class="fas fa-list" style="color:#00C896;margin-right:.4rem"></i>My Support Tickets</div></div>
+  <div style="overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse">
+      <thead><tr>
+        <th style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#334155;padding:.65rem 1.25rem;border-bottom:1px solid rgba(0,200,150,.07);text-align:left">Ticket ID</th>
+        <th style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#334155;padding:.65rem 1.25rem;border-bottom:1px solid rgba(0,200,150,.07);text-align:left">Subject</th>
+        <th style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#334155;padding:.65rem 1.25rem;border-bottom:1px solid rgba(0,200,150,.07);text-align:left">Priority</th>
+        <th style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#334155;padding:.65rem 1.25rem;border-bottom:1px solid rgba(0,200,150,.07);text-align:left">Status</th>
+        <th style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#334155;padding:.65rem 1.25rem;border-bottom:1px solid rgba(0,200,150,.07);text-align:left">Date</th>
+      </tr></thead>
+      <tbody>
+        {% for ticket in tickets %}
+        <tr style="border-bottom:1px solid rgba(255,255,255,.03)">
+          <td style="padding:.75rem 1.25rem;font-family:'JetBrains Mono',monospace;font-size:.73rem;color:#00C896">{{ ticket.ticket_id }}</td>
+          <td style="padding:.75rem 1.25rem;color:#E2E8F0;font-size:.83rem">{{ ticket.subject|truncatechars:40 }}</td>
+          <td style="padding:.75rem 1.25rem"><span style="font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:99px;text-transform:uppercase;{% if ticket.priority == 'urgent' %}background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:#EF4444{% elif ticket.priority == 'high' %}background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:#F59E0B{% else %}background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);color:#3B82F6{% endif %}">{{ ticket.get_priority_display }}</span></td>
+          <td style="padding:.75rem 1.25rem"><span style="font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:99px;text-transform:uppercase;{% if ticket.status == 'resolved' %}background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.25);color:#00C896{% elif ticket.status == 'open' %}background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:#F59E0B{% else %}background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);color:#3B82F6{% endif %}">{{ ticket.get_status_display }}</span></td>
+          <td style="padding:.75rem 1.25rem;font-size:.78rem;color:#475569">{{ ticket.created_at|date:"M d, Y" }}</td>
+        </tr>
+        {% if ticket.admin_reply %}
+        <tr style="border-bottom:1px solid rgba(255,255,255,.03)">
+          <td colspan="5" style="padding:.5rem 1.25rem 1rem 2.5rem">
+            <div style="background:rgba(0,200,150,.05);border:1px solid rgba(0,200,150,.12);border-radius:.5rem;padding:.75rem 1rem;font-size:.78rem;color:#64748B">
+              <span style="color:#00C896;font-weight:600;font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:.35rem">Support Reply</span>
+              {{ ticket.admin_reply }}
+            </div>
+          </td>
+        </tr>
+        {% endif %}
+        {% empty %}
+        <tr><td colspan="5" style="text-align:center;padding:3rem;color:#334155"><i class="fas fa-ticket" style="font-size:2rem;margin-bottom:.75rem;display:block;opacity:.3"></i>No tickets submitted yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

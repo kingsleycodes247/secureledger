@@ -1,0 +1,173 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us – SecureLedger</title>
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+<link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+<link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/logo.png' %}">
+<link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/logo.png' %}">
+
+  <style>
+    *,*::before,*::after{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{background:#080E14;color:#E2E8F0;font-family:'Inter',sans-serif;margin:0;padding:0}
+    .gradient-text{background:linear-gradient(135deg,#00C896,#00E5B0,#4FFFCF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .glow-btn{box-shadow:0 0 20px rgba(0,200,150,.4);transition:box-shadow .3s,transform .2s}
+    .glow-btn:hover{box-shadow:0 0 35px rgba(0,200,150,.65);transform:translateY(-2px)}
+    .tag-badge{border:1px solid rgba(0,200,150,.4);background:rgba(0,200,150,.08);color:#00C896;font-size:.7rem;letter-spacing:.12em;font-weight:600}
+    .nav-glass{background:rgba(8,14,20,.88);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,200,150,.1)}
+    .section-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(0,200,150,.3),transparent)}
+    .grid-overlay{background-image:linear-gradient(rgba(0,200,150,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,150,.5) 1px,transparent 1px);background-size:50px 50px;opacity:.04;pointer-events:none}
+    .mobile-menu-panel{background:rgba(8,14,20,.98);border-bottom:1px solid rgba(0,200,150,.18)}
+    /* Hero */
+    .hero-contact{position:relative;min-height:52vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(160deg,#0A1E18,#0D1C28,#080E14)}
+    /* Contact card wrapper */
+    .contact-wrapper{background:#0D1620;border:1px solid rgba(0,200,150,.2);border-radius:1.5rem;overflow:hidden}
+    /* Left info panel */
+    .contact-info-panel{background:linear-gradient(160deg,#0A1E18,#0D1620);border-right:1px solid rgba(0,200,150,.15);padding:2.5rem}
+    .contact-detail-row{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.5rem}
+    .contact-icon{width:48px;height:48px;border-radius:50%;background:#00C896;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    /* Form fields */
+    .form-input{background:#080E14;border:1px solid rgba(0,200,150,.15);color:#E2E8F0;border-radius:.75rem;padding:.75rem 1rem;width:100%;font-size:.9rem;font-family:'Inter',sans-serif;transition:border-color .25s,box-shadow .25s}
+    .form-input:focus{outline:none;border-color:rgba(0,200,150,.55);box-shadow:0 0 0 3px rgba(0,200,150,.08)}
+    .form-input::placeholder{color:#4A5568}
+    textarea.form-input{resize:vertical;min-height:140px}
+    /* Quick-link cards */
+    .quick-card{background:#0D1620;border:1px solid rgba(0,200,150,.12);border-radius:1.25rem;padding:1.75rem;transition:all .3s}
+    .quick-card:hover{border-color:rgba(0,200,150,.4);transform:translateY(-3px)}
+    .quick-icon{width:52px;height:52px;border-radius:.75rem;background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.2);display:flex;align-items:center;justify-content:center;margin-bottom:1rem}
+    /* Map section */
+    .map-wrap{border-radius:1.25rem;overflow:hidden;border:1px solid rgba(0,200,150,.18)}
+    /* Footer */
+    .footer-input{background:#080E14;border:1px solid rgba(0,200,150,.2);color:#E2E8F0}
+    .footer-input:focus{outline:none;border-color:rgba(0,200,150,.5)}
+    .footer-input::placeholder{color:#4A5568}
+    /* Fade */
+    .fade-up{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+    .fade-up.visible{opacity:1;transform:translateY(0)}
+    /* Success toast */
+    .toast{position:fixed;bottom:2rem;right:2rem;background:#0D1620;border:1px solid rgba(0,200,150,.4);border-radius:1rem;padding:1rem 1.5rem;display:flex;align-items:center;gap:.75rem;z-index:999;transform:translateY(100px);opacity:0;transition:all .4s ease}
+    .toast.show{transform:translateY(0);opacity:1}
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav class="nav-glass fixed top-0 left-0 right-0 z-50" id="navbar">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16 lg:h-20">
+      <a href="{% url 'frontend:home' %}" class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-lg bg-primary flex items-center justify-center glow-btn"><i class="fas fa-shield-halved text-dark text-base"></i></div>
+        <span class="font-display font-bold text-xl text-white">Secure<span class="text-primary">Ledger</span></span>
+      </a>
+      <div class="hidden lg:flex items-center gap-8">
+        <a href="{% url 'frontend:home' %}" class="text-slate-400 hover:text-primary transition text-sm font-medium uppercase tracking-wide">Home</a>
+        <a href="{% url 'frontend:about' %}" class="text-slate-400 hover:text-primary transition text-sm font-medium uppercase tracking-wide">About</a>
+        <a href="{% url 'frontend:services' %}" class="text-slate-400 hover:text-primary transition text-sm font-medium uppercase tracking-wide">Services</a>
+        <a href="{% url 'frontend:home' %}#plans" class="text-slate-400 hover:text-primary transition text-sm font-medium uppercase tracking-wide">Plans</a>
+        <a href="{% url 'frontend:contact' %}" class="text-primary text-sm font-semibold uppercase tracking-wide">Contact</a>
+      </div>
+      <div class="hidden lg:flex items-center gap-3">
+        <a href="{% url 'accounts:login' %}" class="text-slate-300 text-sm font-semibold border border-slate-700 hover:border-primary/50 hover:text-primary px-4 py-2 rounded-full transition">Sign In</a>
+        <a href="{% url 'accounts:register' %}" class="bg-primary text-dark font-bold text-sm px-5 py-2.5 rounded-full glow-btn flex items-center gap-2"><i class="fas fa-phone text-xs"></i> Get In Touch</a>
+      </div>
+      <button id="hamburger" class="lg:hidden text-slate-300 hover:text-primary p-2" onclick="toggleMenu()"><i class="fas fa-bars text-xl" id="hamburger-icon"></i></button>
+    </div>
+  </div>
+  <div id="mobile-menu" class="mobile-menu-panel hidden lg:hidden px-4 py-4 space-y-2">
+    <a href="{% url 'frontend:home' %}" class="block text-slate-300 hover:text-primary py-2.5 font-medium border-b border-slate-800">Home</a>
+    <a href="{% url 'frontend:about' %}" class="block text-slate-300 hover:text-primary py-2.5 font-medium border-b border-slate-800">About</a>
+    <a href="{% url 'frontend:services' %}" class="block text-slate-300 hover:text-primary py-2.5 font-medium border-b border-slate-800">Services</a>
+    <a href="{% url 'frontend:home' %}#plans" class="block text-slate-300 hover:text-primary py-2.5 font-medium border-b border-slate-800">Plans</a>
+    <a href="{% url 'frontend:contact' %}" class="block text-primary py-2.5 font-semibold border-b border-slate-800">Contact</a>
+    <div class="pt-3 flex flex-col gap-2">
+      <a href="{% url 'accounts:login' %}" class="w-full text-center text-primary border border-primary/40 py-2.5 rounded-full font-semibold text-sm">Sign In</a>
+      <a href="{% url 'accounts:register' %}" class="w-full text-center bg-primary text-dark font-bold py-2.5 rounded-full text-sm">Get Started</a>
+    </div>
+  </div>
+</nav>
+
+
+ <!-- Page content -->
+  <main class="page-body">
+    {% block content %}{% endblock %}
+  </main>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="pt-16 pb-8" style="background:#0D1620;border-top:1px solid rgba(0,200,150,.12)">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+      <div>
+        <div class="flex items-center gap-2 mb-4"><div class="w-9 h-9 rounded-lg bg-primary flex items-center justify-center"><i class="fas fa-shield-halved text-dark"></i></div><span class="font-display font-bold text-xl text-white">Secure<span class="text-primary">Ledger</span></span></div>
+        <p class="text-slate-500 text-sm leading-relaxed mb-5">SecureLedger is a modern investment and digital asset protection platform dedicated to growing and securing wealth for investors worldwide.</p>
+        <div class="flex gap-3">
+          <a href="#" class="w-9 h-9 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-facebook-f text-sm"></i></a>
+          <a href="#" class="w-9 h-9 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-x-twitter text-sm"></i></a>
+          <a href="#" class="w-9 h-9 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-instagram text-sm"></i></a>
+          <a href="#" class="w-9 h-9 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-youtube text-sm"></i></a>
+        </div>
+      </div>
+      <div>
+        <div class="tag-badge px-3 py-1 rounded-full inline-block mb-4 uppercase text-xs">Pages</div>
+        <ul class="space-y-3">
+          <li><a href="{% url 'frontend:home' %}" class="text-slate-400 hover:text-primary transition text-sm flex items-center gap-2"><i class="fas fa-circle-check text-primary text-xs"></i>Home</a></li>
+          <li><a href="{% url 'frontend:about' %}" class="text-slate-400 hover:text-primary transition text-sm flex items-center gap-2"><i class="fas fa-circle-check text-primary text-xs"></i>About</a></li>
+          <li><a href="{% url 'frontend:services' %}" class="text-slate-400 hover:text-primary transition text-sm flex items-center gap-2"><i class="fas fa-circle-check text-primary text-xs"></i>Services</a></li>
+          <li><a href="{% url 'frontend:home' %}#plans" class="text-slate-400 hover:text-primary transition text-sm flex items-center gap-2"><i class="fas fa-circle-check text-primary text-xs"></i>Plans</a></li>
+          <li><a href="{% url 'frontend:services' %}#faqs" class="text-slate-400 hover:text-primary transition text-sm flex items-center gap-2"><i class="fas fa-circle-check text-primary text-xs"></i>FAQ</a></li>
+          <li><a href="{% url 'frontend:contact' %}" class="text-primary text-sm flex items-center gap-2 font-semibold"><i class="fas fa-circle-check text-primary text-xs"></i>Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="tag-badge px-3 py-1 rounded-full inline-block mb-4 uppercase text-xs">Get In Touch</div>
+        <div class="space-y-4 text-sm"><div><div class="text-slate-500 text-xs uppercase tracking-wide mb-1">Address</div><div class="text-slate-300">101 Market Street, Suite 800<br>San Francisco, CA 94105, USA</div></div><div><div class="text-slate-500 text-xs uppercase tracking-wide mb-1">Support</div><div class="text-slate-300">support@secureledger.com</div></div></div>
+      </div>
+      <div>
+        <div class="tag-badge px-3 py-1 rounded-full inline-block mb-4 uppercase text-xs">Get The Latest Insight</div>
+        <p class="text-slate-500 text-sm mb-2">Join Our Newsletter</p>
+        <div class="flex"><input type="email" placeholder="Email Address" class="footer-input flex-1 text-sm px-4 py-2.5 rounded-l-xl outline-none"><button class="bg-primary text-dark px-4 py-2.5 rounded-r-xl font-bold"><i class="fas fa-paper-plane text-sm"></i></button></div>
+        <div class="mt-5 space-y-3">
+          <div><div class="tag-badge px-3 py-1 rounded-full inline-block text-xs mb-1">Address</div><div class="text-slate-400 text-xs">101 Market St, San Francisco, CA 94105</div></div>
+          <div><div class="tag-badge px-3 py-1 rounded-full inline-block text-xs mb-1">Support</div><div class="text-slate-400 text-xs">support@secureledger.com</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="section-divider mb-6"></div>
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-500 text-xs">
+      <span>© 2026 SecureLedger Investment Corp. All rights reserved.</span>
+      <div class="flex gap-4"><a href="#" class="hover:text-primary transition">Privacy Policy</a><a href="#" class="hover:text-primary transition">Terms of Service</a></div>
+    </div>
+  </div>
+</footer>
+
+<!-- Toast notification -->
+<div class="toast" id="toast">
+  <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0"><i class="fas fa-check text-dark text-sm"></i></div>
+  <div><div class="text-white font-semibold text-sm">Message Sent!</div><div class="text-slate-400 text-xs">We'll get back to you within 24 hours.</div></div>
+</div>
+
+<script>
+  function toggleMenu(){const m=document.getElementById('mobile-menu'),i=document.getElementById('hamburger-icon'),o=m.classList.toggle('hidden');i.className=o?'fas fa-bars text-xl':'fas fa-xmark text-xl'}
+  function handleSubmit(e){
+    e.preventDefault();
+    const btn=document.getElementById('submitBtn');
+    btn.innerHTML='<i class="fas fa-spinner fa-spin text-sm"></i> Sending…';btn.disabled=true;
+    setTimeout(()=>{
+      btn.innerHTML='<i class="fas fa-check text-sm"></i> Message Sent!';
+      const toast=document.getElementById('toast');toast.classList.add('show');
+      setTimeout(()=>toast.classList.remove('show'),4000);
+      setTimeout(()=>{btn.innerHTML='<i class="fas fa-paper-plane text-sm"></i> Submit Message';btn.disabled=false},2000);
+    },1600);
+  }
+  const io=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('visible');io.unobserve(x.target)}})},{threshold:.12});
+  document.querySelectorAll('.fade-up').forEach(el=>io.observe(el));
+  window.addEventListener('scroll',()=>{document.getElementById('navbar').style.boxShadow=window.scrollY>40?'0 4px 30px rgba(0,0,0,.4)':'none'});
+</script>
+</body>
+</html>

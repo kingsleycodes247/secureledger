@@ -1,0 +1,294 @@
+{% load static%}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Dashboard{% endblock %} – SecureLedger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+
+<link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+<link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/logo.png' %}">
+<link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/logo.png' %}">
+ 
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%;margin:0;padding:0}
+    body{background:#080E14;color:#E2E8F0;font-family:'Inter',sans-serif;overflow-x:hidden}
+    ::-webkit-scrollbar{width:5px;height:5px}
+    ::-webkit-scrollbar-track{background:#0D1620}
+    ::-webkit-scrollbar-thumb{background:rgba(0,200,150,.3);border-radius:3px}
+    .dashboard-shell{display:flex;min-height:100vh}
+    /* ── Sidebar ── */
+    .sidebar{width:260px;flex-shrink:0;background:#0D1620;border-right:1px solid rgba(0,200,150,.1);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:transform .3s ease;overflow-y:auto}
+    .sidebar.collapsed{transform:translateX(-260px)}
+    .sidebar-logo{padding:1.5rem 1.25rem 1.25rem;border-bottom:1px solid rgba(0,200,150,.08);display:flex;align-items:center;gap:.6rem}
+    .sidebar-logo-icon{width:34px;height:34px;border-radius:8px;background:#00C896;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 14px rgba(0,200,150,.4)}
+    .sidebar-user{padding:1rem 1.25rem;border-bottom:1px solid rgba(0,200,150,.08);position:relative}
+    .sidebar-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,rgba(0,200,150,.25),rgba(0,200,150,.08));border:1.5px solid rgba(0,200,150,.35);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+    .user-dropdown-btn{display:flex;align-items:center;gap:.6rem;width:100%;background:transparent;border:none;cursor:pointer;padding:.5rem;border-radius:.6rem;transition:background .2s}
+    .user-dropdown-btn:hover{background:rgba(0,200,150,.06)}
+    .user-dropdown-menu{position:absolute;left:1rem;right:1rem;top:100%;margin-top:.25rem;background:#111D2B;border:1px solid rgba(0,200,150,.2);border-radius:.75rem;padding:.5rem;z-index:200;box-shadow:0 12px 40px rgba(0,0,0,.4);display:none}
+    .user-dropdown-menu.open{display:block}
+    .dropdown-link{display:flex;align-items:center;gap:.6rem;padding:.6rem .75rem;border-radius:.5rem;color:#94A3B8;font-size:.82rem;font-weight:500;text-decoration:none;transition:all .2s}
+    .dropdown-link:hover{background:rgba(0,200,150,.08);color:#00C896}
+    .sidebar-nav{padding:.75rem;flex:1}
+    .nav-label{font-size:.62rem;font-weight:700;letter-spacing:.1em;color:#334155;padding:.75rem .5rem .4rem;text-transform:uppercase}
+    .nav-link{display:flex;align-items:center;gap:.75rem;padding:.7rem .875rem;border-radius:.65rem;color:#64748B;font-size:.875rem;font-weight:500;text-decoration:none;transition:all .2s;margin-bottom:.15rem;position:relative}
+    .nav-icon{width:18px;text-align:center;flex-shrink:0;font-size:.9rem}
+    .nav-link:hover{background:rgba(0,200,150,.07);color:#CBD5E1}
+    .nav-link.active{background:rgba(0,200,150,.12);color:#00C896;font-weight:600}
+    .nav-link.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:3px;background:#00C896;border-radius:0 2px 2px 0}
+    .nav-badge{margin-left:auto;background:#00C896;color:#080E14;font-size:.65rem;font-weight:700;padding:.1rem .45rem;border-radius:99px}
+    .sidebar-bottom{padding:1rem .75rem;border-top:1px solid rgba(0,200,150,.08)}
+    /* ── Main ── */
+    .main-content{flex:1;margin-left:260px;display:flex;flex-direction:column;min-height:100vh;transition:margin-left .3s}
+    .main-content.expanded{margin-left:0}
+    .top-navbar{height:64px;background:rgba(13,22,32,.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,200,150,.1);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;position:sticky;top:0;z-index:90;gap:1rem}
+    .btn-deposit{background:#00C896;color:#080E14;font-weight:700;font-size:.82rem;padding:.5rem 1.1rem;border-radius:99px;border:none;cursor:pointer;display:flex;align-items:center;gap:.4rem;box-shadow:0 0 16px rgba(0,200,150,.4);transition:all .25s}
+    .btn-deposit:hover{box-shadow:0 0 28px rgba(0,200,150,.6);transform:translateY(-1px)}
+    .btn-withdraw{background:transparent;color:#00C896;font-weight:700;font-size:.82rem;padding:.5rem 1.1rem;border-radius:99px;border:1.5px solid rgba(0,200,150,.4);cursor:pointer;display:flex;align-items:center;gap:.4rem;transition:all .25s}
+    .btn-withdraw:hover{background:rgba(0,200,150,.08);border-color:#00C896;transform:translateY(-1px)}
+    .notif-btn{position:relative;background:rgba(0,200,150,.06);border:1px solid rgba(0,200,150,.15);border-radius:.5rem;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#64748B;transition:all .2s}
+    .notif-btn:hover{color:#00C896;border-color:rgba(0,200,150,.4)}
+    .notif-dot{position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:#00C896;border:1.5px solid #0D1620}
+    .page-body{padding:1.5rem;flex:1}
+    /* ── Cards / panels ── */
+    .panel{background:#0D1620;border:1px solid rgba(0,200,150,.1);border-radius:.875rem;overflow:hidden;margin-bottom:1.5rem}
+    .panel-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid rgba(0,200,150,.08);flex-wrap:wrap;gap:.75rem}
+    .panel-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.95rem;color:#F1F5F9;display:flex;align-items:center;gap:.5rem}
+    .live-dot{width:7px;height:7px;border-radius:50%;background:#00C896;animation:livePulse 1.5s ease-in-out infinite;flex-shrink:0}
+    @keyframes livePulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,200,150,.4)}50%{opacity:.8;box-shadow:0 0 0 5px rgba(0,200,150,0)}}
+    /* ── Form inputs ── */
+    .form-input{background:#080E14;border:1px solid rgba(0,200,150,.15);color:#E2E8F0;border-radius:.65rem;padding:.75rem 1rem;width:100%;font-family:'Inter',sans-serif;font-size:.88rem;transition:border-color .25s,box-shadow .25s}
+    .form-input:focus{outline:none;border-color:rgba(0,200,150,.55);box-shadow:0 0 0 3px rgba(0,200,150,.08)}
+    .form-input::placeholder{color:#4A5568}
+    .form-input-label{display:block;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:#475569;margin-bottom:.4rem}
+    /* ── Misc ── */
+    .tag-badge{border:1px solid rgba(0,200,150,.4);background:rgba(0,200,150,.08);color:#00C896;font-size:.65rem;letter-spacing:.1em;font-weight:700}
+    .gradient-text{background:linear-gradient(135deg,#00C896,#00E5B0,#4FFFCF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .section-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(0,200,150,.2),transparent)}
+    .glow-btn{box-shadow:0 0 18px rgba(0,200,150,.4);transition:box-shadow .3s,transform .2s}
+    .glow-btn:hover{box-shadow:0 0 30px rgba(0,200,150,.65);transform:translateY(-1px)}
+    /* ── Alert messages ── */
+    .alert{padding:.8rem 1rem;border-radius:.65rem;font-size:.85rem;margin-bottom:1rem;display:flex;align-items:flex-start;gap:.6rem}
+    .alert-success{background:rgba(0,200,150,.08);border:1px solid rgba(0,200,150,.25);color:#6EFCD8}
+    .alert-error{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);color:#FCA5A5}
+    .alert-warning{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);color:#FCD34D}
+    .alert-info{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.25);color:#93C5FD}
+    /* ── Mobile ── */
+    .sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;display:none}
+    .sidebar-overlay.show{display:block}
+    @media(max-width:768px){
+      .sidebar{transform:translateX(-260px)}
+      .sidebar.mobile-open{transform:translateX(0)}
+      .main-content{margin-left:0}
+      .page-body{padding:1rem}
+      .hide-mobile{display:none}
+    }
+    {% block extra_styles %}{% endblock %}
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- ══════════════ SIDEBAR ══════════════ -->
+<aside class="sidebar" id="sidebar">
+  <!-- Logo -->
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-icon">
+      <i class="fas fa-shield-halved text-dark text-sm"></i>
+      <a href="{% url 'dashboard:home' %}" style="position:absolute;inset:0"></a>
+    </div>
+    <div>
+      <span class="font-display font-bold text-white text-base leading-none">Secure<span class="text-primary">Ledger</span></span>
+      <div class="text-xs" style="color:#334155;margin-top:1px">Investment Portal</div>
+    </div>
+  </div>
+
+  <!-- User profile -->
+  <div class="sidebar-user">
+    <button class="user-dropdown-btn" onclick="toggleUserDropdown()">
+      <div class="sidebar-avatar">
+        {% if request.user.profile.avatar %}
+          <img src="{{ request.user.profile.avatar.url }}" alt="{{ request.user.full_name }}" style="width:100%;height:100%;object-fit:cover">
+        {% else %}
+          <i class="fas fa-user text-primary text-sm"></i>
+        {% endif %}
+      </div>
+      <div class="flex-1 text-left min-w-0">
+        <div class="text-white font-semibold text-sm truncate">{{ request.user.get_full_name }}</div>
+        <div class="text-xs truncate" style="color:#475569">{{ request.user.email }}</div>
+      </div>
+      <i class="fas fa-chevron-down text-xs" style="color:#475569" id="user-chevron"></i>
+    </button>
+    <div class="user-dropdown-menu" id="userDropdown">
+      <a href="{% url 'dashboard:account_settings' %}" class="dropdown-link">
+        <i class="fas fa-gear text-xs w-4"></i> Account Settings
+      </a>
+      <a href="{% url 'dashboard:account_settings' %}" class="dropdown-link">
+        <i class="fas fa-id-badge text-xs w-4"></i> View Profile
+      </a>
+      <div style="height:1px;background:rgba(0,200,150,.08);margin:.4rem 0"></div>
+      <a href="{% url 'accounts:logout' %}" class="dropdown-link" style="color:#EF4444">
+        <i class="fas fa-right-from-bracket text-xs w-4"></i> Sign Out
+      </a>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="sidebar-nav">
+    <div class="nav-label">Main Menu</div>
+    <a href="{% url 'dashboard:home' %}" class="nav-link {% if page == 'dashboard' %}active{% endif %}">
+      <span class="nav-icon"><i class="fas fa-gauge-high"></i></span> Dashboard
+    </a>
+    <a href="{% url 'dashboard:profit_record' %}" class="nav-link {% if page == 'profit_record' %}active{% endif %}">
+      <span class="nav-icon"><i class="fas fa-chart-line"></i></span> Profit Record
+    </a>
+    <a href="{% url 'dashboard:transaction_history' %}" class="nav-link {% if page == 'transactions' %}active{% endif %}">
+      <span class="nav-icon"><i class="fas fa-clock-rotate-left"></i></span>
+      Transaction History
+      {% with pending=request.user.transactions.filter.pending_count %}{% endwith %}
+    </a>
+    <a href="{% url 'dashboard:crypto_exchange' %}" class="nav-link {% if page == 'exchange' %}active{% endif %}">
+      <span class="nav-icon"><i class="fas fa-arrows-rotate"></i></span> Crypto Exchange
+    </a>
+
+    <div class="nav-label">Investments</div>
+    <a href="{% url 'dashboard:invest' %}" class="nav-link {% if page == 'invest' %}active{% endif %}">
+      <span class="nav-icon"><i class="fas fa-rocket"></i></span> Invest
+    </a>
+    <a href="{% url 'dashboard:refer_users' %}" class="nav-link {% if page == 'refer' %}active{% endif %}">
+      <span class="nav-icon"><i class="fas fa-user-plus"></i></span> Refer Users
+    </a>
+
+    <div class="nav-label">Support</div>
+    <a href="{% url 'dashboard:help_support' %}" class="nav-link {% if page == 'support' %}active{% endif %}">
+      <span class="nav-icon"><i class="fas fa-circle-question"></i></span> Help / Support
+    </a>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <a href="{% url 'accounts:logout' %}" class="nav-link" style="color:#EF4444">
+      <span class="nav-icon"><i class="fas fa-right-from-bracket"></i></span> Sign Out
+    </a>
+  </div>
+</aside>
+
+<!-- ══════════════ MAIN CONTENT ══════════════ -->
+<div class="main-content" id="mainContent">
+
+  <!-- Top Navbar -->
+  <header class="top-navbar">
+    <div style="display:flex;align-items:center;gap:.75rem">
+      <button class="notif-btn" onclick="toggleSidebar()" style="width:auto;padding:.4rem .6rem;background:none;border:none">
+        <i class="fas fa-bars text-lg" style="color:#64748B"></i>
+      </button>
+      <div class="hidden sm:flex items-center gap-2">
+        <div style="width:28px;height:28px;background:#00C896;border-radius:7px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px rgba(0,200,150,.4)">
+          <i class="fas fa-shield-halved text-dark text-xs"></i>
+        </div>
+        <span class="font-display font-bold text-white text-base">Secure<span class="text-primary">Ledger</span></span>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:.75rem">
+      <div class="notif-btn">
+        <i class="fas fa-bell text-sm"></i>
+        <div class="notif-dot"></div>
+      </div>
+      <button class="btn-withdraw" onclick="document.getElementById('withdrawModalBase').classList.add('open')">
+        <i class="fas fa-arrow-up text-xs"></i> <span class="hide-mobile">Withdraw</span>
+      </button>
+      <button class="btn-deposit glow-btn" onclick="document.getElementById('depositModalBase').classList.add('open')">
+        <i class="fas fa-plus text-xs"></i> <span class="hide-mobile">Deposit</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Flash messages -->
+  {% if messages %}
+  <div style="padding:.75rem 1.5rem 0">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+      <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% elif message.tags == 'warning' %}triangle-exclamation{% else %}info-circle{% endif %} flex-shrink-0 mt-0.5"></i>
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Page content -->
+  <main class="page-body">
+    {% block content %}{% endblock %}
+  </main>
+</div>
+
+<!-- ══════════════ QUICK DEPOSIT MODAL ══════════════ -->
+<div class="modal-overlay" id="depositModalBase" style="position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .3s">
+  <div style="background:#0D1620;border:1px solid rgba(0,200,150,.25);border-radius:1.25rem;width:100%;max-width:440px;overflow:hidden;transform:scale(.96) translateY(12px);transition:transform .3s">
+    <div style="padding:1.25rem 1.5rem;border-bottom:1px solid rgba(0,200,150,.1);display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:.6rem">
+        <div style="width:36px;height:36px;background:rgba(0,200,150,.12);border:1px solid rgba(0,200,150,.25);border-radius:.6rem;display:flex;align-items:center;justify-content:center"><i class="fas fa-plus" style="color:#00C896"></i></div>
+        <div><div class="font-display font-bold text-white">Make a Deposit</div><div style="color:#475569;font-size:.72rem">Choose a plan & payment method</div></div>
+      </div>
+      <button onclick="document.getElementById('depositModalBase').classList.remove('open')" style="background:rgba(255,255,255,.05);border:none;color:#64748B;width:30px;height:30px;border-radius:.4rem;cursor:pointer"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div style="padding:1.5rem">
+      <a href="{% url 'dashboard:invest' %}" class="glow-btn" style="background:#00C896;color:#080E14;font-weight:700;font-size:.9rem;padding:.85rem;border:none;border-radius:.75rem;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:.5rem;text-decoration:none">
+        <i class="fas fa-rocket text-sm"></i> Go to Investment Plans
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ QUICK WITHDRAW MODAL ══════════════ -->
+<div class="modal-overlay" id="withdrawModalBase" style="position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .3s">
+  <div style="background:#0D1620;border:1px solid rgba(0,200,150,.25);border-radius:1.25rem;width:100%;max-width:440px;overflow:hidden;transform:scale(.96) translateY(12px);transition:transform .3s">
+    <div style="padding:1.25rem 1.5rem;border-bottom:1px solid rgba(0,200,150,.1);display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:.6rem">
+        <div style="width:36px;height:36px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:.6rem;display:flex;align-items:center;justify-content:center"><i class="fas fa-arrow-up" style="color:#EF4444"></i></div>
+        <div><div class="font-display font-bold text-white">Request Withdrawal</div><div style="color:#475569;font-size:.72rem">Available: <span style="color:#00C896;font-weight:700">${{ request.user.profile.available_balance|floatformat:2|intcomma }}</span></div></div>
+      </div>
+      <button onclick="document.getElementById('withdrawModalBase').classList.remove('open')" style="background:rgba(255,255,255,.05);border:none;color:#64748B;width:30px;height:30px;border-radius:.4rem;cursor:pointer"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div style="padding:1.5rem">
+      <a href="{% url 'dashboard:withdraw' %}" style="background:linear-gradient(135deg,#EF4444,#DC2626);color:#fff;font-weight:700;font-size:.9rem;padding:.85rem;border:none;border-radius:.75rem;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:.5rem;text-decoration:none;box-shadow:0 0 18px rgba(239,68,68,.3)">
+        <i class="fas fa-arrow-up text-sm"></i> Go to Withdrawal Page
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleSidebar(){
+  const sb=document.getElementById('sidebar'),mc=document.getElementById('mainContent'),ol=document.getElementById('sidebarOverlay');
+  if(window.innerWidth<768){sb.classList.toggle('mobile-open');ol.classList.toggle('show')}
+  else{const c=sb.classList.toggle('collapsed');mc.classList.toggle('expanded',c)}
+}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('mobile-open');document.getElementById('sidebarOverlay').classList.remove('show')}
+function toggleUserDropdown(){
+  const dd=document.getElementById('userDropdown'),ch=document.getElementById('user-chevron');
+  const open=dd.classList.toggle('open');ch.style.transform=open?'rotate(180deg)':'';
+}
+document.addEventListener('click',e=>{if(!e.target.closest('.sidebar-user')){document.getElementById('userDropdown').classList.remove('open');document.getElementById('user-chevron').style.transform=''}});
+// Modal open/close animation
+document.querySelectorAll('.modal-overlay').forEach(m=>{
+  const observer=new MutationObserver(()=>{
+    const isOpen=m.classList.contains('open');
+    m.style.opacity=isOpen?'1':'0';m.style.pointerEvents=isOpen?'all':'none';
+    const box=m.querySelector('[style*="scale"]');if(box)box.style.transform=isOpen?'scale(1) translateY(0)':'scale(.96) translateY(12px)';
+  });
+  observer.observe(m,{attributes:true,attributeFilter:['class']});
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open'))});
+</script>
+
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

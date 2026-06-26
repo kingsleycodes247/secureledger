@@ -1,0 +1,128 @@
+{% extends 'adminpanel/base.html' %}
+{% load humanize %}
+{% block title %}{{ target_user.get_full_name }}{% endblock %}
+{% block heading %}User Detail{% endblock %}
+{% block content %}
+<a href="{% url 'adminpanel:users' %}" style="color:#475569;font-size:.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;margin-bottom:1.25rem"><i class="fas fa-arrow-left" style="font-size:.7rem"></i>Back to Users</a>
+
+<div style="display:grid;grid-template-columns:320px 1fr;gap:1.5rem;align-items:start">
+  <!-- Profile card + actions -->
+  <div>
+    <div class="panel">
+      <div style="padding:1.5rem;text-align:center">
+        <div style="width:72px;height:72px;border-radius:50%;background:rgba(0,200,150,.1);border:2px solid rgba(0,200,150,.25);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;overflow:hidden">
+          {% if target_user.profile.avatar %}<img src="{{ target_user.profile.avatar.url }}" style="width:100%;height:100%;object-fit:cover">{% else %}<i class="fas fa-user" style="color:#00C896;font-size:1.6rem"></i>{% endif %}
+        </div>
+        <h2 class="font-display font-bold text-white" style="font-size:1.1rem">{{ target_user.get_full_name }}</h2>
+        <p style="color:#475569;font-size:.8rem;margin-top:.2rem">{{ target_user.email }}</p>
+        <div style="display:flex;gap:.4rem;justify-content:center;margin-top:.75rem;flex-wrap:wrap">
+          {% if target_user.is_email_verified %}<span class="badge badge-green">Verified</span>{% else %}<span class="badge badge-amber">Unverified</span>{% endif %}
+          {% if target_user.is_active %}<span class="badge badge-blue">Active</span>{% else %}<span class="badge badge-red">Suspended</span>{% endif %}
+        </div>
+      </div>
+      <div style="border-top:1px solid rgba(0,200,150,.08);padding:1.25rem">
+        <div style="display:flex;flex-direction:column;gap:.6rem;font-size:.8rem">
+          <div style="display:flex;justify-content:space-between"><span style="color:#475569">Username</span><span style="color:#CBD5E1">@{{ target_user.username }}</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:#475569">Phone</span><span style="color:#CBD5E1">{{ target_user.phone|default:"—" }}</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:#475569">Country</span><span style="color:#CBD5E1">{{ target_user.country|default:"—" }}</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:#475569">Referral Code</span><span style="color:#00C896;font-family:'JetBrains Mono',monospace">{{ target_user.referral_code }}</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:#475569">Referred By</span><span style="color:#CBD5E1">{{ target_user.referred_by.email|default:"—"|truncatechars:18 }}</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:#475569">Joined</span><span style="color:#CBD5E1">{{ target_user.date_joined|date:"M d, Y" }}</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Financials -->
+    <div class="panel">
+      <div class="panel-header"><div class="panel-title" style="font-size:.85rem"><i class="fas fa-coins" style="color:#F59E0B"></i>Financials</div></div>
+      <div style="padding:1.25rem;display:flex;flex-direction:column;gap:.6rem;font-size:.82rem">
+        <div style="display:flex;justify-content:space-between"><span style="color:#475569">Balance</span><span style="color:#00C896;font-weight:600;font-family:'JetBrains Mono',monospace">${{ target_user.profile.account_balance|floatformat:2|intcomma }}</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:#475569">Total Profit</span><span style="color:#CBD5E1;font-family:'JetBrains Mono',monospace">${{ target_user.profile.total_profit|floatformat:2|intcomma }}</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:#475569">Total Deposit</span><span style="color:#CBD5E1;font-family:'JetBrains Mono',monospace">${{ target_user.profile.total_deposit|floatformat:2|intcomma }}</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:#475569">Total Withdrawal</span><span style="color:#CBD5E1;font-family:'JetBrains Mono',monospace">${{ target_user.profile.total_withdrawal|floatformat:2|intcomma }}</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:#475569">Referral Bonus</span><span style="color:#8B5CF6;font-family:'JetBrains Mono',monospace">${{ target_user.profile.total_referral_bonus|floatformat:2|intcomma }}</span></div>
+      </div>
+    </div>
+
+    <!-- Admin actions -->
+    <div class="panel" style="border-color:rgba(239,68,68,.2)">
+      <div class="panel-header" style="border-bottom-color:rgba(239,68,68,.12)"><div class="panel-title" style="font-size:.85rem"><i class="fas fa-bolt" style="color:#EF4444"></i>Admin Actions</div></div>
+      <div style="padding:1.25rem;display:flex;flex-direction:column;gap:.6rem">
+        {% if not target_user.is_email_verified %}
+        <form method="POST" action="{% url 'adminpanel:user_action' target_user.id %}"><input type="hidden" name="action" value="verify">{% csrf_token %}<button class="btn btn-approve" style="width:100%;justify-content:center"><i class="fas fa-check"></i>Manually Verify Email</button></form>
+        {% endif %}
+        {% if target_user.is_active %}
+        <form method="POST" action="{% url 'adminpanel:user_action' target_user.id %}"><input type="hidden" name="action" value="suspend">{% csrf_token %}<button class="btn btn-reject" style="width:100%;justify-content:center" onclick="return confirm('Suspend this user?')"><i class="fas fa-ban"></i>Suspend Account</button></form>
+        {% else %}
+        <form method="POST" action="{% url 'adminpanel:user_action' target_user.id %}"><input type="hidden" name="action" value="activate">{% csrf_token %}<button class="btn btn-approve" style="width:100%;justify-content:center"><i class="fas fa-circle-check"></i>Re-activate Account</button></form>
+        {% endif %}
+        <button onclick="document.getElementById('creditModal').classList.add('open')" class="btn" style="width:100%;justify-content:center;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:#F59E0B"><i class="fas fa-plus"></i>Credit Funds</button>
+        <form method="POST" action="{% url 'adminpanel:user_action' target_user.id %}"><input type="hidden" name="action" value="delete">{% csrf_token %}<button class="btn btn-reject" style="width:100%;justify-content:center" onclick="return confirm('PERMANENTLY delete this user and all their data?')"><i class="fas fa-trash"></i>Delete User</button></form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right column: investments + transactions -->
+  <div>
+    <div class="panel">
+      <div class="panel-header"><div class="panel-title"><i class="fas fa-rocket" style="color:#00C896"></i>Investments ({{ investments.count }})</div></div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>ID</th><th>Plan</th><th>Amount</th><th>Profit</th><th>Status</th><th>Date</th></tr></thead>
+          <tbody>
+            {% for inv in investments %}
+            <tr>
+              <td style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:#475569">{{ inv.investment_id }}</td>
+              <td style="color:#CBD5E1">{{ inv.plan.get_name_display }}</td>
+              <td style="font-family:'JetBrains Mono',monospace;font-weight:600;color:#F1F5F9">${{ inv.amount|intcomma }}</td>
+              <td style="font-family:'JetBrains Mono',monospace;color:#00C896">+${{ inv.expected_profit|intcomma }}</td>
+              <td>{% if inv.status == 'active' %}<span class="badge badge-green">Active</span>{% elif inv.status == 'completed' %}<span class="badge badge-blue">Completed</span>{% elif inv.status == 'pending' %}<span class="badge badge-amber">Pending</span>{% else %}<span class="badge badge-red">Cancelled</span>{% endif %}</td>
+              <td style="color:#475569;font-size:.75rem">{{ inv.created_at|date:"M d" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" style="text-align:center;padding:2rem;color:#334155">No investments.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header"><div class="panel-title"><i class="fas fa-clock-rotate-left" style="color:#00C896"></i>Transactions ({{ transactions.count }})</div></div>
+      <div style="overflow-x:auto;max-height:400px">
+        <table>
+          <thead><tr><th>ID</th><th>Type</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+          <tbody>
+            {% for tx in transactions %}
+            <tr>
+              <td style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:#475569">{{ tx.transaction_id }}</td>
+              <td style="text-transform:capitalize;color:#CBD5E1">{{ tx.get_tx_type_display }}</td>
+              <td style="font-family:'JetBrains Mono',monospace;font-weight:600;color:#F1F5F9">${{ tx.amount|intcomma }}</td>
+              <td>{% if tx.status == 'approved' %}<span class="badge badge-green">Approved</span>{% elif tx.status == 'pending' %}<span class="badge badge-amber">Pending</span>{% else %}<span class="badge badge-red">Rejected</span>{% endif %}</td>
+              <td style="color:#475569;font-size:.75rem">{{ tx.created_at|date:"M d" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" style="text-align:center;padding:2rem;color:#334155">No transactions.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block modals %}
+<div class="modal-bg" id="creditModal">
+  <div class="modal-card">
+    <div style="padding:1.25rem 1.5rem;border-bottom:1px solid rgba(0,200,150,.1);display:flex;align-items:center;justify-content:between"><div class="panel-title">Credit Funds to {{ target_user.first_name }}</div><button onclick="document.getElementById('creditModal').classList.remove('open')" style="background:none;border:none;color:#64748B;cursor:pointer;margin-left:auto"><i class="fas fa-xmark"></i></button></div>
+    <form method="POST" action="{% url 'adminpanel:user_action' target_user.id %}">
+      {% csrf_token %}<input type="hidden" name="action" value="credit">
+      <div style="padding:1.5rem">
+        <div style="margin-bottom:1rem"><label class="form-label">Type</label><select name="tx_type" class="form-input"><option value="bonus">Bonus</option><option value="profit">Profit</option><option value="deposit">Deposit</option><option value="referral_bonus">Referral Bonus</option></select></div>
+        <div style="margin-bottom:1.25rem"><label class="form-label">Amount (USD)</label><input type="number" step="0.01" name="amount" class="form-input" placeholder="0.00" required></div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:.7rem"><i class="fas fa-plus"></i>Credit Funds</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

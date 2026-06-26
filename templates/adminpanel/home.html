@@ -1,0 +1,105 @@
+{% extends 'adminpanel/base.html' %}
+{% load humanize %}
+{% block title %}Dashboard{% endblock %}
+{% block heading %}Dashboard Overview{% endblock %}
+{% block extra_styles %}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-bottom:1.5rem}
+.stat-card{background:#0D1620;border:1px solid rgba(0,200,150,.1);border-radius:.875rem;padding:1.1rem 1.25rem;position:relative;overflow:hidden;transition:border-color .3s,transform .2s}
+.stat-card:hover{border-color:rgba(0,200,150,.3);transform:translateY(-2px)}
+.stat-icon{width:38px;height:38px;border-radius:.55rem;display:flex;align-items:center;justify-content:center;margin-bottom:.75rem;font-size:1rem}
+.stat-label{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#475569;margin-bottom:.3rem}
+.stat-value{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.5rem;color:#F1F5F9;line-height:1}
+{% endblock %}
+{% block content %}
+
+<!-- Pending action alerts -->
+{% if pending_proofs %}
+<div style="background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(13,22,32,.5));border:1px solid rgba(245,158,11,.25);border-radius:.875rem;padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+  <i class="fas fa-bell" style="color:#F59E0B;font-size:1.1rem"></i>
+  <span style="color:#FCD34D;font-size:.88rem;font-weight:500">You have {{ pending_proofs|length }} deposit proof{{ pending_proofs|length|pluralize }} awaiting review.</span>
+  <a href="{% url 'adminpanel:investments' %}?status=pending" class="btn btn-primary" style="margin-left:auto">Review Now <i class="fas fa-arrow-right" style="font-size:.65rem"></i></a>
+</div>
+{% endif %}
+
+<!-- Stats -->
+<div class="stat-grid">
+  <div class="stat-card"><div class="stat-icon" style="background:rgba(0,200,150,.12);border:1px solid rgba(0,200,150,.2)"><i class="fas fa-users" style="color:#00C896"></i></div><div class="stat-label">Total Users</div><div class="stat-value">{{ total_users|intcomma }}</div><div style="font-size:.7rem;color:#00C896;margin-top:.3rem">{{ verified_users }} verified</div></div>
+  <div class="stat-card"><div class="stat-icon" style="background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2)"><i class="fas fa-arrow-down-to-bracket" style="color:#3B82F6"></i></div><div class="stat-label">Total Deposits</div><div class="stat-value">${{ total_deposits|floatformat:0|intcomma }}</div><div style="font-size:.7rem;color:#3B82F6;margin-top:.3rem">Approved only</div></div>
+  <div class="stat-card"><div class="stat-icon" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2)"><i class="fas fa-arrow-up-from-bracket" style="color:#EF4444"></i></div><div class="stat-label">Total Withdrawals</div><div class="stat-value">${{ total_withdrawals|floatformat:0|intcomma }}</div><div style="font-size:.7rem;color:#EF4444;margin-top:.3rem">Paid out</div></div>
+  <div class="stat-card"><div class="stat-icon" style="background:rgba(0,200,150,.12);border:1px solid rgba(0,200,150,.2)"><i class="fas fa-vault" style="color:#00C896"></i></div><div class="stat-label">Net Balance</div><div class="stat-value">${{ net_balance|floatformat:0|intcomma }}</div><div style="font-size:.7rem;color:#475569;margin-top:.3rem">Deposits − Withdrawals</div></div>
+  <div class="stat-card"><div class="stat-icon" style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2)"><i class="fas fa-hourglass-half" style="color:#F59E0B"></i></div><div class="stat-label">Pending Deposits</div><div class="stat-value">{{ pending_deposits }}</div><div style="font-size:.7rem;color:#F59E0B;margin-top:.3rem">Awaiting approval</div></div>
+  <div class="stat-card"><div class="stat-icon" style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2)"><i class="fas fa-clock" style="color:#F59E0B"></i></div><div class="stat-label">Pending Withdrawals</div><div class="stat-value">{{ pending_withdrawals }}</div><div style="font-size:.7rem;color:#F59E0B;margin-top:.3rem">To process</div></div>
+  <div class="stat-card"><div class="stat-icon" style="background:rgba(0,200,150,.12);border:1px solid rgba(0,200,150,.2)"><i class="fas fa-rocket" style="color:#00C896"></i></div><div class="stat-label">Active Investments</div><div class="stat-value">{{ active_investments }}</div><div style="font-size:.7rem;color:#00C896;margin-top:.3rem">Running plans</div></div>
+  <div class="stat-card"><div class="stat-icon" style="background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2)"><i class="fas fa-headset" style="color:#8B5CF6"></i></div><div class="stat-label">Open Tickets</div><div class="stat-value">{{ open_tickets }}</div><div style="font-size:.7rem;color:#8B5CF6;margin-top:.3rem">Need response</div></div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start">
+  <!-- Pending proofs -->
+  <div class="panel">
+    <div class="panel-header"><div class="panel-title"><i class="fas fa-receipt" style="color:#F59E0B"></i>Deposit Proofs to Review</div><a href="{% url 'adminpanel:investments' %}?status=pending" style="color:#00C896;font-size:.78rem;text-decoration:none">View All →</a></div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr><th>User</th><th>Plan</th><th>Amount</th><th>Action</th></tr></thead>
+        <tbody>
+          {% for inv in pending_proofs %}
+          <tr>
+            <td><div style="color:#E2E8F0;font-weight:500;font-size:.8rem">{{ inv.user.get_full_name }}</div><div style="color:#475569;font-size:.7rem">{{ inv.user.email|truncatechars:22 }}</div></td>
+            <td style="color:#94A3B8">{{ inv.plan.get_name_display }}</td>
+            <td style="font-family:'JetBrains Mono',monospace;font-weight:600;color:#00C896">${{ inv.amount|intcomma }}</td>
+            <td><a href="{% url 'adminpanel:investments' %}?status=pending" class="btn btn-view">Review</a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" style="text-align:center;padding:2rem;color:#334155">No proofs pending review.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Recent users -->
+  <div class="panel">
+    <div class="panel-header"><div class="panel-title"><i class="fas fa-user-plus" style="color:#00C896"></i>New Users</div><a href="{% url 'adminpanel:users' %}" style="color:#00C896;font-size:.78rem;text-decoration:none">View All →</a></div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Joined</th></tr></thead>
+        <tbody>
+          {% for u in recent_users %}
+          <tr>
+            <td style="color:#E2E8F0;font-weight:500">{{ u.get_full_name }}</td>
+            <td style="color:#475569;font-family:'JetBrains Mono',monospace;font-size:.75rem">{{ u.email|truncatechars:20 }}</td>
+            <td>{% if u.is_email_verified %}<span class="badge badge-green">Verified</span>{% else %}<span class="badge badge-amber">Pending</span>{% endif %}</td>
+            <td style="color:#475569;font-size:.76rem">{{ u.date_joined|date:"M d" }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" style="text-align:center;padding:2rem;color:#334155">No users yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Recent transactions -->
+<div class="panel">
+  <div class="panel-header"><div class="panel-title"><i class="fas fa-clock-rotate-left" style="color:#00C896"></i>Recent Transactions</div><a href="{% url 'adminpanel:transactions' %}" style="color:#00C896;font-size:.78rem;text-decoration:none">View All →</a></div>
+  <div style="overflow-x:auto">
+    <table>
+      <thead><tr><th>ID</th><th>User</th><th>Type</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+      <tbody>
+        {% for tx in recent_transactions %}
+        <tr>
+          <td style="font-family:'JetBrains Mono',monospace;font-size:.73rem;color:#475569">{{ tx.transaction_id }}</td>
+          <td style="color:#94A3B8;font-size:.78rem">{{ tx.user.email|truncatechars:22 }}</td>
+          <td style="text-transform:capitalize;color:#CBD5E1">{{ tx.get_tx_type_display }}</td>
+          <td style="font-family:'JetBrains Mono',monospace;font-weight:600;color:#F1F5F9">${{ tx.amount|intcomma }}</td>
+          <td>{% if tx.status == 'approved' %}<span class="badge badge-green">Approved</span>{% elif tx.status == 'pending' %}<span class="badge badge-amber">Pending</span>{% else %}<span class="badge badge-red">Rejected</span>{% endif %}</td>
+          <td style="color:#475569;font-size:.76rem">{{ tx.created_at|date:"M d, H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" style="text-align:center;padding:2rem;color:#334155">No transactions yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

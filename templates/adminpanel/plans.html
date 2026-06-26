@@ -1,0 +1,32 @@
+{% extends 'adminpanel/base.html' %}
+{% load humanize %}
+{% block title %}Plans{% endblock %}
+{% block heading %}Investment Plans{% endblock %}
+{% block content %}
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.25rem">
+{% for plan in plans %}
+<div class="panel" style="margin-bottom:0">
+  <div class="panel-header">
+    <div class="panel-title">{{ plan.get_name_display }}</div>
+    {% if plan.is_active %}<span class="badge badge-green">Active</span>{% else %}<span class="badge badge-gray">Inactive</span>{% endif %}
+  </div>
+  <form method="POST" action="{% url 'adminpanel:plan_edit' plan.id %}">
+    {% csrf_token %}
+    <div style="padding:1.25rem">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem">
+        <div><label class="form-label">Daily Return %</label><input type="number" step="0.01" name="daily_return_pct" value="{{ plan.daily_return_pct }}" class="form-input"></div>
+        <div><label class="form-label">Duration (days)</label><input type="number" name="duration_days" value="{{ plan.duration_days }}" class="form-input"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem">
+        <div><label class="form-label">Min Deposit</label><input type="number" step="0.01" name="min_deposit" value="{{ plan.min_deposit }}" class="form-input"></div>
+        <div><label class="form-label">Max Deposit</label><input type="number" step="0.01" name="max_deposit" value="{{ plan.max_deposit }}" class="form-input"></div>
+      </div>
+      <div style="margin-bottom:1rem"><label class="form-label">Referral Bonus %</label><input type="number" step="0.01" name="referral_bonus_pct" value="{{ plan.referral_bonus_pct }}" class="form-input"></div>
+      <label style="display:flex;align-items:center;gap:.5rem;margin-bottom:1rem;cursor:pointer"><input type="checkbox" name="is_active" {% if plan.is_active %}checked{% endif %} style="width:16px;height:16px;accent-color:#00C896"><span style="color:#94A3B8;font-size:.82rem">Plan is active</span></label>
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:.6rem"><i class="fas fa-save"></i>Save Changes</button>
+    </div>
+  </form>
+</div>
+{% endfor %}
+</div>
+{% endblock %}

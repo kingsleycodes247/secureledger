@@ -1,0 +1,356 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Us – SecureLedger</title>
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/logo.png' %}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/logo.png' %}">
+ 
+  
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background-color: #080E14; color: #E2E8F0; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
+
+    /* ── Reusable utilities ── */
+    .gradient-text { background: linear-gradient(135deg, #00C896, #00E5B0, #4FFFCF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .glow-btn { box-shadow: 0 0 20px rgba(0,200,150,0.4); transition: box-shadow .3s, transform .2s; }
+    .glow-btn:hover { box-shadow: 0 0 35px rgba(0,200,150,0.65); transform: translateY(-2px); }
+    .tag-badge { border: 1px solid rgba(0,200,150,0.4); background: rgba(0,200,150,0.08); color: #00C896; font-size: .7rem; letter-spacing: .12em; font-weight: 600; }
+    .section-divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(0,200,150,0.3), transparent); }
+    .nav-glass { background: rgba(8,14,20,0.88); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(0,200,150,0.1); }
+    .grid-overlay { background-image: linear-gradient(rgba(0,200,150,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(0,200,150,.5) 1px, transparent 1px); background-size: 50px 50px; opacity: .04; pointer-events: none; }
+
+    /* ── Hero ── */
+    .hero-about {
+      position: relative;
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: #080E14;
+    }
+    
+    .hero-about-img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; object-position: center;
+      opacity: 0.35;
+    }
+    /* Breadcrumb trail */
+    .breadcrumb a { color: #4A5568; font-size: .8rem; transition: color .2s; }
+    .breadcrumb a:hover { color: #00C896; }
+    .breadcrumb span { color: #00C896; font-size: .8rem; }
+
+    /* ── Who We Are ── */
+    .vision-card {
+      background: #00C896;
+      color: #080E14;
+      border-radius: 1rem;
+      padding: 1.5rem;
+    }
+    .mission-card {
+      background: #0D1620;
+      border: 1px solid rgba(0,200,150,0.18);
+      border-radius: 1rem;
+      padding: 1.5rem;
+    }
+    .values-card {
+      background: #0D1620;
+      border: 1px solid rgba(0,200,150,0.12);
+      border-radius: 1rem;
+      padding: 1.5rem;
+    }
+
+    /* ── Why Trust Us ── */
+    .why-trust-section { background: #0D1620; }
+    .benefit-item { position: relative; }
+    .benefit-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 4rem;
+      font-weight: 800;
+      line-height: 1;
+      color: rgba(0,200,150,0.06);
+      position: absolute;
+      top: -10px;
+      left: 0;
+      user-select: none;
+    }
+    .lock-visual-wrap {
+      border-radius: 1.25rem;
+      overflow: hidden;
+      border: 1px solid rgba(0,200,150,0.2);
+      background: linear-gradient(160deg, #0A1E18, #0D1620);
+      aspect-ratio: 1/1.05;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .lock-visual-wrap::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(0,200,150,0.08), transparent 70%);
+    }
+
+    /* ── Partners ── */
+    .partner-card {
+      background: #0D1620;
+      border: 1px solid rgba(0,200,150,0.1);
+      border-radius: 1rem;
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color .3s, transform .3s;
+    }
+    .partner-card:hover { border-color: rgba(0,200,150,0.4); transform: translateY(-3px); }
+
+    /* ── Team ── */
+    .team-card {
+      background: #0D1620;
+      border: 1px solid rgba(0,200,150,0.12);
+      border-radius: 1.25rem;
+      overflow: hidden;
+      transition: border-color .3s, transform .3s, box-shadow .3s;
+    }
+    .team-card:hover { border-color: rgba(0,200,150,0.45); transform: translateY(-5px); box-shadow: 0 20px 50px rgba(0,200,150,0.08); }
+    .team-img-wrap {
+      background: linear-gradient(160deg, #0A1E18, #0D1620);
+      border-bottom: 1px solid rgba(0,200,150,0.15);
+      height: 200px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .team-img-wrap::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0; height: 40%;
+      background: linear-gradient(to top, rgba(13,22,32,.9), transparent);
+    }
+    .team-avatar-icon {
+      width: 96px; height: 96px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(0,200,150,0.2), rgba(0,200,150,0.05));
+      border: 2px solid rgba(0,200,150,0.3);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .social-dot {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(0,200,150,0.1);
+      border: 1px solid rgba(0,200,150,0.25);
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s, border-color .2s;
+    }
+    .social-dot:hover { background: #00C896; border-color: #00C896; }
+    .social-dot:hover i { color: #080E14; }
+
+    /* ── Stats strip ── */
+    .stat-strip { background: linear-gradient(90deg, rgba(0,200,150,0.06), rgba(0,200,150,0.03), rgba(0,200,150,0.06)); border-top: 1px solid rgba(0,200,150,0.12); border-bottom: 1px solid rgba(0,200,150,0.12); }
+
+    /* ── Timeline ── */
+    .timeline-item { position: relative; padding-left: 2.5rem; }
+    .timeline-item::before { content: ''; position: absolute; left: 9px; top: 28px; bottom: -20px; width: 2px; background: rgba(0,200,150,0.15); }
+    .timeline-item:last-child::before { display: none; }
+    .timeline-dot { position: absolute; left: 0; top: 4px; width: 20px; height: 20px; border-radius: 50%; background: rgba(0,200,150,0.15); border: 2px solid rgba(0,200,150,0.4); display: flex; align-items: center; justify-content: center; }
+    .timeline-dot.active { background: #00C896; border-color: #00C896; }
+    .timeline-dot.active::after { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #080E14; }
+
+    /* ── CTA strip ── */
+    .cta-strip { background: linear-gradient(135deg, #0A1E18, #0D1620, #080E14); border: 1px solid rgba(0,200,150,0.2); }
+
+    /* ── Footer ── */
+    .footer-bg { background: #0D1620; border-top: 1px solid rgba(0,200,150,0.12); }
+    .footer-input { background: #080E14; border: 1px solid rgba(0,200,150,0.2); color: #E2E8F0; }
+    .footer-input:focus { outline: none; border-color: rgba(0,200,150,0.5); }
+    .footer-input::placeholder { color: #4A5568; }
+
+    /* ── Mobile menu ── */
+    .mobile-menu-panel { background: rgba(8,14,20,0.98); border-bottom: 1px solid rgba(0,200,150,0.18); }
+
+    /* Animate on scroll */
+    .fade-up { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+
+<body x-data="{ mobileOpen: false, certOpen: false }">
+
+<!-- ═══════════════════ NAVBAR ═══════════════════ -->
+<nav class="nav-glass fixed top-0 left-0 right-0 z-50" id="navbar">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16 lg:h-20">
+
+      <!-- Logo -->
+      <a href="{% url 'frontend:home' %}" class="flex items-center gap-2 group">
+        <div class="w-9 h-9 rounded-lg bg-primary flex items-center justify-center glow-btn">
+          <i class="fas fa-shield-halved text-dark text-base"></i>
+        </div>
+        <span class="font-display font-bold text-xl text-white">Secure<span class="text-primary">Ledger</span></span>
+      </a>
+
+      <!-- Desktop links -->
+      <div class="hidden lg:flex items-center gap-8">
+        <a href="{% url 'frontend:home' %}" class="text-slate-400 hover:text-primary transition text-sm font-medium uppercase tracking-wide">Home</a>
+        <a href="{% url 'frontend:about' %}" class="text-primary text-sm font-semibold uppercase tracking-wide">About</a>
+        <a href="{% url 'frontend:services' %}" class="text-slate-400 hover:text-primary transition text-sm font-medium uppercase tracking-wide">Services</a>
+        <a href="{% url 'frontend:home' %}#plans" class="text-slate-400 hover:text-primary transition text-sm font-medium uppercase tracking-wide">Plans</a>
+        <a href="{% url 'frontend:contact' %}" class="text-slate-400 hover:text-primary transition text-sm font-medium uppercase tracking-wide">Contact</a>
+      </div>
+
+      <!-- CTA -->
+      <div class="hidden lg:flex items-center gap-3">
+        <a href="{% url 'accounts:login' %}" class="text-slate-300 text-sm font-semibold border border-slate-700 hover:border-primary/50 hover:text-primary px-4 py-2 rounded-full transition">Sign In</a>
+        <a href="{% url 'accounts:register' %}" class="bg-primary text-dark font-bold text-sm px-5 py-2.5 rounded-full glow-btn flex items-center gap-2">
+          <i class="fas fa-phone text-xs"></i> Get In Touch
+        </a>
+      </div>
+
+      <!-- Mobile hamburger -->
+      <button id="hamburger" class="lg:hidden text-slate-300 hover:text-primary p-2" onclick="toggleMenu()">
+        <i class="fas fa-bars text-xl" id="hamburger-icon"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="mobile-menu-panel hidden lg:hidden px-4 py-4 space-y-2">
+    <a href="{% url 'frontend:home' %}" class="block text-slate-300 hover:text-primary py-2.5 font-medium border-b border-slate-800">Home</a>
+    <a href="{% url 'frontend:about' %}" class="block text-primary py-2.5 font-semibold border-b border-slate-800">About</a>
+    <a href="{% url 'frontend:services' %}" class="block text-slate-300 hover:text-primary py-2.5 font-medium border-b border-slate-800">Services</a>
+    <a href="{% url 'frontend:home' %}#plans" class="block text-slate-300 hover:text-primary py-2.5 font-medium border-b border-slate-800">Plans</a>
+    <a href="{% url 'frontend:contact' %}" class="block text-slate-300 hover:text-primary py-2.5 font-medium border-b border-slate-800">Contact</a>
+    <div class="pt-3 flex flex-col gap-2">
+      <a href="{% url 'accounts:login' %}" class="w-full text-center text-primary border border-primary/40 py-2.5 rounded-full font-semibold text-sm">Sign In</a>
+      <a href="{% url 'accounts:register' %}" class="w-full text-center bg-primary text-dark font-bold py-2.5 rounded-full text-sm">Get Started</a>
+    </div>
+  </div>
+</nav>
+
+ <!-- Page content -->
+  <main class="page-body">
+    {% block content %}{% endblock %}
+  </main>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer id="contact" class="footer-bg pt-16 pb-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+
+      <!-- Brand -->
+      <div>
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-9 h-9 rounded-lg bg-primary flex items-center justify-center"><i class="fas fa-shield-halved text-dark"></i></div>
+          <span class="font-display font-bold text-xl text-white">Secure<span class="text-primary">Ledger</span></span>
+        </div>
+        <p class="text-slate-500 text-sm leading-relaxed mb-5">SecureLedger is a modern investment and digital asset protection platform dedicated to growing and securing wealth for investors worldwide.</p>
+        <div class="flex gap-3">
+          <a href="#" class="w-9 h-9 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-facebook-f text-sm"></i></a>
+          <a href="#" class="w-9 h-9 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-x-twitter text-sm"></i></a>
+          <a href="#" class="w-9 h-9 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-instagram text-sm"></i></a>
+          <a href="#" class="w-9 h-9 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-youtube text-sm"></i></a>
+        </div>
+      </div>
+
+      <!-- Pages -->
+      <div>
+        <div class="tag-badge px-3 py-1 rounded-full inline-block mb-4 uppercase text-xs">Pages</div>
+        <ul class="space-y-3">
+          <li><a href="{% url 'frontend:home' %}" class="text-slate-400 hover:text-primary transition text-sm flex items-center gap-2"><i class="fas fa-circle-check text-primary text-xs"></i>Home</a></li>
+          <li><a href="{% url 'frontend:about' %}" class="text-primary text-sm flex items-center gap-2 font-semibold"><i class="fas fa-circle-check text-primary text-xs"></i>About Us</a></li>
+          <li><a href="{% url 'frontend:services' %}" class="text-slate-400 hover:text-primary transition text-sm flex items-center gap-2"><i class="fas fa-circle-check text-primary text-xs"></i>Services</a></li>
+          <li><a href="{% url 'frontend:home' %}#plans" class="text-slate-400 hover:text-primary transition text-sm flex items-center gap-2"><i class="fas fa-circle-check text-primary text-xs"></i>Investment Plans</a></li>
+          <li><a href="{% url 'frontend:services' %}#faq" class="text-slate-400 hover:text-primary transition text-sm flex items-center gap-2"><i class="fas fa-circle-check text-primary text-xs"></i>FAQ</a></li>
+          <li><a href="{% url 'frontend:contact' %}" class="text-slate-400 hover:text-primary transition text-sm flex items-center gap-2"><i class="fas fa-circle-check text-primary text-xs"></i>Contact</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <div class="tag-badge px-3 py-1 rounded-full inline-block mb-4 uppercase text-xs">Get In Touch</div>
+        <div class="space-y-4 text-sm">
+          <div>
+            <div class="text-slate-500 text-xs uppercase tracking-wide mb-1">Address</div>
+            <div class="text-slate-300">101 Market Street, Suite 800<br>San Francisco, CA 94105, USA</div>
+          </div>
+          <div>
+            <div class="text-slate-500 text-xs uppercase tracking-wide mb-1">Support</div>
+            <div class="text-slate-300">support@secureledger.com</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Newsletter -->
+      <div>
+        <div class="tag-badge px-3 py-1 rounded-full inline-block mb-4 uppercase text-xs">Get The Latest Insight</div>
+        <p class="text-slate-500 text-sm mb-2">Join Our Newsletter</p>
+        <div class="flex">
+          <input type="email" placeholder="Email Address" class="footer-input flex-1 text-sm px-4 py-2.5 rounded-l-xl outline-none placeholder-slate-600">
+          <button class="bg-primary text-dark px-4 py-2.5 rounded-r-xl font-bold hover:bg-primary-dark transition">
+            <i class="fas fa-paper-plane text-sm"></i>
+          </button>
+        </div>
+        <div class="mt-6 grid grid-cols-2 gap-3">
+          <div>
+            <div class="tag-badge px-3 py-1 rounded-full inline-block text-xs mb-2">Address</div>
+            <div class="text-slate-400 text-xs">101 Market St, San Francisco, CA 94105</div>
+          </div>
+          <div>
+            <div class="tag-badge px-3 py-1 rounded-full inline-block text-xs mb-2">Support</div>
+            <div class="text-slate-400 text-xs">support@secureledger.com</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="section-divider mb-6"></div>
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-500 text-xs">
+      <span>© 2026 SecureLedger Investment Corp. All rights reserved.</span>
+      <div class="flex gap-4">
+        <a href="#" class="hover:text-primary transition">Privacy Policy</a>
+        <a href="#" class="hover:text-primary transition">Terms of Service</a>
+        <a href="{% url 'frontend:home' %}" class="hover:text-primary transition">View Certificate</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script>
+  /* ── Mobile menu ── */
+  function toggleMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const icon = document.getElementById('hamburger-icon');
+    const open = menu.classList.toggle('hidden');
+    icon.className = open ? 'fas fa-bars text-xl' : 'fas fa-xmark text-xl';
+  }
+
+  /* ── Scroll fade-in ── */
+  const fadeEls = document.querySelectorAll('.fade-up');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  fadeEls.forEach(el => io.observe(el));
+
+  /* ── Navbar scroll shadow ── */
+  window.addEventListener('scroll', () => {
+    const nav = document.getElementById('navbar');
+    nav.style.boxShadow = window.scrollY > 40 ? '0 4px 30px rgba(0,0,0,0.4)' : 'none';
+  });
+</script>
+
+<style>
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+</style>
+
+</body>
+</html>

@@ -1,0 +1,78 @@
+{% extends 'adminpanel/base.html' %}
+{% load humanize %}
+{% block title %}Investments{% endblock %}
+{% block heading %}Investments{% endblock %}
+{% block content %}
+<div class="panel">
+  <div class="panel-header">
+    <div class="panel-title"><i class="fas fa-rocket" style="color:#00C896"></i>All Investments ({{ investments.count }})</div>
+    <form method="GET">
+      <select name="status" class="filter-select" onchange="this.form.submit()">
+        <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Status</option>
+        <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+        <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+        <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Completed</option>
+        <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Cancelled</option>
+      </select>
+    </form>
+  </div>
+  <div style="overflow-x:auto">
+    <table>
+      <thead><tr><th>ID</th><th>User</th><th>Plan</th><th>Amount</th><th>Method</th><th>Proof</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+      <tbody>
+        {% for inv in investments %}
+        <tr>
+          <td style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:#475569">{{ inv.investment_id }}</td>
+          <td style="color:#94A3B8;font-size:.78rem">{{ inv.user.email|truncatechars:18 }}</td>
+          <td style="color:#CBD5E1">{{ inv.plan.get_name_display }}</td>
+          <td style="font-family:'JetBrains Mono',monospace;font-weight:600;color:#00C896">${{ inv.amount|intcomma }}</td>
+          <td style="color:#94A3B8;font-size:.78rem">{{ inv.payment_method }}</td>
+          <td>
+            {% if inv.proof_of_payment %}
+            <button onclick="showProof('{{ inv.proof_of_payment.url }}','{{ inv.user.get_full_name }}','{{ inv.amount }}','{{ inv.investment_id }}')" class="btn btn-view"><i class="fas fa-image"></i>View</button>
+            {% else %}<span style="color:#334155;font-size:.72rem">No proof</span>{% endif %}
+          </td>
+          <td>{% if inv.status == 'active' %}<span class="badge badge-green">Active</span>{% elif inv.status == 'completed' %}<span class="badge badge-blue">Completed</span>{% elif inv.status == 'pending' %}<span class="badge badge-amber">Pending</span>{% else %}<span class="badge badge-red">Cancelled</span>{% endif %}</td>
+          <td style="color:#475569;font-size:.75rem;white-space:nowrap">{{ inv.created_at|date:"M d" }}</td>
+          <td>
+            {% if inv.status == 'pending' %}
+            <div style="display:flex;gap:.35rem">
+              <form method="POST" action="{% url 'adminpanel:investment_action' inv.investment_id %}"><input type="hidden" name="action" value="approve">{% csrf_token %}<button class="btn btn-approve" title="Approve & Activate"><i class="fas fa-check"></i></button></form>
+              <form method="POST" action="{% url 'adminpanel:investment_action' inv.investment_id %}"><input type="hidden" name="action" value="reject">{% csrf_token %}<button class="btn btn-reject" title="Reject" onclick="return confirm('Reject this investment?')"><i class="fas fa-xmark"></i></button></form>
+            </div>
+            {% else %}<span style="color:#334155;font-size:.75rem">—</span>{% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="9" style="text-align:center;padding:3rem;color:#334155"><i class="fas fa-rocket" style="font-size:2rem;display:block;margin-bottom:.75rem;opacity:.3"></i>No investments found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+{% block modals %}
+<div class="modal-bg" id="proofModal">
+  <div class="modal-card" style="max-width:520px">
+    <div style="padding:1.25rem 1.5rem;border-bottom:1px solid rgba(0,200,150,.1);display:flex;align-items:center;gap:.75rem">
+      <div class="panel-title">Payment Proof — <span id="proofId" style="color:#00C896"></span></div>
+      <button onclick="document.getElementById('proofModal').classList.remove('open')" style="background:none;border:none;color:#64748B;cursor:pointer;margin-left:auto"><i class="fas fa-xmark text-lg"></i></button>
+    </div>
+    <div style="padding:1.5rem">
+      <div style="display:flex;justify-content:space-between;margin-bottom:1rem;font-size:.82rem"><span style="color:#475569">User: <span id="proofUser" style="color:#CBD5E1"></span></span><span style="color:#475569">Amount: <span id="proofAmount" style="color:#00C896;font-weight:600"></span></span></div>
+      <img id="proofImg" src="" alt="Proof" style="width:100%;border-radius:.65rem;border:1px solid rgba(0,200,150,.15)">
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+function showProof(url,user,amount,id){
+  document.getElementById('proofImg').src=url;
+  document.getElementById('proofUser').textContent=user;
+  document.getElementById('proofAmount').textContent='$'+parseFloat(amount).toLocaleString();
+  document.getElementById('proofId').textContent=id;
+  document.getElementById('proofModal').classList.add('open');
+}
+</script>
+{% endblock %}

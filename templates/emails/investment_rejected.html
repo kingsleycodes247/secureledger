@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#080E14;font-family:Inter,Arial,sans-serif">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#080E14;padding:40px 20px"><tr><td align="center">
+<table width="600" cellpadding="0" cellspacing="0" style="background:#0D1620;border:1px solid rgba(239,68,68,.2);border-radius:16px;overflow:hidden;max-width:600px;width:100%">
+  <tr><td style="background:linear-gradient(135deg,#1E0A0A,#0D1620);padding:32px 40px;text-align:center;border-bottom:1px solid rgba(239,68,68,.12)">
+    <div style="display:inline-flex;align-items:center;gap:10px">
+      <div style="width:36px;height:36px;background:#00C896;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:18px">🛡</div>
+      <span style="font-family:Arial,sans-serif;font-weight:800;font-size:20px;color:#fff">Secure<span style="color:#00C896">Ledger</span></span>
+    </div>
+  </td></tr>
+  <tr><td style="padding:40px">
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="width:64px;height:64px;border-radius:50%;background:rgba(239,68,68,.12);border:2px solid #EF4444;display:inline-flex;align-items:center;justify-content:center;font-size:28px">⚠️</div>
+    </div>
+    <h2 style="color:#fff;font-size:22px;margin:0 0 12px;font-weight:700;text-align:center">Deposit Could Not Be Verified</h2>
+    <p style="color:#94A3B8;font-size:15px;line-height:1.6;margin:0 0 28px;text-align:center">Hi {{ user.first_name }}, we were unable to verify the payment for your {{ investment.plan.get_name_display }} investment ({{ investment.investment_id }}).</p>
+
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#111D2B;border:1px solid rgba(239,68,68,.15);border-radius:12px;margin-bottom:28px">
+      <tr><td style="padding:20px 24px">
+        <p style="color:#94A3B8;font-size:14px;line-height:1.6;margin:0">This usually happens when:</p>
+        <ul style="color:#94A3B8;font-size:14px;line-height:1.8;margin:12px 0 0;padding-left:20px">
+          <li>The payment was not received or is still pending on the network</li>
+          <li>The amount sent didn't match the investment amount</li>
+          <li>The proof of payment was unclear or invalid</li>
+        </ul>
+      </td></tr>
+    </table>
+
+    <div style="text-align:center;margin-bottom:8px">
+      <a href="{{ support_url }}" style="background:#00C896;color:#080E14;font-weight:700;font-size:15px;padding:14px 36px;border-radius:99px;text-decoration:none;display:inline-block">Contact Support</a>
+    </div>
+    <p style="color:#475569;font-size:13px;text-align:center;margin:20px 0 0">If you believe this is an error, please reach out with your transaction details.</p>
+  </td></tr>
+  <tr><td style="padding:20px 40px;border-top:1px solid rgba(239,68,68,.08);text-align:center">
+    <p style="color:#334155;font-size:12px;margin:0">© 2026 SecureLedger Investment Corp. · San Francisco, CA</p>
+  </td></tr>
+</table>
+</td></tr></table></body></html>

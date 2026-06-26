@@ -1,0 +1,59 @@
+{% extends 'adminpanel/base.html' %}
+{% load humanize %}
+{% block title %}Tickets{% endblock %}
+{% block heading %}Support Tickets{% endblock %}
+{% block content %}
+<div class="panel">
+  <div class="panel-header">
+    <div class="panel-title"><i class="fas fa-headset" style="color:#00C896"></i>Support Tickets ({{ tickets.count }})</div>
+    <form method="GET">
+      <select name="status" class="filter-select" onchange="this.form.submit()">
+        <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Status</option>
+        <option value="open" {% if status_filter == 'open' %}selected{% endif %}>Open</option>
+        <option value="in_progress" {% if status_filter == 'in_progress' %}selected{% endif %}>In Progress</option>
+        <option value="resolved" {% if status_filter == 'resolved' %}selected{% endif %}>Resolved</option>
+        <option value="closed" {% if status_filter == 'closed' %}selected{% endif %}>Closed</option>
+      </select>
+    </form>
+  </div>
+  <div style="padding:1rem">
+    {% for ticket in tickets %}
+    <div style="background:#111D2B;border:1px solid rgba(0,200,150,.08);border-radius:.75rem;padding:1.25rem;margin-bottom:1rem">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:.75rem">
+        <div>
+          <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.3rem">
+            <span style="font-family:'JetBrains Mono',monospace;color:#00C896;font-size:.78rem;font-weight:600">#{{ ticket.ticket_id }}</span>
+            {% if ticket.priority == 'urgent' %}<span class="badge badge-red">Urgent</span>{% elif ticket.priority == 'high' %}<span class="badge badge-amber">High</span>{% else %}<span class="badge badge-blue">{{ ticket.get_priority_display }}</span>{% endif %}
+            {% if ticket.status == 'resolved' %}<span class="badge badge-green">Resolved</span>{% elif ticket.status == 'open' %}<span class="badge badge-amber">Open</span>{% else %}<span class="badge badge-gray">{{ ticket.get_status_display }}</span>{% endif %}
+          </div>
+          <h4 style="color:#F1F5F9;font-weight:600;font-size:.9rem;margin:0">{{ ticket.subject }}</h4>
+          <p style="color:#475569;font-size:.75rem;margin:.2rem 0 0">{{ ticket.user.get_full_name }} · {{ ticket.user.email }} · {{ ticket.created_at|date:"M d, Y H:i" }}</p>
+        </div>
+      </div>
+      <p style="color:#94A3B8;font-size:.83rem;line-height:1.6;background:#080E14;border-radius:.5rem;padding:.75rem 1rem;margin:0 0 .75rem">{{ ticket.message }}</p>
+      {% if ticket.admin_reply %}
+      <div style="background:rgba(0,200,150,.05);border:1px solid rgba(0,200,150,.12);border-radius:.5rem;padding:.75rem 1rem;margin-bottom:.75rem">
+        <span style="color:#00C896;font-weight:600;font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:.3rem">Your Reply</span>
+        <span style="color:#94A3B8;font-size:.82rem">{{ ticket.admin_reply }}</span>
+      </div>
+      {% endif %}
+      <form method="POST" action="{% url 'adminpanel:ticket_reply' ticket.id %}">
+        {% csrf_token %}
+        <textarea name="admin_reply" class="form-input" rows="2" placeholder="Type your reply…" style="margin-bottom:.6rem">{{ ticket.admin_reply }}</textarea>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
+          <select name="status" class="form-input" style="width:auto">
+            <option value="open" {% if ticket.status == 'open' %}selected{% endif %}>Open</option>
+            <option value="in_progress" {% if ticket.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+            <option value="resolved" {% if ticket.status == 'resolved' %}selected{% endif %}>Resolved</option>
+            <option value="closed" {% if ticket.status == 'closed' %}selected{% endif %}>Closed</option>
+          </select>
+          <button type="submit" class="btn btn-primary" style="padding:.5rem 1.25rem"><i class="fas fa-paper-plane"></i>Send Reply &amp; Update</button>
+        </div>
+      </form>
+    </div>
+    {% empty %}
+    <div style="text-align:center;padding:3rem;color:#334155"><i class="fas fa-headset" style="font-size:2rem;display:block;margin-bottom:.75rem;opacity:.3"></i>No support tickets found.</div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

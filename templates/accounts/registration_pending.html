@@ -1,0 +1,18 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Verify Email – SecureLedger</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>*{box-sizing:border-box}body{margin:0;background:#080E14;color:#E2E8F0;font-family:'Inter',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem}.card{background:#0D1620;border:1px solid rgba(0,200,150,.2);border-radius:1.25rem;padding:2.5rem;max-width:480px;width:100%;text-align:center}.icon{width:72px;height:72px;border-radius:50%;background:rgba(0,200,150,.1);border:2px solid rgba(0,200,150,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;font-size:2rem;animation:float 3s ease-in-out infinite}@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}input{background:#080E14;border:1px solid rgba(0,200,150,.15);color:#E2E8F0;border-radius:.65rem;padding:.7rem 1rem;width:100%;font-size:.88rem;margin-bottom:.75rem;outline:none}input::placeholder{color:#4A5568}</style></head>
+<body><div class="card">
+  <div class="icon">📧</div>
+  <h1 style="font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:800;color:#fff;margin:0 0 .75rem">Check Your Email</h1>
+  <p style="color:#475569;font-size:.9rem;line-height:1.7;margin:0 0 1.5rem">We've sent a verification link to your email. Click it to activate your account. The link expires in <strong style="color:#00C896">24 hours</strong>.</p>
+  {% if messages %}{% for m in messages %}<div style="background:rgba(0,200,150,.08);border:1px solid rgba(0,200,150,.2);border-radius:.65rem;padding:.75rem 1rem;font-size:.83rem;color:#6EFCD8;margin-bottom:1rem">{{ m }}</div>{% endfor %}{% endif %}
+  <form method="POST" action="{% url 'accounts:resend_verification' %}" style="margin-bottom:1rem">
+    {% csrf_token %}
+    <input type="email" name="email" placeholder="Enter your email to resend">
+    <button type="submit" style="background:#00C896;color:#080E14;font-weight:700;font-size:.88rem;padding:.75rem;border:none;border-radius:.65rem;cursor:pointer;width:100%">Resend Verification Email</button>
+  </form>
+  <a href="{% url 'accounts:login' %}" style="color:#475569;font-size:.83rem;text-decoration:none">← Back to login</a>
+</div></body></html>

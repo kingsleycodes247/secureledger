@@ -1,0 +1,112 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Admin{% endblock %} – SecureLedger Control</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/logo.png' %}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/logo.png' %}">
+ 
+  <style>
+    *,*::before,*::after{box-sizing:border-box}html,body{height:100%;margin:0;padding:0}
+    body{background:#080E14;color:#E2E8F0;font-family:'Inter',sans-serif;overflow-x:hidden}
+    ::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:#0D1620}::-webkit-scrollbar-thumb{background:rgba(0,200,150,.3);border-radius:3px}
+    .sidebar{width:250px;flex-shrink:0;background:#0D1620;border-right:1px solid rgba(0,200,150,.1);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:transform .3s;overflow-y:auto}
+    .sidebar.collapsed{transform:translateX(-250px)}
+    .sidebar-logo{padding:1.25rem;border-bottom:1px solid rgba(0,200,150,.08);display:flex;align-items:center;gap:.6rem}
+    .logo-badge{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#EF4444;font-size:.55rem;font-weight:700;padding:.1rem .4rem;border-radius:99px;text-transform:uppercase;letter-spacing:.05em}
+    .nav-label{font-size:.62rem;font-weight:700;letter-spacing:.1em;color:#334155;padding:.9rem .5rem .4rem;text-transform:uppercase}
+    .nav-link{display:flex;align-items:center;gap:.75rem;padding:.65rem .875rem;border-radius:.6rem;color:#64748B;font-size:.85rem;font-weight:500;text-decoration:none;transition:all .2s;margin-bottom:.1rem;position:relative}
+    .nav-icon{width:18px;text-align:center;flex-shrink:0;font-size:.85rem}
+    .nav-link:hover{background:rgba(0,200,150,.07);color:#CBD5E1}
+    .nav-link.active{background:rgba(0,200,150,.12);color:#00C896;font-weight:600}
+    .nav-link.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:3px;background:#00C896;border-radius:0 2px 2px 0}
+    .nav-badge{margin-left:auto;background:#EF4444;color:#fff;font-size:.62rem;font-weight:700;padding:.05rem .4rem;border-radius:99px}
+    .main{flex:1;margin-left:250px;display:flex;flex-direction:column;min-height:100vh;transition:margin-left .3s}
+    .topbar{height:60px;background:rgba(13,22,32,.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,200,150,.1);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;position:sticky;top:0;z-index:90}
+    .page-body{padding:1.5rem;flex:1}
+    .panel{background:#0D1620;border:1px solid rgba(0,200,150,.1);border-radius:.875rem;overflow:hidden;margin-bottom:1.5rem}
+    .panel-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid rgba(0,200,150,.08);flex-wrap:wrap;gap:.75rem}
+    .panel-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.92rem;color:#F1F5F9;display:flex;align-items:center;gap:.5rem}
+    table{width:100%;border-collapse:collapse}
+    thead th{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#334155;padding:.7rem 1.25rem;text-align:left;border-bottom:1px solid rgba(0,200,150,.07);white-space:nowrap}
+    tbody td{padding:.75rem 1.25rem;font-size:.82rem;border-bottom:1px solid rgba(255,255,255,.03)}
+    tbody tr:hover td{background:rgba(0,200,150,.03)}
+    .badge{font-size:.66rem;font-weight:700;padding:.2rem .55rem;border-radius:99px;text-transform:uppercase;white-space:nowrap}
+    .badge-green{background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.25);color:#00C896}
+    .badge-amber{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:#F59E0B}
+    .badge-red{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:#EF4444}
+    .badge-blue{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);color:#3B82F6}
+    .badge-gray{background:rgba(148,163,184,.1);border:1px solid rgba(148,163,184,.2);color:#94A3B8}
+    .btn{font-size:.75rem;font-weight:600;padding:.4rem .8rem;border-radius:.45rem;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:.35rem;transition:all .2s;text-decoration:none}
+    .btn-approve{background:rgba(0,200,150,.12);border:1px solid rgba(0,200,150,.3);color:#00C896}
+    .btn-approve:hover{background:rgba(0,200,150,.2)}
+    .btn-reject{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#EF4444}
+    .btn-reject:hover{background:rgba(239,68,68,.2)}
+    .btn-primary{background:#00C896;color:#080E14}
+    .btn-view{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);color:#3B82F6}
+    .form-input{background:#080E14;border:1px solid rgba(0,200,150,.15);color:#E2E8F0;border-radius:.55rem;padding:.55rem .85rem;width:100%;font-size:.85rem;font-family:'Inter',sans-serif}
+    .form-input:focus{outline:none;border-color:rgba(0,200,150,.5)}
+    .form-label{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#475569;margin-bottom:.35rem;display:block}
+    .alert{padding:.75rem 1rem;border-radius:.6rem;font-size:.82rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+    .alert-success{background:rgba(0,200,150,.08);border:1px solid rgba(0,200,150,.25);color:#6EFCD8}
+    .alert-error{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);color:#FCA5A5}
+    .filter-select{background:#080E14;border:1px solid rgba(0,200,150,.15);color:#94A3B8;border-radius:.5rem;padding:.4rem .7rem;font-size:.8rem}
+    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:1rem}
+    .modal-bg.open{display:flex}
+    .modal-card{background:#0D1620;border:1px solid rgba(0,200,150,.25);border-radius:1rem;width:100%;max-width:440px;overflow:hidden}
+    @media(max-width:768px){.sidebar{transform:translateX(-250px)}.sidebar.mobile-open{transform:translateX(0)}.main{margin-left:0}.page-body{padding:1rem}.hide-mobile{display:none}}
+    {% block extra_styles %}{% endblock %}
+  </style>
+</head>
+<body>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div style="width:32px;height:32px;background:#00C896;border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px rgba(0,200,150,.4)"><i class="fas fa-shield-halved text-dark text-sm"></i><a href="{% url 'adminpanel:home' %}" style="position:absolute;inset:0"></a></div>
+    <div><span class="font-display font-bold text-white text-sm">SecureLedger</span><br><span class="logo-badge">Admin Control</span></div>
+  </div>
+  <nav style="padding:.75rem;flex:1">
+    <div class="nav-label">Overview</div>
+    <a href="{% url 'adminpanel:home' %}" class="nav-link {% if page == 'dashboard' %}active{% endif %}"><span class="nav-icon"><i class="fas fa-gauge-high"></i></span>Dashboard</a>
+    <div class="nav-label">Management</div>
+    <a href="{% url 'adminpanel:users' %}" class="nav-link {% if page == 'users' %}active{% endif %}"><span class="nav-icon"><i class="fas fa-users"></i></span>Users</a>
+    <a href="{% url 'adminpanel:investments' %}" class="nav-link {% if page == 'investments' %}active{% endif %}"><span class="nav-icon"><i class="fas fa-rocket"></i></span>Investments</a>
+    <a href="{% url 'adminpanel:transactions' %}" class="nav-link {% if page == 'transactions' %}active{% endif %}"><span class="nav-icon"><i class="fas fa-money-bill-transfer"></i></span>Transactions</a>
+    <a href="{% url 'adminpanel:plans' %}" class="nav-link {% if page == 'plans' %}active{% endif %}"><span class="nav-icon"><i class="fas fa-layer-group"></i></span>Plans</a>
+    <a href="{% url 'adminpanel:wallets' %}" class="nav-link {% if page == 'wallets' %}active{% endif %}"><span class="nav-icon"><i class="fas fa-wallet"></i></span>Wallets</a>
+    <div class="nav-label">Support</div>
+    <a href="{% url 'adminpanel:tickets' %}" class="nav-link {% if page == 'tickets' %}active{% endif %}"><span class="nav-icon"><i class="fas fa-headset"></i></span>Support Tickets</a>
+    <div class="nav-label">System</div>
+    <a href="/admin/" class="nav-link"><span class="nav-icon"><i class="fas fa-database"></i></span>Django Admin</a>
+    <a href="{% url 'dashboard:home' %}" class="nav-link"><span class="nav-icon"><i class="fas fa-arrow-left"></i></span>Exit to App</a>
+  </nav>
+  <div style="padding:1rem .75rem;border-top:1px solid rgba(0,200,150,.08)">
+    <a href="{% url 'accounts:logout' %}" class="nav-link" style="color:#EF4444"><span class="nav-icon"><i class="fas fa-right-from-bracket"></i></span>Sign Out</a>
+  </div>
+</aside>
+<div class="main" id="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:.75rem">
+      <button onclick="document.getElementById('sidebar').classList.toggle('mobile-open')" style="background:none;border:none;color:#64748B;cursor:pointer;padding:.4rem"><i class="fas fa-bars text-lg"></i></button>
+      <h1 class="font-display font-bold text-white" style="font-size:1rem">{% block heading %}Dashboard{% endblock %}</h1>
+    </div>
+    <div style="display:flex;align-items:center;gap:.75rem">
+      <span style="color:#475569;font-size:.78rem" class="hide-mobile">{{ request.user.email }}</span>
+      <div style="width:34px;height:34px;border-radius:50%;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.25);display:flex;align-items:center;justify-content:center"><i class="fas fa-user-shield" style="color:#EF4444;font-size:.85rem"></i></div>
+    </div>
+  </header>
+  {% if messages %}<div style="padding:.75rem 1.5rem 0">{% for message in messages %}<div class="alert alert-{% if message.tags == 'error' %}error{% else %}success{% endif %}"><i class="fas fa-{% if message.tags == 'error' %}circle-exclamation{% else %}circle-check{% endif %}"></i>{{ message }}</div>{% endfor %}</div>{% endif %}
+  <main class="page-body">{% block content %}{% endblock %}</main>
+</div>
+{% block modals %}{% endblock %}
+
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

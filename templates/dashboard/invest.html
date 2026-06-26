@@ -1,0 +1,158 @@
+{% extends 'dashboard/base.html' %}
+{% load custom_filters %}
+{% load static %}
+{% load humanize %}
+{% block title %}Invest{% endblock %}
+{% block extra_styles %}
+.plan-card{background:#0D1620;border:1px solid rgba(0,200,150,.12);border-radius:1.25rem;padding:1.5rem;transition:all .3s;cursor:pointer}
+.plan-card:hover,.plan-card.selected{border-color:rgba(0,200,150,.5);box-shadow:0 0 30px rgba(0,200,150,.08)}
+.plan-card.featured{border-color:rgba(0,200,150,.4);background:linear-gradient(160deg,#0A1E18,#0D1620)}
+{% endblock %}
+{% block content %}
+<div style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+  <div><h1 class="font-display font-bold text-white" style="font-size:1.4rem">Investment Plans</h1><p style="color:#475569;font-size:.85rem;margin-top:.25rem">Choose a plan and start earning daily returns today.</p></div>
+  <div style="background:#111D2B;border:1px solid rgba(0,200,150,.15);border-radius:.75rem;padding:.65rem 1rem;display:flex;align-items:center;gap:.5rem">
+    <i class="fas fa-wallet" style="color:#00C896;font-size:.85rem"></i>
+    <span style="color:#475569;font-size:.78rem">Available Balance:</span>
+    <span class="font-display font-bold" style="color:#00C896">${{ profile.available_balance|floatformat:2|intcomma }}</span>
+  </div>
+</div>
+
+<!-- Plans grid -->
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-bottom:2rem">
+{% for plan in plans %}
+<div class="plan-card {% if plan.name == 'gold' %}featured{% endif %}" onclick="selectPlan('{{ plan.id }}','{{ plan.get_name_display }}','{{ plan.min_deposit }}','{{ plan.max_deposit }}','{{ plan.daily_return_pct }}','{{ plan.duration_days }}')">
+  {% if plan.name == 'gold' %}<div style="text-align:center;margin-bottom:.75rem"><span class="tag-badge px-3 py-0.5 rounded-full" style="font-size:.65rem">POPULAR</span></div>{% endif %}
+  <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:1rem">
+    <div style="width:38px;height:38px;border-radius:.65rem;{% if plan.name == 'bronze' %}background:rgba(180,83,9,.15);border:1px solid rgba(180,83,9,.3){% elif plan.name == 'silver' %}background:rgba(148,163,184,.1);border:1px solid rgba(148,163,184,.2){% elif plan.name == 'gold' %}background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25){% elif plan.name == 'diamond' %}background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2){% else %}background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2){% endif %};display:flex;align-items:center;justify-content:center">
+      <i class="fas fa-{% if plan.name == 'bronze' %}medal{% elif plan.name == 'silver' %}medal{% elif plan.name == 'gold' %}medal{% elif plan.name == 'diamond' %}gem{% else %}microchip{% endif %}" style="{% if plan.name == 'bronze' %}color:#B45309{% elif plan.name == 'silver' %}color:#94A3B8{% elif plan.name == 'gold' %}color:#F59E0B{% elif plan.name == 'diamond' %}color:#3B82F6{% else %}color:#8B5CF6{% endif %}"></i>
+    </div>
+    <div class="font-display font-bold text-white" style="font-size:.95rem">{{ plan.get_name_display }}</div>
+  </div>
+  <div style="margin-bottom:1rem">
+    <div class="font-display font-bold" style="font-size:2rem;color:#00C896;line-height:1">{{ plan.daily_return_pct }}%</div>
+    <div style="color:#475569;font-size:.75rem;margin-top:.15rem">daily for {{ plan.duration_days }} days</div>
+  </div>
+  <div style="height:1px;background:rgba(0,200,150,.1);margin-bottom:.875rem"></div>
+  <div style="display:flex;flex-direction:column;gap:.45rem;font-size:.78rem;margin-bottom:1rem">
+    <div style="display:flex;justify-content:space-between"><span style="color:#475569">Min deposit</span><span style="color:#E2E8F0;font-weight:600">${{ plan.min_deposit|intcomma }}</span></div>
+    <div style="display:flex;justify-content:space-between"><span style="color:#475569">Max deposit</span><span style="color:#E2E8F0;font-weight:600">${{ plan.max_deposit|intcomma }}</span></div>
+    <div style="display:flex;justify-content:space-between"><span style="color:#475569">Referral bonus</span><span style="color:#8B5CF6;font-weight:600">{{ plan.referral_bonus_pct }}%</span></div>
+    <div style="display:flex;justify-content:space-between"><span style="color:#475569">Withdrawal</span><span style="color:#00C896;font-weight:600">Instant</span></div>
+  </div>
+  <button onclick="selectPlan('{{ plan.id }}','{{ plan.get_name_display }}','{{ plan.min_deposit }}','{{ plan.max_deposit }}','{{ plan.daily_return_pct }}','{{ plan.duration_days }}')" class="glow-btn" style="background:#00C896;color:#080E14;font-weight:700;font-size:.82rem;padding:.6rem;border:none;border-radius:.65rem;cursor:pointer;width:100%">
+    Invest Now
+  </button>
+</div>
+{% endfor %}
+</div>
+
+<!-- Subscribe Form -->
+<div class="panel" id="investForm" style="display:none;max-width:520px">
+  <div class="panel-header"><div class="panel-title"><i class="fas fa-rocket" style="color:#00C896;margin-right:.4rem"></i>Subscribe to <span id="selectedPlanName" style="color:#00C896">Plan</span></div></div>
+  <div style="padding:1.5rem">
+    <form method="POST">
+      {% csrf_token %}
+      <div style="margin-bottom:1rem">
+        <label class="form-input-label">Investment Plan</label>
+        {{ form.plan }}
+        {% if form.plan.errors %}<p style="color:#EF4444;font-size:.75rem;margin-top:.3rem">{{ form.plan.errors.0 }}</p>{% endif %}
+      </div>
+      <div style="margin-bottom:1rem">
+        <label class="form-input-label">Amount (USD)</label>
+        {{ form.amount }}
+        <p style="color:#475569;font-size:.72rem;margin-top:.3rem" id="amountRange">Select a plan above to see limits</p>
+        {% if form.amount.errors %}<p style="color:#EF4444;font-size:.75rem;margin-top:.3rem">{{ form.amount.errors.0 }}</p>{% endif %}
+      </div>
+      <!-- Return preview -->
+      <div id="returnPreview" style="display:none;background:rgba(0,200,150,.06);border:1px solid rgba(0,200,150,.18);border-radius:.75rem;padding:1rem;margin-bottom:1rem">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;font-size:.82rem">
+          <div><div style="color:#475569;font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.25rem">Expected Profit</div><div class="font-display font-bold" style="color:#00C896;font-size:1.1rem" id="rProfit">$0</div></div>
+          <div><div style="color:#475569;font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.25rem">Total Payout</div><div class="font-display font-bold text-white" style="font-size:1.1rem" id="rTotal">$0</div></div>
+          <div><div style="color:#475569;font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.25rem">Rate</div><div style="color:#F59E0B;font-weight:700" id="rRate">0%</div></div>
+          <div><div style="color:#475569;font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.25rem">Duration</div><div style="color:#CBD5E1;font-weight:600" id="rDays">— days</div></div>
+        </div>
+      </div>
+      <div style="margin-bottom:1.5rem">
+        <label class="form-input-label">Payment Method</label>
+        {{ form.payment_method }}
+      </div>
+      {% if form.non_field_errors %}<div class="alert alert-error" style="margin-bottom:1rem"><i class="fas fa-exclamation-circle flex-shrink-0"></i><div>{% for e in form.non_field_errors %}<p>{{ e }}</p>{% endfor %}</div></div>{% endif %}
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+        <button type="submit" class="glow-btn" style="background:#00C896;color:#080E14;font-weight:700;font-size:.9rem;padding:.8rem 2rem;border:none;border-radius:.65rem;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem">
+          <i class="fas fa-rocket"></i> Confirm Investment
+        </button>
+        <button type="button" onclick="document.getElementById('investForm').style.display='none'" style="background:transparent;border:1px solid rgba(255,255,255,.1);color:#64748B;font-size:.88rem;padding:.8rem 1.5rem;border-radius:.65rem;cursor:pointer">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- My Investments -->
+<div style="margin-top:2rem"><h2 class="font-display font-bold text-white" style="font-size:1.1rem;margin-bottom:1rem">My Investments</h2></div>
+<div class="panel">
+  <div style="overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse">
+      <thead><tr>
+        {% for h in "ID,Plan,Amount,Profit,Status,Start,End,Progress"|split:"," %}
+        <th style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#334155;padding:.65rem 1.25rem;border-bottom:1px solid rgba(0,200,150,.07);text-align:left">{{ h }}</th>
+        {% endfor %}
+      </tr></thead>
+      <tbody>
+        {% for inv in my_investments %}
+        <tr style="border-bottom:1px solid rgba(255,255,255,.03)">
+          <td style="padding:.7rem 1.25rem;font-family:'JetBrains Mono',monospace;font-size:.73rem;color:#475569">{{ inv.investment_id }}</td>
+          <td style="padding:.7rem 1.25rem"><div style="font-weight:600;color:#E2E8F0;font-size:.85rem">{{ inv.plan.get_name_display }}</div><div style="color:#475569;font-size:.7rem">{{ inv.plan.daily_return_pct }}%/{{ inv.plan.duration_days }}d</div></td>
+          <td style="padding:.7rem 1.25rem;font-family:'JetBrains Mono',monospace;font-weight:600;color:#F1F5F9">${{ inv.amount|intcomma }}</td>
+          <td style="padding:.7rem 1.25rem;font-family:'JetBrains Mono',monospace;font-weight:600;color:#00C896">+${{ inv.expected_profit|intcomma }}</td>
+          <td style="padding:.7rem 1.25rem"><span style="font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:99px;text-transform:uppercase;{% if inv.status == 'active' %}background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.25);color:#00C896{% elif inv.status == 'completed' %}background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);color:#3B82F6{% elif inv.status == 'pending' %}background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:#F59E0B{% else %}background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:#EF4444{% endif %}">{{ inv.get_status_display }}</span></td>
+          <td style="padding:.7rem 1.25rem;font-size:.78rem;color:#475569">{% if inv.start_date %}{{ inv.start_date|date:"M d, Y" }}{% else %}—{% endif %}</td>
+          <td style="padding:.7rem 1.25rem;font-size:.78rem;color:#475569">{% if inv.end_date %}{{ inv.end_date|date:"M d, Y" }}{% else %}—{% endif %}</td>
+          <td style="padding:.7rem 1.25rem;min-width:120px">{% if inv.status == 'active' %}<div style="background:#111D2B;border-radius:99px;height:5px"><div style="height:100%;width:{{ inv.progress_pct }}%;background:linear-gradient(90deg,#00C896,#4FFFCF);border-radius:99px"></div></div><div style="font-size:.65rem;color:#475569;margin-top:.2rem">{{ inv.progress_pct }}%</div>{% else %}—{% endif %}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8" style="text-align:center;padding:3rem;color:#334155">No investments yet. Subscribe to a plan above.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+const planData = {
+  {% for plan in plans %}
+  '{{ plan.id }}': {name:'{{ plan.get_name_display }}',min:{{ plan.min_deposit }},max:{{ plan.max_deposit }},rate:{{ plan.daily_return_pct }},days:{{ plan.duration_days }}},
+  {% endfor %}
+};
+function selectPlan(id,name,min,max,rate,days){
+  const form=document.getElementById('investForm');
+  form.style.display='block';form.scrollIntoView({behavior:'smooth',block:'start'});
+  document.getElementById('selectedPlanName').textContent=name;
+  document.getElementById('amountRange').textContent=`Min: $${parseFloat(min).toLocaleString()} · Max: $${parseFloat(max).toLocaleString()}`;
+  const planSel=document.getElementById('investPlan');
+  if(planSel){for(let o of planSel.options){if(o.value==id){o.selected=true;break;}}}
+  document.querySelectorAll('.plan-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('rRate').textContent=rate+'% daily';
+  document.getElementById('rDays').textContent=days+' days';
+}
+document.getElementById('investPlan')?.addEventListener('change',function(){
+  const d=planData[this.value];if(!d)return;
+  document.getElementById('selectedPlanName').textContent=d.name;
+  document.getElementById('amountRange').textContent=`Min: $${d.min.toLocaleString()} · Max: $${d.max.toLocaleString()}`;
+  document.getElementById('rRate').textContent=d.rate+'% daily';document.getElementById('rDays').textContent=d.days+' days';calcReturn();
+});
+document.querySelector('[name="amount"]')?.addEventListener('input',calcReturn);
+function calcReturn(){
+  const planSel=document.getElementById('investPlan');const amtEl=document.querySelector('[name="amount"]');
+  if(!planSel||!amtEl)return;
+  const d=planData[planSel.value];const amt=parseFloat(amtEl.value)||0;
+  if(!d||!amt){document.getElementById('returnPreview').style.display='none';return;}
+  const profit=(amt*d.rate/100*d.days),total=amt+profit;
+  document.getElementById('rProfit').textContent='$'+profit.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById('rTotal').textContent='$'+total.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById('returnPreview').style.display='block';
+}
+{% if form.errors %}document.getElementById('investForm').style.display='block';{% endif %}
+</script>
+{% endblock %}

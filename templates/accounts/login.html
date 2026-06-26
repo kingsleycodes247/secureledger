@@ -1,0 +1,315 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign In – SecureLedger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+<link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/logo.png' %}">
+<link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/logo.png' %}">
+  <style>
+    * { scroll-behavior: smooth; }
+    body { background-color: #080E14; color: #E2E8F0; font-family: 'Inter', sans-serif; }
+    .gradient-text { background: linear-gradient(135deg, #00C896, #00E5B0, #4FFFCF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .glow-btn { box-shadow: 0 0 20px rgba(0,200,150,0.4); transition: box-shadow 0.3s ease, transform 0.2s ease; }
+    .glow-btn:hover { box-shadow: 0 0 35px rgba(0,200,150,0.65); transform: translateY(-1px); }
+    .tag-badge { border: 1px solid rgba(0,200,150,0.4); background: rgba(0,200,150,0.08); color: #00C896; font-size: 0.7rem; letter-spacing: 0.12em; font-weight: 600; }
+    .page-bg { background: radial-gradient(ellipse at 30% 10%, rgba(0,200,150,0.07) 0%, transparent 60%), radial-gradient(ellipse at 80% 90%, rgba(0,200,150,0.05) 0%, transparent 50%), #080E14; }
+    .form-card { background: #0D1620; border: 1px solid rgba(0,200,150,0.18); box-shadow: 0 30px 80px rgba(0,0,0,0.5), 0 0 60px rgba(0,200,150,0.04); }
+    .input-field { background: #080E14; border: 1px solid rgba(0,200,150,0.15); color: #E2E8F0; transition: border-color 0.25s, box-shadow 0.25s; }
+    .input-field:focus { outline: none; border-color: rgba(0,200,150,0.55); box-shadow: 0 0 0 3px rgba(0,200,150,0.08); }
+    .input-field::placeholder { color: #4A5568; }
+    .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: rgba(0,200,150,0.5); font-size: 0.85rem; pointer-events: none; }
+    .input-field.has-icon { padding-left: 2.5rem; }
+    .toggle-pw { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: #4A5568; cursor: pointer; font-size: 0.85rem; transition: color 0.2s; }
+    .toggle-pw:hover { color: #00C896; }
+    .side-panel { background: linear-gradient(160deg, #0A1E18 0%, #0D1620 60%, #080E14 100%); border-right: 1px solid rgba(0,200,150,0.12); }
+    .grid-overlay { background-image: linear-gradient(rgba(0,200,150,.4) 1px, transparent 1px), linear-gradient(90deg, rgba(0,200,150,.4) 1px, transparent 1px); background-size: 40px 40px; opacity: 0.04; }
+    .divider-line { height: 1px; background: linear-gradient(90deg, transparent, rgba(0,200,150,0.25), transparent); }
+    .checkbox-custom { width: 18px; height: 18px; border-radius: 4px; border: 1.5px solid rgba(0,200,150,0.4); background: rgba(0,200,150,0.05); appearance: none; -webkit-appearance: none; cursor: pointer; transition: all 0.2s; flex-shrink: 0; margin-top: 2px; }
+    .checkbox-custom:checked { background: #00C896; border-color: #00C896; }
+    .checkbox-custom:checked::after { content: '✓'; display: block; text-align: center; color: #080E14; font-size: 11px; font-weight: 900; line-height: 16px; }
+    .stat-pill { background: rgba(0,200,150,0.06); border: 1px solid rgba(0,200,150,0.18); }
+    .alert-error { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); color: #FCA5A5; }
+    .alert-success { background: rgba(0,200,150,0.08); border: 1px solid rgba(0,200,150,0.25); color: #6EFCD8; }
+    .alert-warning { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.25); color: #FCD34D; }
+    .shield-pulse { animation: shieldPulse 3s ease-in-out infinite; }
+    @keyframes shieldPulse { 0%,100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 0.9; transform: scale(1.04); } }
+    .ring-anim { animation: ringAnim 4s linear infinite; }
+    @keyframes ringAnim { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .ring-anim-rev { animation: ringAnim 6s linear infinite reverse; }
+    .float-anim { animation: floatAnim 4s ease-in-out infinite; }
+    @keyframes floatAnim { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    .modal-overlay { background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); }
+    .tfa-modal { background: #0D1620; border: 1px solid rgba(0,200,150,0.3); }
+    .otp-input { background: #080E14; border: 1.5px solid rgba(0,200,150,0.2); color: #fff; font-size: 1.4rem; font-weight: 700; text-align: center; border-radius: 12px; width: 48px; height: 56px; transition: border-color 0.2s, box-shadow 0.2s; font-family: 'Space Grotesk', sans-serif; }
+    .otp-input:focus { outline: none; border-color: #00C896; box-shadow: 0 0 0 3px rgba(0,200,150,0.12); }
+  </style>
+</head>
+<body class="page-bg min-h-screen">
+
+  <!-- Navbar -->
+  <nav class="fixed top-0 left-0 right-0 z-50" style="background: rgba(8,14,20,0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(0,200,150,0.1);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <a href="{% url 'frontend:home' %}" class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+          <i class="fas fa-shield-halved text-dark text-sm"></i>
+        </div>
+        <span class="font-display font-bold text-lg text-white">Secure<span class="text-primary">Ledger</span></span>
+      </a>
+      <div class="flex items-center gap-3 text-sm">
+        <span class="text-slate-500 hidden sm:inline">New to SecureLedger?</span>
+        <a href="{% url 'accounts:register' %}" class="bg-primary text-dark font-bold px-4 py-1.5 rounded-full glow-btn text-sm">Create Account</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="flex min-h-screen pt-16">
+
+    <!-- ── LEFT PANEL -->
+    <div class="hidden lg:flex lg:w-5/12 xl:w-1/2 side-panel flex-col justify-between p-10 xl:p-14 relative overflow-hidden">
+      <div class="grid-overlay absolute inset-0 pointer-events-none"></div>
+      <div class="absolute top-0 left-0 w-96 h-96 rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(0,200,150,0.07) 0%, transparent 70%);"></div>
+      <div class="absolute bottom-10 right-0 w-64 h-64 rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(0,200,150,0.05) 0%, transparent 70%);"></div>
+      <div class="relative z-10">
+        <span class="tag-badge px-4 py-1.5 rounded-full inline-block mb-8 uppercase">Welcome Back</span>
+        <h2 class="font-display text-3xl xl:text-4xl font-bold text-white leading-tight mb-5">
+          Your Portfolio<br>Is Waiting For <span class="gradient-text">You</span>
+        </h2>
+        <p class="text-slate-400 leading-relaxed mb-10 text-sm xl:text-base">
+          Sign in to your SecureLedger dashboard to monitor your investments, track earnings, and manage withdrawals in real time.
+        </p>
+        <div class="relative flex items-center justify-center h-52 mb-10">
+          <div class="absolute w-44 h-44 rounded-full border border-dashed ring-anim" style="border-color: rgba(0,200,150,0.2);"></div>
+          <div class="absolute w-32 h-32 rounded-full border ring-anim-rev" style="border-color: rgba(0,200,150,0.15);"></div>
+          <div class="float-anim relative z-10">
+            <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-primary/25 to-primary/5 border border-primary/35 flex items-center justify-center shield-pulse">
+              <i class="fas fa-shield-halved text-primary text-5xl"></i>
+            </div>
+          </div>
+          <div class="absolute top-2 right-4 stat-pill rounded-xl px-3 py-2 text-xs">
+            <span class="text-primary font-bold">+7.3%</span><span class="text-slate-400 ml-1">Today</span>
+          </div>
+          <div class="absolute bottom-4 left-2 stat-pill rounded-xl px-3 py-2 text-xs">
+            <i class="fas fa-bolt text-primary text-xs mr-1"></i><span class="text-slate-300">Instant Withdrawal</span>
+          </div>
+        </div>
+        <div class="space-y-3">
+          <div class="text-slate-500 text-xs uppercase tracking-wider mb-3 font-semibold">Recent Platform Activity</div>
+          <div class="flex items-center gap-3 py-2.5 border-b" style="border-color: rgba(0,200,150,0.08);">
+            <div class="w-8 h-8 rounded-full bg-green-500/15 flex items-center justify-center flex-shrink-0"><i class="fas fa-arrow-down text-green-400 text-xs"></i></div>
+            <div class="flex-1 min-w-0"><div class="text-slate-300 text-xs font-medium">Withdrawal Processed</div><div class="text-slate-600 text-xs">2 minutes ago</div></div>
+            <div class="text-green-400 text-xs font-bold">+$4,820</div>
+          </div>
+          <div class="flex items-center gap-3 py-2.5 border-b" style="border-color: rgba(0,200,150,0.08);">
+            <div class="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0"><i class="fas fa-user-plus text-primary text-xs"></i></div>
+            <div class="flex-1 min-w-0"><div class="text-slate-300 text-xs font-medium">New Investor Registered</div><div class="text-slate-600 text-xs">11 minutes ago</div></div>
+            <div class="text-primary text-xs font-bold">+1</div>
+          </div>
+          <div class="flex items-center gap-3 py-2.5">
+            <div class="w-8 h-8 rounded-full bg-blue-500/15 flex items-center justify-center flex-shrink-0"><i class="fas fa-chart-line text-blue-400 text-xs"></i></div>
+            <div class="flex-1 min-w-0"><div class="text-slate-300 text-xs font-medium">Mining Plan Matured</div><div class="text-slate-600 text-xs">34 minutes ago</div></div>
+            <div class="text-blue-400 text-xs font-bold">+$71,400</div>
+          </div>
+        </div>
+      </div>
+      <div class="relative z-10 grid grid-cols-3 gap-4 mt-10">
+        <div class="text-center"><div class="text-primary font-display font-bold text-xl">50K+</div><div class="text-slate-500 text-xs mt-0.5">Investors</div></div>
+        <div class="text-center border-x" style="border-color: rgba(0,200,150,0.15);"><div class="text-primary font-display font-bold text-xl">$2.4B+</div><div class="text-slate-500 text-xs mt-0.5">Managed</div></div>
+        <div class="text-center"><div class="text-primary font-display font-bold text-xl">24/7</div><div class="text-slate-500 text-xs mt-0.5">Support</div></div>
+      </div>
+    </div>
+
+    <!-- ── RIGHT PANEL: FORM -->
+    <div class="flex-1 flex items-center justify-center px-4 sm:px-8 py-12 xl:py-14">
+      <div class="w-full max-w-md">
+
+        <div class="form-card rounded-2xl p-7 sm:p-9">
+          <div class="mb-8">
+            <div class="w-12 h-12 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center mb-4">
+              <i class="fas fa-right-to-bracket text-primary text-xl"></i>
+            </div>
+            <h1 class="font-display font-bold text-2xl text-white mb-1">Welcome Back</h1>
+            <p class="text-slate-400 text-sm">Sign in to access your SecureLedger dashboard.</p>
+          </div>
+
+          {# ── Django messages (e.g. "verify your email") ── #}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="rounded-xl px-4 py-3 mb-4 text-sm flex items-start gap-2
+                {% if message.tags == 'error' %}alert-error{% elif message.tags == 'warning' %}alert-warning{% else %}alert-success{% endif %}">
+                <i class="fas fa-circle-info flex-shrink-0 mt-0.5"></i><span>{{ message }}</span>
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          {# ── Form (auth) errors ── #}
+          {% if form.errors %}
+            <div class="alert-error rounded-xl px-4 py-3 flex items-start gap-3 mb-6">
+              <i class="fas fa-circle-exclamation text-red-400 flex-shrink-0 mt-0.5"></i>
+              <span class="text-sm">
+                {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                {% if not form.non_field_errors %}Incorrect email or password. Please try again.{% endif %}
+              </span>
+            </div>
+          {% endif %}
+
+          <form method="POST" id="loginForm" novalidate>
+            {% csrf_token %}
+            <div class="space-y-5">
+
+              <!-- Email (field name MUST be 'username' for AuthenticationForm) -->
+              <div>
+                <label class="block text-slate-300 text-xs font-semibold uppercase tracking-wide mb-2">Email Address</label>
+                <div class="relative">
+                  <i class="input-icon fas fa-envelope"></i>
+                  <input type="email" name="username" id="loginUser" value="{{ form.username.value|default:'' }}" placeholder="john@example.com" autocomplete="email" class="input-field has-icon w-full rounded-xl px-4 py-3 text-sm">
+                </div>
+              </div>
+
+              <!-- Password -->
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <label class="text-slate-300 text-xs font-semibold uppercase tracking-wide">Password</label>
+                  <a href="{% url 'accounts:forgot-password' %}" class="text-primary text-xs font-medium hover:underline">Forgot Password?</a>
+                </div>
+                <div class="relative">
+                  <i class="input-icon fas fa-lock"></i>
+                  <input type="password" name="password" id="loginPw" placeholder="Enter your password" autocomplete="current-password" class="input-field has-icon w-full rounded-xl px-4 py-3 text-sm pr-10">
+                  <span class="toggle-pw" onclick="togglePw('loginPw', this)"><i class="fas fa-eye-slash"></i></span>
+                </div>
+              </div>
+
+              <!-- Remember me -->
+              <div class="flex items-center gap-3">
+                <input type="checkbox" id="remember" name="remember" class="checkbox-custom">
+                <label for="remember" class="text-slate-400 text-sm cursor-pointer">Keep me signed in</label>
+              </div>
+
+              <!-- Submit (plain submit — posts to Django LoginView) -->
+              <button type="submit" class="w-full bg-primary text-dark font-bold text-base py-3.5 rounded-xl glow-btn flex items-center justify-center gap-2 mt-1" id="loginBtn">
+                <i class="fas fa-right-to-bracket text-sm"></i>
+                Sign In to Dashboard
+              </button>
+
+              <div class="flex items-center gap-3 my-1">
+                <div class="divider-line flex-1"></div>
+                <span class="text-slate-600 text-xs">OR</span>
+                <div class="divider-line flex-1"></div>
+              </div>
+
+              <p class="text-center text-slate-400 text-sm">
+                Don't have an account?
+                <a href="{% url 'accounts:register' %}" class="text-primary font-semibold hover:underline ml-1">Create One Free</a>
+              </p>
+            </div>
+          </form>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3 mt-5">
+          <div class="text-center"><div class="flex items-center justify-center gap-1.5 text-slate-500 text-xs"><i class="fas fa-lock text-primary/60 text-xs"></i><span>SSL Secured</span></div></div>
+          <div class="text-center border-x" style="border-color: rgba(0,200,150,0.1);"><div class="flex items-center justify-center gap-1.5 text-slate-500 text-xs"><i class="fas fa-shield-halved text-primary/60 text-xs"></i><span>SEC Registered</span></div></div>
+          <div class="text-center"><div class="flex items-center justify-center gap-1.5 text-slate-500 text-xs"><i class="fas fa-eye-slash text-primary/60 text-xs"></i><span>No Tracking</span></div></div>
+        </div>
+
+        <div class="text-center mt-5">
+          <a href="{% url 'frontend:home' %}" class="text-slate-600 hover:text-primary transition text-xs flex items-center justify-center gap-1.5">
+            <i class="fas fa-arrow-left text-xs"></i> Back to Homepage
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 2FA Modal (real form → posts to verify_login_otp) ── -->
+  <div id="tfaOverlay" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 {% if not show_otp %}hidden{% endif %}">
+    <div class="tfa-modal rounded-2xl w-full max-w-sm p-8 text-center">
+      <div class="w-14 h-14 rounded-2xl bg-primary/15 border border-primary/25 flex items-center justify-center mx-auto mb-5">
+        <i class="fas fa-mobile-screen text-primary text-2xl"></i>
+      </div>
+      <h3 class="font-display font-bold text-white text-xl mb-2">Two-Factor Verification</h3>
+      <p class="text-slate-400 text-sm mb-6">Enter the 6-digit code sent to <span class="text-primary">{{ otp_email|default:"your email" }}</span>.</p>
+
+      {% if otp_error %}
+        <div class="alert-error rounded-xl px-3 py-2 mb-4 text-sm">{{ otp_error }}</div>
+      {% endif %}
+
+      <form method="POST" action="{% url 'accounts:verify_login_otp' %}" id="otpForm">
+        {% csrf_token %}
+        <input type="hidden" name="otp_code" id="otpHidden">
+        <div class="flex gap-2 justify-center mb-6" id="otpInputs">
+          <input class="otp-input" type="text" maxlength="1" inputmode="numeric" oninput="otpNext(this,0)">
+          <input class="otp-input" type="text" maxlength="1" inputmode="numeric" oninput="otpNext(this,1)">
+          <input class="otp-input" type="text" maxlength="1" inputmode="numeric" oninput="otpNext(this,2)">
+          <input class="otp-input" type="text" maxlength="1" inputmode="numeric" oninput="otpNext(this,3)">
+          <input class="otp-input" type="text" maxlength="1" inputmode="numeric" oninput="otpNext(this,4)">
+          <input class="otp-input" type="text" maxlength="1" inputmode="numeric" oninput="otpNext(this,5)">
+        </div>
+        <button type="submit" class="w-full bg-primary text-dark font-bold py-3 rounded-xl glow-btn mb-4" id="verifyBtn">
+          Verify &amp; Continue
+        </button>
+      </form>
+
+      <div class="flex items-center justify-between text-xs text-slate-500">
+        <a href="{% url 'accounts:login' %}" class="hover:text-slate-300 transition">← Go Back</a>
+        <a href="{% url 'accounts:resend_login_otp' %}" class="text-primary hover:underline font-medium">Resend Code</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function togglePw(id, btn) {
+      const input = document.getElementById(id);
+      const t = input.type === 'text';
+      input.type = t ? 'password' : 'text';
+      btn.innerHTML = t ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+    }
+
+    // Validate-only; let Django receive the POST
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      const user = document.getElementById('loginUser').value.trim();
+      const pw = document.getElementById('loginPw').value;
+      if (!user || !pw) { e.preventDefault(); return; }
+      const btn = document.getElementById('loginBtn');
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin text-sm"></i> Signing In…';
+    });
+
+    // ── OTP modal handling ──
+    function otpNext(input, idx) {
+      const inputs = document.querySelectorAll('.otp-input');
+      input.value = input.value.replace(/[^0-9]/g, '');
+      if (input.value && idx < 5) inputs[idx + 1].focus();
+    }
+    document.addEventListener('keydown', (e) => {
+      const inputs = [...document.querySelectorAll('.otp-input')];
+      const idx = inputs.indexOf(document.activeElement);
+      if (idx === -1) return;
+      if (e.key === 'Backspace' && !inputs[idx].value && idx > 0) inputs[idx - 1].focus();
+      if (e.key === 'ArrowLeft' && idx > 0) inputs[idx - 1].focus();
+      if (e.key === 'ArrowRight' && idx < 5) inputs[idx + 1].focus();
+    });
+
+    const otpForm = document.getElementById('otpForm');
+    if (otpForm) {
+      otpForm.addEventListener('submit', function(e) {
+        const code = [...document.querySelectorAll('.otp-input')].map(i => i.value).join('');
+        if (code.length < 6) {
+          e.preventDefault();
+          document.querySelectorAll('.otp-input').forEach(i => { i.style.borderColor = '#EF4444'; setTimeout(() => i.style.borderColor = '', 1200); });
+          return;
+        }
+        document.getElementById('otpHidden').value = code;
+        document.getElementById('verifyBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying…';
+      });
+    }
+
+    // Auto-focus first OTP box when modal opens on load
+    {% if show_otp %}window.addEventListener('load', () => document.querySelector('.otp-input')?.focus());{% endif %}
+  </script>
+</body>
+</html>

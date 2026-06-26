@@ -1,0 +1,50 @@
+{% extends 'adminpanel/base.html' %}
+{% load humanize %}
+{% block title %}Users{% endblock %}
+{% block heading %}User Management{% endblock %}
+{% block content %}
+<div class="panel">
+  <div class="panel-header">
+    <div class="panel-title"><i class="fas fa-users" style="color:#00C896"></i>All Users ({{ users.count }})</div>
+    <form method="GET" style="display:flex;gap:.5rem;flex-wrap:wrap">
+      <input type="text" name="q" value="{{ q }}" placeholder="Search name, email, username…" class="form-input" style="width:240px;padding:.4rem .75rem">
+      <select name="status" class="filter-select" onchange="this.form.submit()">
+        <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Status</option>
+        <option value="verified" {% if status_filter == 'verified' %}selected{% endif %}>Verified</option>
+        <option value="unverified" {% if status_filter == 'unverified' %}selected{% endif %}>Unverified</option>
+        <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+        <option value="suspended" {% if status_filter == 'suspended' %}selected{% endif %}>Suspended</option>
+      </select>
+      <button type="submit" class="btn btn-primary"><i class="fas fa-magnifying-glass"></i></button>
+    </form>
+  </div>
+  <div style="overflow-x:auto">
+    <table>
+      <thead><tr><th>User</th><th>Email</th><th>Balance</th><th>Deposits</th><th>Verified</th><th>Status</th><th>Joined</th><th>Action</th></tr></thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:.6rem">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden">
+                {% if u.profile.avatar %}<img src="{{ u.profile.avatar.url }}" style="width:100%;height:100%;object-fit:cover">{% else %}<i class="fas fa-user" style="color:#00C896;font-size:.7rem"></i>{% endif %}
+              </div>
+              <div><div style="color:#E2E8F0;font-weight:500;font-size:.82rem">{{ u.get_full_name }}</div><div style="color:#475569;font-size:.7rem">@{{ u.username }}</div></div>
+            </div>
+          </td>
+          <td style="color:#94A3B8;font-family:'JetBrains Mono',monospace;font-size:.75rem">{{ u.email|truncatechars:24 }}</td>
+          <td style="font-family:'JetBrains Mono',monospace;font-weight:600;color:#00C896">${{ u.profile.account_balance|floatformat:2|intcomma }}</td>
+          <td style="font-family:'JetBrains Mono',monospace;color:#94A3B8">${{ u.profile.total_deposit|floatformat:0|intcomma }}</td>
+          <td>{% if u.is_email_verified %}<span class="badge badge-green">Yes</span>{% else %}<span class="badge badge-amber">No</span>{% endif %}</td>
+          <td>{% if u.is_active %}<span class="badge badge-green">Active</span>{% else %}<span class="badge badge-red">Suspended</span>{% endif %}</td>
+          <td style="color:#475569;font-size:.76rem">{{ u.date_joined|date:"M d, Y" }}</td>
+          <td><a href="{% url 'adminpanel:user_detail' u.id %}" class="btn btn-view">Manage</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8" style="text-align:center;padding:3rem;color:#334155"><i class="fas fa-users" style="font-size:2rem;display:block;margin-bottom:.75rem;opacity:.3"></i>No users found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

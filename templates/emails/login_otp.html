@@ -1,0 +1,15 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<body style="margin:0;background:#080E14;font-family:Arial,sans-serif;padding:40px 20px">
+<table width="100%"><tr><td align="center">
+<table width="600" style="background:#0D1620;border:1px solid rgba(0,200,150,.2);border-radius:16px;max-width:600px;width:100%">
+  <tr><td style="padding:40px;text-align:center">
+    <span style="font-weight:800;font-size:20px;color:#fff">Secure<span style="color:#00C896">Ledger</span></span>
+    <h2 style="color:#fff;font-size:20px;margin:24px 0 12px">Your Login Code</h2>
+    <p style="color:#94A3B8;font-size:14px;margin:0 0 24px">Hi {{ user.first_name }}, enter this code to finish signing in:</p>
+    <div style="font-size:36px;font-weight:800;letter-spacing:.4em;color:#00C896;background:#111D2B;padding:20px;border-radius:12px;font-family:monospace">{{ code }}</div>
+    <p style="color:#475569;font-size:13px;margin:24px 0 0">This code expires in 10 minutes. If you didn't try to log in, ignore this email.</p>
+  </td></tr>
+</table></td></tr></table></body></html>

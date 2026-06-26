@@ -1,0 +1,430 @@
+{% extends 'frontend/servicesbase.html' %}
+{% load humanize %}
+{% load static %}
+{% block title %}Our Services - Secure Ledger{% endblock %}
+
+{% block content %}
+
+<!-- ═══ HERO ═══ -->
+<section class="hero-services pt-16">
+
+    <!-- Hero background image with dark + green overlay -->
+<div class="hero-image-layer">
+  <img src="{% static 'images/Home-bg.webp' %}" alt="Services Hero Background">
+  <div class="hero-image-overlay"></div>
+</div>
+
+  <div class="grid-overlay absolute inset-0"></div>
+  <div class="absolute top-10 right-10 w-72 h-72 rounded-full pointer-events-none" style="background:radial-gradient(circle,rgba(0,200,150,.07),transparent 70%)"></div>
+  <div class="absolute bottom-0 left-10 w-56 h-56 rounded-full pointer-events-none" style="background:radial-gradient(circle,rgba(0,200,150,.05),transparent 70%)"></div>
+  <!-- Decorative screens -->
+  <div class="absolute inset-0 flex items-center justify-center opacity-8 pointer-events-none overflow-hidden">
+    <div class="flex gap-6 items-end">
+      <div class="w-48 h-32 rounded-xl border border-primary/20" style="background:rgba(0,200,150,.03)"></div>
+      <div class="w-64 h-40 rounded-xl border border-primary/25" style="background:rgba(0,200,150,.05)"></div>
+      <div class="w-48 h-32 rounded-xl border border-primary/20" style="background:rgba(0,200,150,.03)"></div>
+    </div>
+  </div>
+  <div class="relative z-10 text-center px-4 py-28 sm:py-36">
+    <div class="flex items-center justify-center gap-2 mb-6">
+      <a href="{% url 'frontend:home' %}" class="text-slate-500 text-sm hover:text-primary transition">Home</a>
+      <i class="fas fa-chevron-right text-slate-600 text-xs"></i>
+      <span class="text-primary text-sm font-semibold">Services</span>
+    </div>
+    <span class="tag-badge px-4 py-1.5 rounded-full inline-block mb-5 uppercase">Services</span>
+    <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight">
+      Comprehensive Investment &<br><span class="gradient-text">Security Solutions</span>
+    </h1>
+    <p class="text-slate-400 mt-5 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
+      From high-yield investment portfolios to world-class digital asset recovery — SecureLedger delivers intelligent, end-to-end financial protection for every type of investor.
+    </p>
+    <div class="mt-8 flex justify-center">
+      <a href="#our-services" class="flex flex-col items-center gap-2 text-slate-500 hover:text-primary transition text-xs">
+        <span>Explore our services</span>
+        <i class="fas fa-chevron-down animate-bounce"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ OUR SERVICES INTRO ═══ -->
+<section id="our-services" class="py-20 lg:py-28">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-12 items-start mb-16">
+      <div class="fade-up">
+        <span class="tag-badge px-4 py-1.5 rounded-full inline-block mb-5 uppercase">Our Services</span>
+        <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
+          Smart Investment Services For <span class="gradient-text">Modern Investors</span>
+        </h2>
+      </div>
+      <div class="grid grid-cols-2 gap-4 fade-up" style="transition-delay:.1s">
+        <div class="stat-box text-center">
+          <div class="font-display font-bold text-4xl text-primary">50K+</div>
+          <div class="text-slate-400 text-sm mt-1 leading-snug">Active Investors<br>Worldwide</div>
+        </div>
+        <div class="stat-box text-center">
+          <div class="font-display font-bold text-4xl text-primary">$2.4B+</div>
+          <div class="text-slate-400 text-sm mt-1 leading-snug">Assets Successfully<br>Managed</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8 Service cards -->
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <!-- Card 1 -->
+      <div class="svc-card p-6 fade-up">
+        <div class="svc-icon-wrap"><i class="fas fa-building text-white text-2xl"></i></div>
+        <h3 class="font-display font-bold text-white text-lg mb-2">Real Estate</h3>
+        <p class="text-primary text-sm leading-relaxed mb-4">Commercial and residential real estate portfolios delivering stable, long-term capital growth and passive income.</p>
+        <div class="section-divider mb-4"></div>
+        <a href="{% url 'accounts:register' %}" class="bg-primary text-dark font-bold text-sm px-4 py-2 rounded-lg glow-btn inline-flex items-center gap-1.5">
+          Invest Now <i class="fas fa-arrow-up-right-from-square text-xs"></i>
+        </a>
+      </div>
+      <!-- Card 2 -->
+      <div class="svc-card p-6 fade-up" style="transition-delay:.05s">
+        <div class="svc-icon-wrap"><i class="fas fa-wheat-awn text-white text-2xl"></i></div>
+        <h3 class="font-display font-bold text-white text-lg mb-2">Agriculture</h3>
+        <p class="text-primary text-sm leading-relaxed mb-4">Farmland acquisitions and agribusiness ventures providing consistent commodity-backed yields year-round.</p>
+        <div class="section-divider mb-4"></div>
+        <a href="{% url 'accounts:register' %}" class="bg-primary text-dark font-bold text-sm px-4 py-2 rounded-lg glow-btn inline-flex items-center gap-1.5">
+          Invest Now <i class="fas fa-arrow-up-right-from-square text-xs"></i>
+        </a>
+      </div>
+      <!-- Card 3 -->
+      <div class="svc-card p-6 fade-up" style="transition-delay:.1s">
+        <div class="svc-icon-wrap"><i class="fas fa-oil-well text-white text-2xl"></i></div>
+        <h3 class="font-display font-bold text-white text-lg mb-2">Oil & Gas</h3>
+        <p class="text-primary text-sm leading-relaxed mb-4">Strategic upstream and midstream energy positions with global market exposure and high-yield returns.</p>
+        <div class="section-divider mb-4"></div>
+        <a href="{% url 'accounts:register' %}" class="bg-primary text-dark font-bold text-sm px-4 py-2 rounded-lg glow-btn inline-flex items-center gap-1.5">
+          Invest Now <i class="fas fa-arrow-up-right-from-square text-xs"></i>
+        </a>
+      </div>
+      <!-- Card 4 -->
+      <div class="svc-card p-6 fade-up" style="transition-delay:.15s">
+        <div class="svc-icon-wrap"><i class="fas fa-plane-departure text-white text-2xl"></i></div>
+        <h3 class="font-display font-bold text-white text-lg mb-2">Work & Visa Travel</h3>
+        <p class="text-primary text-sm leading-relaxed mb-4">Working Holiday Visa programmes — travel, placement and employment facilitation for global job seekers.</p>
+        <div class="section-divider mb-4"></div>
+        <a href="{% url 'accounts:register' %}" class="bg-primary text-dark font-bold text-sm px-4 py-2 rounded-lg glow-btn inline-flex items-center gap-1.5">
+          Learn More <i class="fas fa-arrow-up-right-from-square text-xs"></i>
+        </a>
+      </div>
+      <!-- Card 5 -->
+      <div class="svc-card p-6 fade-up" style="transition-delay:.2s">
+        <div class="svc-icon-wrap"><i class="fas fa-hand-holding-dollar text-white text-2xl"></i></div>
+        <h3 class="font-display font-bold text-white text-lg mb-2">Quick Loans</h3>
+        <p class="text-primary text-sm leading-relaxed mb-4">Fast, collateral-backed lending solutions for investors and businesses that need immediate capital access.</p>
+        <div class="section-divider mb-4"></div>
+        <a href="{% url 'accounts:register' %}" class="bg-primary text-dark font-bold text-sm px-4 py-2 rounded-lg glow-btn inline-flex items-center gap-1.5">
+          Apply Now <i class="fas fa-arrow-up-right-from-square text-xs"></i>
+        </a>
+      </div>
+      <!-- Card 6 -->
+      <div class="svc-card p-6 fade-up" style="transition-delay:.25s">
+        <div class="svc-icon-wrap"><i class="fas fa-chart-candlestick text-white text-2xl"></i></div>
+        <h3 class="font-display font-bold text-white text-lg mb-2">Active Strategies</h3>
+        <p class="text-primary text-sm leading-relaxed mb-4">Algorithmic and quantitative trading capturing alpha across bull and bear market conditions globally.</p>
+        <div class="section-divider mb-4"></div>
+        <a href="{% url 'accounts:register' %}" class="bg-primary text-dark font-bold text-sm px-4 py-2 rounded-lg glow-btn inline-flex items-center gap-1.5">
+          Invest Now <i class="fas fa-arrow-up-right-from-square text-xs"></i>
+        </a>
+      </div>
+      <!-- Card 7 -->
+      <div class="svc-card p-6 fade-up" style="transition-delay:.3s">
+        <div class="svc-icon-wrap"><i class="fas fa-landmark text-white text-2xl"></i></div>
+        <h3 class="font-display font-bold text-white text-lg mb-2">Capital Markets</h3>
+        <p class="text-primary text-sm leading-relaxed mb-4">Equities, fixed income, derivatives and structured products managed for optimised risk-adjusted returns.</p>
+        <div class="section-divider mb-4"></div>
+        <a href="{% url 'accounts:register' %}" class="bg-primary text-dark font-bold text-sm px-4 py-2 rounded-lg glow-btn inline-flex items-center gap-1.5">
+          Invest Now <i class="fas fa-arrow-up-right-from-square text-xs"></i>
+        </a>
+      </div>
+      <!-- Card 8 -->
+      <div class="svc-card p-6 fade-up" style="transition-delay:.35s">
+        <div class="svc-icon-wrap"><i class="fas fa-microscope text-white text-2xl"></i></div>
+        <h3 class="font-display font-bold text-white text-lg mb-2">Research</h3>
+        <p class="text-primary text-sm leading-relaxed mb-4">Proprietary market research and intelligence reports powering data-driven portfolio allocation decisions.</p>
+        <div class="section-divider mb-4"></div>
+        <a href="{% url 'accounts:register' %}" class="bg-primary text-dark font-bold text-sm px-4 py-2 rounded-lg glow-btn inline-flex items-center gap-1.5">
+          Learn More <i class="fas fa-arrow-up-right-from-square text-xs"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider max-w-7xl mx-auto px-4"></div>
+
+<!-- ═══ WHAT WE OFFER ═══ -->
+<section class="py-20 lg:py-28" style="background:#0D1620">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-14 items-center">
+      <!-- Left -->
+      <div class="fade-up">
+        <span class="tag-badge px-4 py-1.5 rounded-full inline-block mb-5 uppercase">What We Offer</span>
+        <h2 class="font-display text-3xl sm:text-4xl font-bold text-white leading-tight mb-5">
+          Smart Investment Solutions For A <span class="gradient-text">Secure Financial Future</span>
+        </h2>
+        <p class="text-slate-400 leading-relaxed mb-8 text-sm">
+          At SecureLedger, we protect and grow your wealth through intelligent investment strategies designed to deliver consistent, high-yield returns in an evolving global economy. Every plan is backed by a seasoned team and military-grade security.
+        </p>
+        <!-- 3 mini icons -->
+        <div class="grid grid-cols-3 gap-5 mb-8">
+          <div class="text-center">
+            <div class="offer-mini-icon mx-auto mb-3"><i class="fas fa-shield-halved text-primary text-xl"></i></div>
+            <div class="font-display font-bold text-white text-xs">Asset Protection</div>
+            <p class="text-primary text-xs mt-1 leading-snug">Proactive Security Against Financial Risks.</p>
+          </div>
+          <div class="text-center">
+            <div class="offer-mini-icon mx-auto mb-3"><i class="fas fa-users text-primary text-xl"></i></div>
+            <div class="font-display font-bold text-white text-xs">Expert Analysts</div>
+            <p class="text-primary text-xs mt-1 leading-snug">Experienced Professionals Managing Your Portfolio.</p>
+          </div>
+          <div class="text-center">
+            <div class="offer-mini-icon mx-auto mb-3"><i class="fas fa-clock text-primary text-xl"></i></div>
+            <div class="font-display font-bold text-white text-xs">24/7 Monitoring</div>
+            <p class="text-primary text-xs mt-1 leading-snug">Continuous Protection For Your Investments.</p>
+          </div>
+        </div>
+        <p class="text-slate-400 text-sm leading-relaxed mb-6">Strengthen your wealth, protect your critical assets, and achieve financial freedom with powerful multi-sector investment solutions built for the modern investor.</p>
+        <a href="{% url 'accounts:register' %}" class="bg-primary text-dark font-bold px-7 py-3 rounded-full glow-btn inline-flex items-center gap-2 text-sm">
+          Discover More <i class="fas fa-arrow-up-right-from-square text-xs"></i>
+        </a>
+      </div>
+      <!-- Right: image grid -->
+      <div class="fade-up grid grid-cols-2 gap-4" style="transition-delay:.15s">
+        <!-- Top full-width -->
+        <div class="col-span-2 img-grid-top">
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="text-center p-8 relative z-10">
+              <div class="w-20 h-20 rounded-full bg-primary/15 border border-primary/30 flex items-center justify-center mx-auto mb-4" style="animation:float 4s ease-in-out infinite">
+                <i class="fas fa-shield-halved text-primary text-3xl"></i>
+              </div>
+              <div class="text-white font-display font-bold text-lg">Secure Investment Platform</div>
+              <div class="text-slate-400 text-sm mt-1">Multi-sector · Instant Withdrawal · SEC Registered</div>
+            </div>
+          </div>
+          <div class="absolute inset-0" style="background:radial-gradient(ellipse at 50% 50%,rgba(0,200,150,.07),transparent 60%)"></div>
+        </div>
+        <!-- Bottom left — neon bordered -->
+        <div class="img-grid-bottom-left">
+          <div class="text-center p-4 relative z-10">
+            <div class="w-12 h-12 rounded-lg bg-primary/15 border border-primary/30 flex items-center justify-center mx-auto mb-3">
+              <i class="fas fa-play text-primary text-lg ml-0.5"></i>
+            </div>
+            <div class="text-white font-bold text-xs">Watch Demo</div>
+          </div>
+        </div>
+        <!-- Bottom right -->
+        <div class="img-grid-bottom-right">
+          <div class="text-center p-4 relative z-10">
+            <div class="w-12 h-12 rounded-lg bg-primary/15 border border-primary/30 flex items-center justify-center mx-auto mb-3">
+              <i class="fas fa-chart-line text-primary text-lg"></i>
+            </div>
+            <div class="text-white font-bold text-xs">Live Portfolio</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider max-w-7xl mx-auto px-4"></div>
+
+<!-- ═══ RECOVERY SERVICES ═══ -->
+<section class="py-20 lg:py-28">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-2xl mx-auto mb-14 fade-up">
+      <span class="tag-badge px-4 py-1.5 rounded-full inline-block mb-4 uppercase">Cyber Security</span>
+      <h2 class="font-display text-3xl sm:text-4xl font-bold text-white mb-4">Digital Asset <span class="gradient-text">Recovery Services</span></h2>
+      <p class="text-slate-400 text-base">Our dedicated cybersecurity team uses advanced forensic tools to trace, locate, and legally recover stolen or lost digital assets.</p>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div class="recovery-card p-6 fade-up">
+        <div class="w-12 h-12 rounded-xl bg-red-500/15 border border-red-500/25 flex items-center justify-center mb-4"><i class="fas fa-heart-crack text-red-400 text-xl"></i></div>
+        <h3 class="font-display font-bold text-white text-lg mb-2">Romance Scam Recovery</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">Trace and recover funds lost to online romance fraud and relationship-based financial manipulation by bad actors.</p>
+      </div>
+      <div class="recovery-card p-6 fade-up" style="transition-delay:.07s">
+        <div class="w-12 h-12 rounded-xl bg-orange-500/15 border border-orange-500/25 flex items-center justify-center mb-4"><i class="fas fa-laptop-code text-orange-400 text-xl"></i></div>
+        <h3 class="font-display font-bold text-white text-lg mb-2">Device Hack Recovery</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">Forensic recovery of data and assets stolen through device compromise, malware, or unauthorized remote access.</p>
+      </div>
+      <div class="recovery-card p-6 fade-up" style="transition-delay:.14s">
+        <div class="w-12 h-12 rounded-xl bg-yellow-500/15 border border-yellow-500/25 flex items-center justify-center mb-4"><i class="fas fa-magnifying-glass-dollar text-yellow-400 text-xl"></i></div>
+        <h3 class="font-display font-bold text-white text-lg mb-2">Asset Tracing & Recovery</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">Blockchain forensics and cross-exchange tracking to locate and legally reclaim stolen or misappropriated funds.</p>
+      </div>
+      <div class="recovery-card p-6 fade-up" style="transition-delay:.21s">
+        <div class="w-12 h-12 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center mb-4"><i class="fas fa-bitcoin-sign text-primary text-xl"></i></div>
+        <h3 class="font-display font-bold text-white text-lg mb-2">Crypto Scam Recovery</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">Recovery of cryptocurrency lost to rug pulls, fake exchanges, phishing attacks, and pump-and-dump schemes.</p>
+      </div>
+      <div class="recovery-card p-6 fade-up" style="transition-delay:.28s">
+        <div class="w-12 h-12 rounded-xl bg-blue-500/15 border border-blue-500/25 flex items-center justify-center mb-4"><i class="fas fa-chart-line text-blue-400 text-xl"></i></div>
+        <h3 class="font-display font-bold text-white text-lg mb-2">Investment Scam Recovery</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">Recovery of capital lost to fraudulent investment platforms, Ponzi schemes, and unregistered brokers.</p>
+      </div>
+      <div class="recovery-card p-6 fade-up flex flex-col justify-between" style="transition-delay:.35s;border-color:rgba(0,200,150,.35);background:linear-gradient(135deg,rgba(0,200,150,.08),rgba(0,200,150,.03))">
+        <div>
+          <i class="fas fa-shield-halved text-primary text-3xl mb-4"></i>
+          <h3 class="font-display font-bold text-white text-lg mb-2">Need Help Recovering?</h3>
+          <p class="text-slate-400 text-sm mb-6">Our cybersecurity specialists are on standby 24/7 to begin your asset recovery process immediately.</p>
+        </div>
+        <a href="{% url 'frontend:contact' %}" class="bg-primary text-dark font-bold py-2.5 rounded-xl text-center text-sm glow-btn block">Contact Recovery Team</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ OUR JOURNEY TIMELINE ═══ -->
+<section class="journey-section py-20 lg:py-28">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-14 fade-up">
+      <span class="tag-badge px-4 py-1.5 rounded-full inline-block mb-4 uppercase">Our Journey</span>
+      <h2 class="font-display text-3xl sm:text-4xl font-bold text-white">
+        Building Stronger Financial Protection<br>For Investors <span class="gradient-text">Worldwide</span>
+      </h2>
+    </div>
+
+    <!-- Timeline — alternating left/right -->
+    <div class="relative fade-up" style="transition-delay:.1s">
+      <!-- Centre line -->
+      <div class="hidden md:block absolute left-1/2 top-0 bottom-0 -translate-x-1/2" style="width:3px;background:linear-gradient(180deg,#00C896,rgba(0,200,150,.15))"></div>
+
+      <!-- Item 1 — LEFT -->
+      <div class="flex flex-col md:flex-row items-center gap-0 md:gap-0 mb-10">
+        <div class="w-full md:w-1/2 md:pr-10 md:text-right order-2 md:order-1">
+          <div class="journey-card text-left md:text-right">
+            <h4>The Beginning of SecureLedger</h4>
+            <p class="text-slate-400 text-sm leading-relaxed">SecureLedger was founded in San Francisco with a mission to help investors grow and protect their capital through diversified, transparent, and intelligent investment solutions.</p>
+          </div>
+        </div>
+        <div class="journey-dot order-1 md:order-2 relative z-10 my-3 md:my-0">1</div>
+        <div class="w-full md:w-1/2 md:pl-10 order-3 hidden md:block"></div>
+      </div>
+
+      <!-- Item 2 — RIGHT -->
+      <div class="flex flex-col md:flex-row items-center gap-0 mb-10">
+        <div class="w-full md:w-1/2 md:pr-10 hidden md:block"></div>
+        <div class="journey-dot relative z-10 my-3 md:my-0">2</div>
+        <div class="w-full md:w-1/2 md:pl-10">
+          <div class="journey-card">
+            <h4>Expanding Investment Sectors</h4>
+            <p class="text-slate-400 text-sm leading-relaxed">As client demand grew, we expanded our investment expertise to include Oil & Gas, Agriculture, Capital Markets, Active Strategies, and Quick Loan facilities for all investor types.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 3 — LEFT -->
+      <div class="flex flex-col md:flex-row items-center gap-0 mb-10">
+        <div class="w-full md:w-1/2 md:pr-10 md:text-right order-2 md:order-1">
+          <div class="journey-card text-left md:text-right">
+            <h4>Launching Cyber Security Division</h4>
+            <p class="text-slate-400 text-sm leading-relaxed">We established a dedicated cybersecurity and digital asset recovery unit — bringing forensic-grade protection and scam recovery services to investors globally.</p>
+          </div>
+        </div>
+        <div class="journey-dot order-1 md:order-2 relative z-10 my-3 md:my-0">3</div>
+        <div class="w-full md:w-1/2 md:pl-10 order-3 hidden md:block"></div>
+      </div>
+
+      <!-- Item 4 — RIGHT -->
+      <div class="flex flex-col md:flex-row items-center gap-0">
+        <div class="w-full md:w-1/2 md:pr-10 hidden md:block"></div>
+        <div class="journey-dot relative z-10 my-3 md:my-0">4</div>
+        <div class="w-full md:w-1/2 md:pl-10">
+          <div class="journey-card">
+            <h4>Securing The Future</h4>
+            <p class="text-slate-400 text-sm leading-relaxed">Today, SecureLedger manages $2.4B+ in assets for 50,000+ investors across 80 countries — delivering cutting-edge investment plans with instant withdrawals and zero hidden fees.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider max-w-7xl mx-auto px-4"></div>
+
+<!-- ═══ FAQs ═══ -->
+<section id="faqs" class="py-20 lg:py-28">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-14 items-start">
+      <!-- Left image/visual -->
+      <div class="fade-up">
+        <div class="rounded-2xl overflow-hidden border-4 p-1" style="border-color:#00C896;background:linear-gradient(135deg,#0A1E18,#080E14)">
+          <div class="rounded-xl overflow-hidden" style="background:linear-gradient(160deg,#0A1E18,#0D1C28,#080E14);aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;position:relative">
+            <div class="absolute inset-0" style="background:radial-gradient(ellipse at 50% 40%,rgba(0,200,150,.1),transparent 60%)"></div>
+            <div class="relative z-10 text-center p-8">
+              <div class="relative flex items-center justify-center" style="height:160px">
+                <div class="absolute w-40 h-40 rounded-full border border-dashed" style="border-color:rgba(0,200,150,.25);animation:spin 20s linear infinite"></div>
+                <div class="absolute w-28 h-28 rounded-full border" style="border-color:rgba(0,200,150,.15);animation:spin 14s linear infinite reverse"></div>
+                <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/25 to-primary/5 border border-primary/35 flex items-center justify-center" style="animation:float 4s ease-in-out infinite">
+                  <i class="fas fa-lock text-primary text-4xl"></i>
+                </div>
+              </div>
+              <div class="mt-6 text-slate-300 font-display font-bold text-lg">Got Questions?</div>
+              <div class="text-slate-500 text-sm mt-1">We have answers below.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Right FAQs -->
+      <div class="fade-up" style="transition-delay:.15s">
+        <span class="tag-badge px-4 py-1.5 rounded-full inline-block mb-4 uppercase">FAQs</span>
+        <h2 class="font-display text-3xl sm:text-4xl font-bold text-white mb-8">Common Questions About <span class="gradient-text">SecureLedger Services</span></h2>
+        <div class="space-y-3" id="faq-list">
+          <!-- FAQ 1 - open by default -->
+          <div class="faq-item open">
+            <button class="faq-btn" onclick="toggleFaq(this)">
+              <span>01. What investment services does SecureLedger offer?</span>
+              <div class="faq-icon"><i class="fas fa-minus text-xs"></i></div>
+            </button>
+            <div class="faq-body open">
+              <p class="text-slate-400 text-sm leading-relaxed">SecureLedger offers diversified investment plans across Real Estate, Agriculture, Oil & Gas, Capital Markets, Active Trading Strategies, and Research — plus digital asset recovery services for victims of online financial fraud.</p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-btn" onclick="toggleFaq(this)">
+              <span>02. How quickly can I withdraw my earnings?</span>
+              <div class="faq-icon"><i class="fas fa-plus text-xs"></i></div>
+            </button>
+            <div class="faq-body">
+              <p class="text-slate-400 text-sm leading-relaxed">All withdrawals are processed instantly once your plan matures. There are no withdrawal queues, no processing delays, and no hidden fees — funds are sent directly to your crypto wallet.</p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-btn" onclick="toggleFaq(this)">
+              <span>03. Does SecureLedger provide 24/7 investor support?</span>
+              <div class="faq-icon"><i class="fas fa-plus text-xs"></i></div>
+            </button>
+            <div class="faq-body">
+              <p class="text-slate-400 text-sm leading-relaxed">Yes. Our dedicated account managers and live support team are available around the clock to assist with deposits, withdrawals, account queries, and recovery services — 365 days a year.</p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-btn" onclick="toggleFaq(this)">
+              <span>04. How does the Digital Asset Recovery service work?</span>
+              <div class="faq-icon"><i class="fas fa-plus text-xs"></i></div>
+            </button>
+            <div class="faq-body">
+              <p class="text-slate-400 text-sm leading-relaxed">Our cybersecurity team uses blockchain forensics, exchange tracking, and legal channels to trace and recover stolen digital assets. Cases are assessed within 24 hours and recovery timelines depend on the complexity of the fraud.</p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-btn" onclick="toggleFaq(this)">
+              <span>05. Why should I choose SecureLedger over others?</span>
+              <div class="faq-icon"><i class="fas fa-plus text-xs"></i></div>
+            </button>
+            <div class="faq-body">
+              <p class="text-slate-400 text-sm leading-relaxed">SecureLedger is SEC-registered, transparent, and backed by 12+ years of institutional investment experience. We offer instant withdrawals, a 10% referral bonus, diversified multi-sector exposure, and a dedicated cybersecurity team — all in one platform.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

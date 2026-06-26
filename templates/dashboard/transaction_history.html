@@ -1,0 +1,59 @@
+{% extends 'dashboard/base.html' %}
+{% load custom_filters %}
+{% load humanize %}
+{% block title %}Transaction History{% endblock %}
+{% block content %}
+<div style="margin-bottom:1.5rem"><h1 class="font-display font-bold text-white" style="font-size:1.4rem">Transaction History</h1><p style="color:#475569;font-size:.85rem;margin-top:.25rem">All deposits, withdrawals, profits, and bonuses on your account.</p></div>
+<!-- Filters -->
+<div class="panel" style="padding:1rem 1.25rem">
+  <form method="GET" style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+    <div style="display:flex;align-items:center;gap:.4rem">
+      <label style="color:#475569;font-size:.78rem;font-weight:600">Type:</label>
+      <select name="type" class="form-input" style="padding:.4rem .75rem;font-size:.8rem;width:auto" onchange="this.form.submit()">
+        <option value="all" {% if tx_type == 'all' %}selected{% endif %}>All Types</option>
+        <option value="deposit" {% if tx_type == 'deposit' %}selected{% endif %}>Deposit</option>
+        <option value="withdrawal" {% if tx_type == 'withdrawal' %}selected{% endif %}>Withdrawal</option>
+        <option value="profit" {% if tx_type == 'profit' %}selected{% endif %}>Profit</option>
+        <option value="bonus" {% if tx_type == 'bonus' %}selected{% endif %}>Bonus</option>
+        <option value="referral_bonus" {% if tx_type == 'referral_bonus' %}selected{% endif %}>Referral Bonus</option>
+      </select>
+    </div>
+    <div style="display:flex;align-items:center;gap:.4rem">
+      <label style="color:#475569;font-size:.78rem;font-weight:600">Status:</label>
+      <select name="status" class="form-input" style="padding:.4rem .75rem;font-size:.8rem;width:auto" onchange="this.form.submit()">
+        <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Status</option>
+        <option value="approved" {% if status_filter == 'approved' %}selected{% endif %}>Approved</option>
+        <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+        <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>Rejected</option>
+      </select>
+    </div>
+    <span style="color:#334155;font-size:.78rem">{{ transactions.count }} result{{ transactions.count|pluralize }}</span>
+  </form>
+</div>
+<div class="panel">
+  <div style="overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse">
+      <thead><tr>
+        {% for h in "ID,Type,Amount,Method,Wallet / Note,Status,Date"|split:"," %}
+        <th style="font-size:.68rem;font-weight:700;text-transform:uppercase;color:#334155;padding:.65rem 1.25rem;border-bottom:1px solid rgba(0,200,150,.07);text-align:left">{{ h }}</th>
+        {% endfor %}
+      </tr></thead>
+      <tbody>
+        {% for tx in transactions %}
+        <tr style="border-bottom:1px solid rgba(255,255,255,.03)">
+          <td style="padding:.7rem 1.25rem;font-family:'JetBrains Mono',monospace;font-size:.73rem;color:#475569">{{ tx.transaction_id }}</td>
+          <td style="padding:.7rem 1.25rem"><span style="font-size:.75rem;font-weight:600;{% if tx.tx_type == 'deposit' %}color:#3B82F6{% elif tx.tx_type == 'withdrawal' %}color:#EF4444{% elif tx.tx_type == 'profit' %}color:#00C896{% elif tx.tx_type == 'bonus' %}color:#F59E0B{% else %}color:#8B5CF6{% endif %}">{{ tx.get_tx_type_display }}</span></td>
+          <td style="padding:.7rem 1.25rem;font-family:'JetBrains Mono',monospace;font-weight:700;color:{% if tx.tx_type == 'withdrawal' %}#EF4444{% else %}#00C896{% endif %}">{% if tx.tx_type != 'withdrawal' %}+{% else %}-{% endif %}${{ tx.amount|floatformat:2|intcomma }}</td>
+          <td style="padding:.7rem 1.25rem;font-size:.78rem;color:#94A3B8">{{ tx.payment_method|default:"—" }}</td>
+          <td style="padding:.7rem 1.25rem;font-size:.75rem;color:#475569;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ tx.wallet_address|default:tx.note|default:"—"|truncatechars:30 }}</td>
+          <td style="padding:.7rem 1.25rem"><span style="font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:99px;text-transform:uppercase;{% if tx.status == 'approved' %}background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.25);color:#00C896{% elif tx.status == 'pending' %}background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:#F59E0B{% else %}background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:#EF4444{% endif %}">{{ tx.get_status_display }}</span></td>
+          <td style="padding:.7rem 1.25rem;font-size:.78rem;color:#475569;white-space:nowrap">{{ tx.created_at|date:"M d, Y H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" style="text-align:center;padding:3rem;color:#334155"><i class="fas fa-clock-rotate-left" style="font-size:2rem;margin-bottom:.75rem;display:block;opacity:.3"></i>No transactions found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

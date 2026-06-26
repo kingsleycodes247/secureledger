@@ -1,0 +1,83 @@
+{% extends 'adminpanel/base.html' %}
+{% load humanize %}
+{% block title %}Wallets{% endblock %}
+{% block heading %}Company Wallets{% endblock %}
+{% block content %}
+<div style="display:grid;grid-template-columns:380px 1fr;gap:1.5rem;align-items:start">
+  <div class="panel">
+    <div class="panel-header"><div class="panel-title"><i class="fas fa-plus" style="color:#00C896"></i><span id="formTitle">Add Wallet</span></div></div>
+    <form method="POST" enctype="multipart/form-data" id="walletForm">
+      {% csrf_token %}
+      <input type="hidden" name="wallet_id" id="walletId" value="">
+      <div style="padding:1.25rem">
+        <div style="margin-bottom:1rem"><label class="form-label">Cryptocurrency</label>
+          <select name="crypto" id="walletCrypto" class="form-input" required>
+            <option value="BTC">Bitcoin (BTC)</option>
+            <option value="USDT">Tether (USDT)</option>
+            <option value="ETH">Ethereum (ETH)</option>
+            <option value="SOL">Solana (SOL)</option>
+          </select>
+        </div>
+        <div style="margin-bottom:1rem"><label class="form-label">Network</label><input type="text" name="network" id="walletNetwork" class="form-input" placeholder="e.g. TRC20, ERC20, Bitcoin"></div>
+        <div style="margin-bottom:1rem"><label class="form-label">Wallet Address</label><input type="text" name="address" id="walletAddress" class="form-input" placeholder="Paste the public address" required></div>
+        <div style="margin-bottom:1rem"><label class="form-label">QR Code (optional)</label><input type="file" name="qr_code" accept="image/*" class="form-input" style="padding:.4rem"></div>
+        <label style="display:flex;align-items:center;gap:.5rem;margin-bottom:1rem;cursor:pointer"><input type="checkbox" name="is_active" id="walletActive" checked style="width:16px;height:16px;accent-color:#00C896"><span style="color:#94A3B8;font-size:.82rem">Active (shown to users)</span></label>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:.7rem"><i class="fas fa-save"></i><span id="submitLabel">Save Wallet</span></button>
+        <button type="button" onclick="resetWalletForm()" id="cancelEdit" style="display:none;width:100%;justify-content:center;padding:.6rem;margin-top:.6rem;background:transparent;border:1px solid rgba(255,255,255,.1);color:#64748B;border-radius:.5rem;cursor:pointer;font-size:.8rem">Cancel Edit</button>
+      </div>
+    </form>
+  </div>
+  <div class="panel">
+    <div class="panel-header"><div class="panel-title"><i class="fas fa-wallet" style="color:#00C896"></i>Configured Wallets ({{ wallets.count }})</div></div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr><th>Crypto</th><th>Network</th><th>Address</th><th>QR</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          {% for w in wallets %}
+          <tr>
+            <td><span style="font-weight:600;color:#E2E8F0">{{ w.get_crypto_display }}</span></td>
+            <td style="color:#F59E0B;font-size:.78rem">{{ w.network|default:"—" }}</td>
+            <td style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:#94A3B8;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ w.address }}</td>
+            <td>{% if w.qr_code %}<img src="{{ w.qr_code.url }}" style="width:32px;height:32px;border-radius:.3rem">{% else %}<span style="color:#334155;font-size:.72rem">None</span>{% endif %}</td>
+            <td>{% if w.is_active %}<span class="badge badge-green">Active</span>{% else %}<span class="badge badge-gray">Inactive</span>{% endif %}</td>
+            <td>
+              <div style="display:flex;gap:.35rem">
+                <button class="btn btn-view" title="Edit" onclick="editWallet('{{ w.id }}','{{ w.crypto }}','{{ w.network|escapejs }}','{{ w.address|escapejs }}',{% if w.is_active %}true{% else %}false{% endif %})"><i class="fas fa-pen"></i></button>
+                <form method="POST" action="{% url 'adminpanel:wallet_delete' w.id %}" onsubmit="return confirm('Delete the {{ w.get_crypto_display }} wallet? Users will not be able to deposit with it.')">
+                  {% csrf_token %}
+                  <button class="btn btn-reject" title="Delete"><i class="fas fa-trash"></i></button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6" style="text-align:center;padding:3rem;color:#334155"><i class="fas fa-wallet" style="font-size:2rem;display:block;margin-bottom:.75rem;opacity:.3"></i>No wallets configured. Add one to enable deposits.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+function editWallet(id, crypto, network, address, isActive){
+  document.getElementById('walletId').value = id;
+  document.getElementById('walletCrypto').value = crypto;
+  document.getElementById('walletNetwork').value = network;
+  document.getElementById('walletAddress').value = address;
+  document.getElementById('walletActive').checked = isActive;
+  document.getElementById('formTitle').textContent = 'Edit ' + crypto + ' Wallet';
+  document.getElementById('submitLabel').textContent = 'Update Wallet';
+  document.getElementById('cancelEdit').style.display = 'block';
+  document.getElementById('walletForm').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function resetWalletForm(){
+  document.getElementById('walletForm').reset();
+  document.getElementById('walletId').value = '';
+  document.getElementById('formTitle').textContent = 'Add Wallet';
+  document.getElementById('submitLabel').textContent = 'Save Wallet';
+  document.getElementById('cancelEdit').style.display = 'none';
+}
+</script>
+{% endblock %}

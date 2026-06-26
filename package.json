@@ -1,0 +1,12 @@
+{
+  "name": "secureledger-tailwind",
+  "version": "1.0.0",
+  "description": "Tailwind CSS build for SecureLedger production",
+  "scripts": {
+    "build": "tailwindcss -i ./static/src/input.css -o ./static/css/main.css --minify",
+    "watch": "tailwindcss -i ./static/src/input.css -o ./static/css/main.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+}

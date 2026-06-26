@@ -1,0 +1,44 @@
+{% extends 'dashboard/base.html' %}
+{% load humanize %}
+{% block title %}Withdraw{% endblock %}
+{% block content %}
+<div style="margin-bottom:1.5rem"><h1 class="font-display font-bold text-white" style="font-size:1.4rem">Request Withdrawal</h1><p style="color:#475569;font-size:.85rem;margin-top:.25rem">Withdraw your earnings directly to your crypto wallet.</p></div>
+<div style="max-width:520px">
+  <div style="background:#111D2B;border:1px solid rgba(0,200,150,.2);border-radius:.875rem;padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:.75rem">
+    <div style="width:40px;height:40px;background:rgba(0,200,150,.12);border:1px solid rgba(0,200,150,.2);border-radius:.6rem;display:flex;align-items:center;justify-content:center"><i class="fas fa-wallet" style="color:#00C896"></i></div>
+    <div><div style="color:#475569;font-size:.72rem;text-transform:uppercase;letter-spacing:.07em">Available Balance</div><div class="font-display font-bold" style="color:#00C896;font-size:1.25rem">${{ profile.available_balance|floatformat:2|intcomma }}</div></div>
+  </div>
+  <div class="panel">
+    <div class="panel-header"><div class="panel-title"><i class="fas fa-arrow-up" style="color:#EF4444;margin-right:.4rem"></i>Withdrawal Details</div></div>
+    <div style="padding:1.5rem">
+      <form method="POST">
+        {% csrf_token %}
+        <div style="margin-bottom:1rem"><label class="form-input-label">Amount (USD)</label>{{ form.amount }}<p style="color:#475569;font-size:.72rem;margin-top:.3rem">Minimum: $10.00 · Available: ${{ profile.available_balance|floatformat:2|intcomma }}</p>{% if form.amount.errors %}<p style="color:#EF4444;font-size:.75rem;margin-top:.3rem">{{ form.amount.errors.0 }}</p>{% endif %}</div>
+        <div style="margin-bottom:1rem"><label class="form-input-label">Wallet Address</label>{{ form.wallet_address }}<p style="color:#475569;font-size:.72rem;margin-top:.3rem">Double-check your address. Transactions cannot be reversed.</p>{% if form.wallet_address.errors %}<p style="color:#EF4444;font-size:.75rem;margin-top:.3rem">{{ form.wallet_address.errors.0 }}</p>{% endif %}</div>
+        <div style="margin-bottom:1.25rem"><label class="form-input-label">Payment Method</label>{{ form.payment_method }}</div>
+        <!-- Fee preview -->
+        <div style="background:rgba(0,200,150,.06);border:1px solid rgba(0,200,150,.15);border-radius:.75rem;padding:1rem;margin-bottom:1.25rem">
+          <div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:.4rem"><span style="color:#475569">Network Fee (1%)</span><span style="color:#F59E0B;font-weight:600" id="feeAmt">$0.00</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:.82rem"><span style="color:#475569">You Will Receive</span><span class="font-display font-bold" style="color:#00C896;font-size:1rem" id="receiveAmt">$0.00</span></div>
+        </div>
+        <div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);border-radius:.65rem;padding:.75rem 1rem;margin-bottom:1.25rem;font-size:.78rem;color:#F59E0B;display:flex;align-items:flex-start;gap:.5rem">
+          <i class="fas fa-triangle-exclamation flex-shrink-0 mt-0.5"></i>
+          Withdrawals are processed within 24 hours. Ensure your wallet address is correct.
+        </div>
+        <button type="submit" style="background:linear-gradient(135deg,#EF4444,#DC2626);color:#fff;font-weight:700;font-size:.9rem;padding:.8rem 2rem;border:none;border-radius:.65rem;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;box-shadow:0 0 18px rgba(239,68,68,.25)">
+          <i class="fas fa-arrow-up"></i> Submit Withdrawal
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+document.querySelector('[name="amount"]')?.addEventListener('input',function(){
+  const amt=parseFloat(this.value)||0,fee=amt*.01,rec=Math.max(0,amt-fee);
+  document.getElementById('feeAmt').textContent='$'+fee.toFixed(2);
+  document.getElementById('receiveAmt').textContent='$'+rec.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+});
+</script>
+{% endblock %}

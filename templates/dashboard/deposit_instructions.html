@@ -1,0 +1,174 @@
+{% extends 'dashboard/base.html' %}
+{% load humanize %}
+{% block title %}Complete Deposit{% endblock %}
+
+{% block content %}
+<div style="max-width:680px;margin:0 auto">
+
+  <!-- Breadcrumb / back -->
+  <a href="{% url 'dashboard:invest' %}" style="color:#475569;font-size:.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;margin-bottom:1.25rem">
+    <i class="fas fa-arrow-left" style="font-size:.7rem"></i> Back to Plans
+  </a>
+
+  <div style="margin-bottom:1.5rem">
+    <h1 class="font-display font-bold text-white" style="font-size:1.4rem">Complete Your Deposit</h1>
+    <p style="color:#475569;font-size:.85rem;margin-top:.25rem">Send the exact amount to the wallet below, then upload your payment proof.</p>
+  </div>
+
+  <!-- Investment summary -->
+  <div class="panel" style="margin-bottom:1.25rem">
+    <div style="padding:1.25rem 1.5rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:1rem">
+      <div>
+        <div style="color:#475569;font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem">Plan</div>
+        <div class="font-display font-bold text-white" style="font-size:.95rem">{{ investment.plan.get_name_display }}</div>
+      </div>
+      <div>
+        <div style="color:#475569;font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem">Amount</div>
+        <div class="font-display font-bold" style="font-size:.95rem;color:#00C896">${{ investment.amount|floatformat:2|intcomma }}</div>
+      </div>
+      <div>
+        <div style="color:#475569;font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem">Method</div>
+        <div class="font-display font-bold text-white" style="font-size:.95rem">{{ investment.payment_method }}</div>
+      </div>
+      <div>
+        <div style="color:#475569;font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem">Status</div>
+        <span style="font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:99px;text-transform:uppercase;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:#F59E0B">{{ investment.get_status_display }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wallet address -->
+  <div class="panel" style="margin-bottom:1.25rem">
+    <div class="panel-header">
+      <div class="panel-title"><i class="fas fa-wallet" style="color:#00C896;margin-right:.4rem"></i>Send {{ investment.payment_method }} To This Address</div>
+    </div>
+    <div style="padding:1.5rem">
+      {% if wallet %}
+        <div style="display:flex;gap:1.5rem;flex-wrap:wrap;align-items:center">
+          <!-- QR code -->
+          {% if wallet.qr_code %}
+          <div style="flex-shrink:0;background:#fff;padding:.5rem;border-radius:.75rem">
+            <img src="{{ wallet.qr_code.url }}" alt="Wallet QR" style="width:140px;height:140px;display:block">
+          </div>
+          {% else %}
+          <div style="flex-shrink:0;width:140px;height:140px;background:#111D2B;border:1px dashed rgba(0,200,150,.25);border-radius:.75rem;display:flex;align-items:center;justify-content:center">
+            <i class="fas fa-qrcode" style="color:#334155;font-size:2.5rem"></i>
+          </div>
+          {% endif %}
+
+          <!-- Address details -->
+          <div style="flex:1;min-width:240px">
+            {% if wallet.network %}
+            <div style="margin-bottom:.75rem">
+              <span style="color:#475569;font-size:.7rem;text-transform:uppercase;letter-spacing:.07em">Network</span>
+              <div style="color:#F59E0B;font-weight:600;font-size:.85rem">{{ wallet.network }}</div>
+            </div>
+            {% endif %}
+            <div style="color:#475569;font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.4rem">Wallet Address</div>
+            <div style="background:#080E14;border:1px solid rgba(0,200,150,.2);border-radius:.65rem;padding:.75rem 1rem;display:flex;align-items:center;gap:.75rem">
+              <span id="walletAddr" style="font-family:'JetBrains Mono',monospace;font-size:.8rem;color:#E2E8F0;word-break:break-all;flex:1">{{ wallet.address }}</span>
+              <button onclick="copyAddr()" id="copyBtn" style="background:rgba(0,200,150,.12);border:1px solid rgba(0,200,150,.3);color:#00C896;font-size:.72rem;font-weight:600;padding:.4rem .7rem;border-radius:.4rem;cursor:pointer;white-space:nowrap;flex-shrink:0">
+                <i class="fas fa-copy" style="margin-right:.25rem"></i>Copy
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Warning -->
+        <div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);border-radius:.65rem;padding:.85rem 1rem;margin-top:1.25rem;font-size:.78rem;color:#F59E0B;display:flex;align-items:flex-start;gap:.5rem">
+          <i class="fas fa-triangle-exclamation flex-shrink-0 mt-0.5"></i>
+          <span>Send <strong>exactly ${{ investment.amount|floatformat:2|intcomma }}</strong> worth of {{ investment.payment_method }}{% if wallet.network %} on the <strong>{{ wallet.network }}</strong> network{% endif %}. Sending the wrong amount or using the wrong network may result in loss of funds.</span>
+        </div>
+      {% else %}
+        <div style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:.65rem;padding:1rem;font-size:.82rem;color:#FCA5A5;display:flex;align-items:flex-start;gap:.5rem">
+          <i class="fas fa-circle-exclamation flex-shrink-0 mt-0.5"></i>
+          <span>No active {{ investment.payment_method }} wallet is configured right now. Please contact support to complete your deposit.</span>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Upload proof -->
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title"><i class="fas fa-camera" style="color:#00C896;margin-right:.4rem"></i>Submit Proof of Deposit</div>
+    </div>
+    <div style="padding:1.5rem">
+      {% if investment.proof_of_payment %}
+        <div style="background:rgba(0,200,150,.06);border:1px solid rgba(0,200,150,.2);border-radius:.65rem;padding:1rem;margin-bottom:1rem;font-size:.82rem;color:#6EFCD8;display:flex;align-items:center;gap:.6rem">
+          <i class="fas fa-circle-check"></i>
+          <span>Proof already uploaded {% if investment.proof_uploaded_at %}on {{ investment.proof_uploaded_at|date:"M d, Y H:i" }}{% endif %}. Awaiting admin verification.</span>
+        </div>
+        <div style="margin-bottom:1rem">
+          <img src="{{ investment.proof_of_payment.url }}" alt="Proof" style="max-width:240px;border-radius:.65rem;border:1px solid rgba(0,200,150,.15)">
+        </div>
+        <p style="color:#475569;font-size:.8rem;margin-bottom:1rem">Need to replace it? Upload a new screenshot below.</p>
+      {% else %}
+        <p style="color:#94A3B8;font-size:.85rem;margin-bottom:1.25rem">After sending your payment, upload a clear screenshot of the transaction confirmation from your wallet or exchange.</p>
+      {% endif %}
+
+      <form method="POST" enctype="multipart/form-data" id="proofForm">
+        {% csrf_token %}
+        <div style="margin-bottom:1.25rem">
+          <label class="form-input-label">Payment Screenshot</label>
+          <!-- Custom upload area -->
+          <label for="id_proof_of_payment" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;background:#080E14;border:2px dashed rgba(0,200,150,.25);border-radius:.75rem;padding:2rem 1rem;cursor:pointer;transition:border-color .2s" id="dropZone" onmouseover="this.style.borderColor='rgba(0,200,150,.5)'" onmouseout="this.style.borderColor='rgba(0,200,150,.25)'">
+            <i class="fas fa-cloud-arrow-up" style="color:#00C896;font-size:1.8rem"></i>
+            <span style="color:#94A3B8;font-size:.85rem;font-weight:500" id="uploadLabel">Tap to upload or drag a screenshot here</span>
+            <span style="color:#475569;font-size:.72rem">PNG, JPG up to 5MB</span>
+          </label>
+          <div style="display:none;margin-top:1rem;text-align:center" id="previewWrap">
+            <img id="previewImg" style="max-width:240px;border-radius:.65rem;border:1px solid rgba(0,200,150,.2)" alt="Preview">
+          </div>
+          {{ proof_form.proof_of_payment }}
+          {% if proof_form.proof_of_payment.errors %}
+            <p style="color:#FCA5A5;font-size:.75rem;margin-top:.4rem">{{ proof_form.proof_of_payment.errors.0 }}</p>
+          {% endif %}
+        </div>
+        <button type="submit" class="glow-btn" style="background:#00C896;color:#080E14;font-weight:700;font-size:.9rem;padding:.8rem 2rem;border:none;border-radius:.65rem;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem" id="proofSubmit">
+          <i class="fas fa-paper-plane"></i> Submit Proof of Payment
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function copyAddr(){
+  const addr = document.getElementById('walletAddr').textContent.trim();
+  navigator.clipboard.writeText(addr);
+  const btn = document.getElementById('copyBtn');
+  btn.innerHTML = '<i class="fas fa-check" style="margin-right:.25rem"></i>Copied!';
+  setTimeout(() => btn.innerHTML = '<i class="fas fa-copy" style="margin-right:.25rem"></i>Copy', 2000);
+}
+
+// Hide the raw Django file input, drive it from the styled drop zone
+const fileInput = document.getElementById('id_proof_of_payment');
+if (fileInput) {
+  fileInput.style.display = 'none';
+  fileInput.addEventListener('change', function(){
+    const file = this.files[0];
+    if (!file) return;
+    document.getElementById('uploadLabel').textContent = file.name;
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('previewImg').src = e.target.result;
+      document.getElementById('previewWrap').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+document.getElementById('proofForm').addEventListener('submit', function(e){
+  if (fileInput && !fileInput.files.length && !{% if investment.proof_of_payment %}true{% else %}false{% endif %}) {
+    e.preventDefault();
+    document.getElementById('dropZone').style.borderColor = '#EF4444';
+    setTimeout(() => document.getElementById('dropZone').style.borderColor = 'rgba(0,200,150,.25)', 1500);
+    return;
+  }
+  document.getElementById('proofSubmit').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading…';
+});
+</script>
+{% endblock %}
