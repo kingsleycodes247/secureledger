@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#080E14;font-family:Inter,Arial,sans-serif">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#080E14;padding:40px 20px"><tr><td align="center">
+<table width="600" cellpadding="0" cellspacing="0" style="background:#0D1620;border:1px solid rgba(0,200,150,.2);border-radius:16px;overflow:hidden;max-width:600px;width:100%">
+  <tr><td style="background:linear-gradient(135deg,#0A1E18,#0D1620);padding:32px 40px;text-align:center;border-bottom:1px solid rgba(0,200,150,.1)">
+    <div style="display:inline-flex;align-items:center;gap:10px">
+      <div style="width:36px;height:36px;background:#00C896;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:18px">🛡</div>
+      <span style="font-family:Arial,sans-serif;font-weight:800;font-size:20px;color:#fff">Secure<span style="color:#00C896">Ledger</span></span>
+    </div>
+  </td></tr>
+  <tr><td style="padding:40px">
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="width:64px;height:64px;border-radius:50%;background:rgba(0,200,150,.12);border:2px solid #00C896;display:inline-flex;align-items:center;justify-content:center;font-size:28px">💸</div>
+    </div>
+    <h2 style="color:#fff;font-size:22px;margin:0 0 12px;font-weight:700;text-align:center">Withdrawal Processed</h2>
+    <p style="color:#94A3B8;font-size:15px;line-height:1.6;margin:0 0 28px;text-align:center">Hi {{ user.first_name }}, your withdrawal has been approved and sent to your wallet.</p>
+
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#111D2B;border:1px solid rgba(0,200,150,.15);border-radius:12px;margin-bottom:28px">
+      <tr><td style="padding:20px 24px">
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr><td style="color:#475569;font-size:13px;padding:6px 0">Transaction ID</td><td style="color:#E2E8F0;font-size:13px;font-family:monospace;text-align:right">{{ tx.transaction_id }}</td></tr>
+          <tr><td style="color:#475569;font-size:13px;padding:6px 0">Amount</td><td style="color:#00C896;font-size:16px;font-weight:800;text-align:right">${{ tx.amount }}</td></tr>
+          {% if tx.payment_method %}<tr><td style="color:#475569;font-size:13px;padding:6px 0">Method</td><td style="color:#E2E8F0;font-size:14px;text-align:right">{{ tx.payment_method }}</td></tr>{% endif %}
+          {% if tx.wallet_address %}<tr><td style="color:#475569;font-size:13px;padding:6px 0">To Wallet</td><td style="color:#94A3B8;font-size:11px;font-family:monospace;text-align:right;word-break:break-all">{{ tx.wallet_address }}</td></tr>{% endif %}
+          <tr><td style="color:#475569;font-size:13px;padding:6px 0">Status</td><td style="text-align:right"><span style="background:rgba(0,200,150,.12);border:1px solid rgba(0,200,150,.3);color:#00C896;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;text-transform:uppercase">Sent</span></td></tr>
+          <tr><td style="color:#475569;font-size:13px;padding:6px 0">Date</td><td style="color:#E2E8F0;font-size:14px;text-align:right">{{ tx.updated_at|date:"M d, Y H:i" }}</td></tr>
+        </table>
+      </td></tr>
+    </table>
+
+    <p style="color:#475569;font-size:13px;line-height:1.6;text-align:center;margin:0 0 24px">Depending on network congestion, it may take a short while to appear in your wallet.</p>
+
+    <div style="text-align:center">
+      <a href="{{ dashboard_url }}" style="background:#00C896;color:#080E14;font-weight:700;font-size:15px;padding:14px 36px;border-radius:99px;text-decoration:none;display:inline-block;box-shadow:0 0 24px rgba(0,200,150,.4)">View Dashboard</a>
+    </div>
+  </td></tr>
+  <tr><td style="padding:20px 40px;border-top:1px solid rgba(0,200,150,.08);text-align:center">
+    <p style="color:#334155;font-size:12px;margin:0">© 2026 SecureLedger Investment Corp. · San Francisco, CA</p>
+  </td></tr>
+</table>
+</td></tr></table></body></html>

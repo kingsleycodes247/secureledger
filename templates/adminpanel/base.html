@@ -62,11 +62,17 @@
     .modal-bg.open{display:flex}
     .modal-card{background:#0D1620;border:1px solid rgba(0,200,150,.25);border-radius:1rem;width:100%;max-width:440px;overflow:hidden}
     @media(max-width:768px){.sidebar{transform:translateX(-250px)}.sidebar.mobile-open{transform:translateX(0)}.main{margin-left:0}.page-body{padding:1rem}.hide-mobile{display:none}}
+
+    .sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;display:none}
+    .sidebar-overlay.show{display:block}
+    @media(min-width:769px){.sidebar-overlay{display:none!important}}
     {% block extra_styles %}{% endblock %}
   </style>
 </head>
-<body>
 
+
+<body>
+<div class="sidebar-overlay" id="adminOverlay" onclick="closeAdminSidebar()"></div>
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">
     <div style="width:32px;height:32px;background:#00C896;border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px rgba(0,200,150,.4)"><i class="fas fa-shield-halved text-dark text-sm"></i><a href="{% url 'adminpanel:home' %}" style="position:absolute;inset:0"></a></div>
@@ -94,7 +100,7 @@
 <div class="main" id="main">
   <header class="topbar">
     <div style="display:flex;align-items:center;gap:.75rem">
-      <button onclick="document.getElementById('sidebar').classList.toggle('mobile-open')" style="background:none;border:none;color:#64748B;cursor:pointer;padding:.4rem"><i class="fas fa-bars text-lg"></i></button>
+      <button onclick="toggleAdminSidebar()" style="background:none;border:none;color:#64748B;cursor:pointer;padding:.4rem"><i class="fas fa-bars text-lg"></i></button>
       <h1 class="font-display font-bold text-white" style="font-size:1rem">{% block heading %}Dashboard{% endblock %}</h1>
     </div>
     <div style="display:flex;align-items:center;gap:.75rem">
@@ -107,6 +113,31 @@
 </div>
 {% block modals %}{% endblock %}
 
+<script>
+function toggleAdminSidebar(){
+  const sb = document.getElementById('sidebar');
+  const main = document.getElementById('main');
+  const overlay = document.getElementById('adminOverlay');
+  if (window.innerWidth < 769) {
+    const open = sb.classList.toggle('mobile-open');
+    overlay.classList.toggle('show', open);
+  } else {
+    const collapsed = sb.classList.toggle('collapsed');
+    main.style.marginLeft = collapsed ? '0' : '250px';
+  }
+}
+function closeAdminSidebar(){
+  document.getElementById('sidebar').classList.remove('mobile-open');
+  document.getElementById('adminOverlay').classList.remove('show');
+}
+// Auto-close when any sidebar link is tapped (mobile)
+document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+  link.addEventListener('click', () => {
+    if (window.innerWidth < 769) closeAdminSidebar();
+  });
+});
+</script>
 {% block extra_scripts %}{% endblock %}
+
 </body>
 </html>

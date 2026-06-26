@@ -169,6 +169,34 @@ def admin_transaction_action(request, tx_id):
         if tx.tx_type == 'deposit' and tx.investment and tx.investment.status == 'pending':
             tx.investment.activate()
         _sync_profile(tx.user)
+
+        try:
+            from django.template.loader import render_to_string
+            if tx.tx_type == 'deposit':
+                template = 'emails/deposit_success.html'
+                subject = 'Your SecureLedger deposit was successful ✅'
+            elif tx.tx_type == 'withdrawal':
+                template = 'emails/withdrawal_success.html'
+                subject = 'Your SecureLedger withdrawal has been processed 💸'
+            else:
+                template = None
+
+            if template:
+                html_body = render_to_string(template, {
+                    'user': tx.user,
+                    'tx': tx,
+                    'dashboard_url': request.build_absolute_uri('/dashboard/'),
+                })
+                send_mail(
+                    subject=subject,
+                    message=f'Hi {tx.user.first_name}, your {tx.get_tx_type_display()} of ${tx.amount} was successful.',
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[tx.user.email],
+                    html_message=html_body,
+                    fail_silently=True,
+                )
+        except Exception:
+            pass
         messages.success(request, f'Transaction {tx.transaction_id} approved.')
     elif action == 'reject':
         tx.status = 'rejected'; tx.save()

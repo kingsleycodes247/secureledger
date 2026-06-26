@@ -26,11 +26,13 @@ INSTALLED_APPS = [
     'dashboard',
     'frontend',
     'investments',
+    'whitenoise',
 
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -128,7 +130,7 @@ EMAIL_BACKEND = ('django.core.mail.backends.smtp.EmailBackend')
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'dreamstechsolutions001@gmail.com'
+EMAIL_HOST_USER = 'support@secureledge.net'
 EMAIL_HOST_PASSWORD = 'xjga pivl xgaz iaka'
 #EMAIL_TIMEOUT = 60
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
