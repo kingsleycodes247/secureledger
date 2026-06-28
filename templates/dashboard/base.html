@@ -90,6 +90,66 @@
       .page-body{padding:1rem}
       .hide-mobile{display:none}
     }
+
+    /* Hide Google's own widget + banner entirely */
+    .goog-te-banner-frame.skiptranslate,
+    .skiptranslate iframe { display: none !important; }
+    body { top: 0 !important; position: static !important; }
+    #google_translate_element { display: none !important; }
+    .goog-te-gadget { height: 0; overflow: hidden; }
+
+    /* ── Custom language switcher ── */
+    .lang-switch { position: relative; }
+    .lang-trigger {
+      display: flex; align-items: center; gap: 6px;
+      background: #0D1620;
+      border: 1px solid rgba(0,200,150,0.25);
+      color: #E2E8F0;
+      border-radius: 8px;
+      padding: 7px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: border-color .2s;
+    }
+    .lang-trigger:hover { border-color: rgba(0,200,150,0.6); }
+    .lang-trigger .fa-globe { color: #00C896; font-size: 13px; }
+    .lang-caret { font-size: 9px; color: #64748B; transition: transform .2s; }
+    .lang-switch.open .lang-caret { transform: rotate(180deg); }
+
+    .lang-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: #111D2B;
+      border: 1px solid rgba(0,200,150,0.2);
+      border-radius: 10px;
+      padding: 6px;
+      min-width: 170px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+      z-index: 1000;
+      display: none;
+      max-height: 320px;
+      overflow-y: auto;
+    }
+    .lang-switch.open .lang-menu { display: block; }
+    .lang-menu button {
+      display: flex; align-items: center; gap: 10px;
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: #94A3B8;
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      padding: 9px 12px;
+      border-radius: 7px;
+      cursor: pointer;
+      text-align: left;
+      transition: all .15s;
+    }
+    .lang-menu button:hover { background: rgba(0,200,150,0.08); color: #00C896; }
+
     {% block extra_styles %}{% endblock %}
   </style>
   {% block extra_head %}{% endblock %}
@@ -172,6 +232,26 @@
     <a href="{% url 'dashboard:help_support' %}" class="nav-link {% if page == 'support' %}active{% endif %}">
       <span class="nav-icon"><i class="fas fa-circle-question"></i></span> Help / Support
     </a>
+     <!-- Language selector (DESKTOP) -->
+        <div class="lang-switch" id="langSwitchDesktop">
+          <button type="button" class="lang-trigger" onclick="toggleLangMenu('langSwitchDesktop')">
+            <i class="fas fa-globe"></i>
+            <span class="langCurrent">EN</span>
+            <i class="fas fa-chevron-down lang-caret"></i>
+          </button>
+          <div class="lang-menu">
+            <button type="button" onclick="setLang('en','EN')">🇬🇧 English</button>
+            <button type="button" onclick="setLang('es','ES')">🇪🇸 Español</button>
+            <button type="button" onclick="setLang('fr','FR')">🇫🇷 Français</button>
+            <button type="button" onclick="setLang('de','DE')">🇩🇪 Deutsch</button>
+            <button type="button" onclick="setLang('pt','PT')">🇵🇹 Português</button>
+            <button type="button" onclick="setLang('ar','AR')">🇸🇦 العربية</button>
+            <button type="button" onclick="setLang('zh-CN','ZH')">🇨🇳 中文</button>
+            <button type="button" onclick="setLang('ru','RU')">🇷🇺 Русский</button>
+            <button type="button" onclick="setLang('hi','HI')">🇮🇳 हिन्दी</button>
+            <button type="button" onclick="setLang('it','IT')">🇮🇹 Italiano</button>
+          </div>
+        </div>
   </nav>
 
   <div class="sidebar-bottom">
@@ -265,6 +345,18 @@
   </div>
 </div>
 
+<!-- ═══ Google Translate init (KEEP THIS) ═══ -->
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'en',
+      includedLanguages: 'en,es,fr,de,pt,ar,zh-CN,ru,hi,it',
+      autoDisplay: false
+    }, 'google_translate_element');
+  }
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 <script>
 function toggleSidebar(){
   const sb=document.getElementById('sidebar'),mc=document.getElementById('mainContent'),ol=document.getElementById('sidebarOverlay');
@@ -287,6 +379,39 @@ document.querySelectorAll('.modal-overlay').forEach(m=>{
   observer.observe(m,{attributes:true,attributeFilter:['class']});
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open'))});
+
+/* ── Language switcher ── */
+  function toggleLangMenu(id){
+    const sw = document.getElementById(id);
+    document.querySelectorAll('.lang-switch.open').forEach(el => { if (el !== sw) el.classList.remove('open'); });
+    sw.classList.toggle('open');
+  }
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.lang-switch')) {
+      document.querySelectorAll('.lang-switch.open').forEach(el => el.classList.remove('open'));
+    }
+  });
+  function setLang(code, label){
+    const domain = window.location.hostname;
+    const value = code === 'en' ? '/en/en' : '/en/' + code;
+    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' + domain + ';';
+    if (code !== 'en') {
+      document.cookie = 'googtrans=' + value + '; path=/;';
+      document.cookie = 'googtrans=' + value + '; path=/; domain=.' + domain + ';';
+    }
+    document.querySelectorAll('.langCurrent').forEach(el => el.textContent = label);
+    document.querySelectorAll('.lang-switch.open').forEach(el => el.classList.remove('open'));
+    location.reload();
+  }
+  (function(){
+    const m = document.cookie.match(/googtrans=\/en\/([\w-]+)/);
+    if (m) {
+      const map = {es:'ES',fr:'FR',de:'DE',pt:'PT',ar:'AR','zh-CN':'ZH',ru:'RU',hi:'HI',it:'IT',en:'EN'};
+      const lbl = map[m[1]] || m[1].toUpperCase();
+      document.querySelectorAll('.langCurrent').forEach(el => el.textContent = lbl);
+    }
+  })();
 </script>
 
 {% block extra_scripts %}{% endblock %}

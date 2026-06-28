@@ -58,14 +58,14 @@
               <div class="contact-icon"><i class="fas fa-phone text-dark text-lg"></i></div>
               <div>
                 <div class="text-slate-500 text-xs uppercase tracking-wide mb-0.5">Phone</div>
-                <div class="text-white font-semibold">+1 (415) 800-0000</div>
+                <div class="text-white font-semibold">+1 (415) 610-8259</div>
               </div>
             </div>
             <div class="contact-detail-row">
               <div class="contact-icon"><i class="fas fa-envelope text-dark text-lg"></i></div>
               <div>
                 <div class="text-slate-500 text-xs uppercase tracking-wide mb-0.5">Email</div>
-                <div class="text-white font-semibold">support@secureledger.com</div>
+                <div class="text-white font-semibold">support@secureledge.net</div>
               </div>
             </div>
             <div class="contact-detail-row">
@@ -81,62 +81,85 @@
           <div>
             <div class="text-slate-500 text-xs uppercase tracking-wide mb-3">Follow Us</div>
             <div class="flex gap-3">
-              <a href="#" class="w-10 h-10 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-facebook-f"></i></a>
-              <a href="#" class="w-10 h-10 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-x-twitter"></i></a>
-              <a href="#" class="w-10 h-10 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-instagram"></i></a>
-              <a href="#" class="w-10 h-10 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-youtube"></i></a>
+              <a href="https://wa.me/+14156108259" class="w-10 h-10 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-whatsapp"></i></a>
+              <a href="https://x.com/SecureledgerCP" class="w-10 h-10 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-x-twitter"></i></a>
+              <a href="https://vm.tiktok.com/ZS9jHR8DGjHYF-clOQD/" class="w-10 h-10 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-tiktok"></i></a>
+              <a href="https://t.me/SecureLedgerCorp" class="w-10 h-10 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-telegram"></i></a>
             </div>
           </div>
         </div>
 
         <!-- Right form -->
-        <div class="p-8 lg:p-10 lg:col-span-3">
+          <div class="p-8 lg:p-10 lg:col-span-3">
           <h3 class="font-display font-bold text-2xl text-white mb-7">Send Us A Message</h3>
-          <!-- {% csrf_token %} -->
-          <div class="space-y-4">
-            <div class="grid sm:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">First Name</label>
-                <input type="text" name="first_name" placeholder="First Name" class="form-input">
+
+          {% if messages %}
+            {% for message in messages %}
+              <div class="rounded-xl px-4 py-3 mb-5 text-sm flex items-start gap-2
+                {% if message.tags == 'error' %}bg-red-500/10 border border-red-500/30 text-red-300{% else %}bg-primary/10 border border-primary/30 text-primary{% endif %}">
+                <i class="fas fa-{% if message.tags == 'error' %}circle-exclamation{% else %}circle-check{% endif %} mt-0.5"></i>
+                <span>{{ message }}</span>
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          <form method="POST" action="{% url 'frontend:contact' %}#contact-form">
+            {% csrf_token %}
+            <div class="space-y-4">
+              <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">First Name</label>
+                  <input type="text" name="first_name" placeholder="First Name" class="form-input" required>
+                </div>
+                <div>
+                  <label class="block text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">Last Name</label>
+                  <input type="text" name="last_name" placeholder="Last Name" class="form-input">
+                </div>
+              </div>
+              <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">Email Address</label>
+                  <input type="email" name="email" placeholder="Enter Email Address" class="form-input" required>
+                </div>
+                <div>
+                  <label class="block text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">Phone Number</label>
+                  <input type="tel" name="phone" placeholder="Phone Number" class="form-input">
+                </div>
               </div>
               <div>
-                <label class="block text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">Last Name</label>
-                <input type="text" name="last_name" placeholder="Last Name" class="form-input">
+                <label class="block text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">Country</label>
+                <div class="relative">
+                  <select name="country" class="form-input" style="-webkit-appearance:none;appearance:none;padding-right:2.5rem">
+                    <option value="" disabled selected>Select your country</option>
+                    {% include 'frontend/frontend_country_options.html' %}
+                  </select>
+                  <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs pointer-events-none"></i>
+                </div>
               </div>
-            </div>
-            <div class="grid sm:grid-cols-2 gap-4">
               <div>
-                <label class="block text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">Email Address</label>
-                <input type="email" name="email" placeholder="Enter Email Address" class="form-input">
+                <label class="block text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">Subject</label>
+                <div class="relative">
+                  <select name="subject" class="form-input" style="-webkit-appearance:none;appearance:none;padding-right:2.5rem">
+                    <option value="" disabled selected>Select a subject</option>
+                    <option>Investment Enquiry</option>
+                    <option>Asset Recovery</option>
+                    <option>Quick Loans</option>
+                    <option>Technical Support</option>
+                    <option>Partnership</option>
+                    <option>Other</option>
+                  </select>
+                  <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs pointer-events-none"></i>
+                </div>
               </div>
               <div>
-                <label class="block text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">Phone Number</label>
-                <input type="tel" name="phone" placeholder="Phone Number" class="form-input">
+                <label class="block text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">Your Message</label>
+                <textarea name="message" placeholder="Your Message" class="form-input" required></textarea>
               </div>
+              <button type="submit" onclick="handleSubmit(event)" id="submitBtn" class="bg-primary text-dark font-bold px-8 py-3.5 rounded-xl glow-btn inline-flex items-center gap-2 text-base">
+                <i class="fas fa-paper-plane text-sm"></i> Submit Message
+              </button>
             </div>
-            <div>
-              <label class="block text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">Subject</label>
-              <div class="relative">
-                <select name="subject" class="form-input" style="-webkit-appearance:none;appearance:none;padding-right:2.5rem">
-                  <option value="" disabled selected>Select a subject</option>
-                  <option>Investment Enquiry</option>
-                  <option>Asset Recovery</option>
-                  <option>Quick Loans</option>
-                  <option>Technical Support</option>
-                  <option>Partnership</option>
-                  <option>Other</option>
-                </select>
-                <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs pointer-events-none"></i>
-              </div>
-            </div>
-            <div>
-              <label class="block text-slate-400 text-xs font-semibold uppercase tracking-wide mb-2">Your Message</label>
-              <textarea name="message" placeholder="Your Message" class="form-input"></textarea>
-            </div>
-            <button type="submit" onclick="handleSubmit(event)" class="bg-primary text-dark font-bold px-8 py-3.5 rounded-xl glow-btn inline-flex items-center gap-2 text-base" id="submitBtn">
-              <i class="fas fa-paper-plane text-sm"></i> Submit Message
-            </button>
-          </div>
+          </form>
         </div>
 
       </div>

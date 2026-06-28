@@ -332,7 +332,7 @@ def refer_users(request):
     ).aggregate(t=Sum('amount'))['t'] or Decimal('0')
 
     referral_url = request.build_absolute_uri(
-        f'/auth/register/?ref={request.user.referral_code}'
+        f'/accounts/register/?ref={request.user.referral_code}'
     )
 
     return render(request, 'dashboard/refer_users.html', {

@@ -238,6 +238,10 @@ def verify_login_otp(request):
         request.session.set_expiry(0)   # browser-close session
     request.session.pop('pending_user_id', None)
     request.session.pop('remember', None)
+
+    # Staff/admins go to the control panel, everyone else to the dashboard
+    if user.is_staff:
+        return redirect('adminpanel:home')
     return redirect('dashboard:home')
 
 

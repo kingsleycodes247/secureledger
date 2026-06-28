@@ -14,16 +14,6 @@ from .models import User, UserProfile
 # ─────────────────────────────────────────────────────────────────────────────
 # Registration
 # ─────────────────────────────────────────────────────────────────────────────
-COUNTRIES = [
-    ('', 'Select your country'),
-    ('US', 'United States'), ('GB', 'United Kingdom'), ('CA', 'Canada'),
-    ('AU', 'Australia'), ('DE', 'Germany'), ('FR', 'France'),
-    ('NG', 'Nigeria'), ('ZA', 'South Africa'), ('IN', 'India'),
-    ('SG', 'Singapore'), ('AE', 'United Arab Emirates'), ('GH', 'Ghana'),
-    ('KE', 'Kenya'), ('ZW', 'Zimbabwe'), ('CM', 'Cameroon'),
-    ('OTHER', 'Other'),
-]
-
 
 class RegisterForm(forms.ModelForm):
     first_name    = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'placeholder': 'First name', 'class': 'form-input'}))
@@ -31,7 +21,7 @@ class RegisterForm(forms.ModelForm):
     username      = forms.CharField(max_length=40, widget=forms.TextInput(attrs={'placeholder': 'Username', 'class': 'form-input'}))
     email         = forms.EmailField(widget=forms.EmailInput(attrs={'placeholder': 'Email address', 'class': 'form-input'}))
     phone         = forms.CharField(max_length=30, required=False, widget=forms.TextInput(attrs={'placeholder': '+1 (415) 000-0000', 'class': 'form-input'}))
-    country       = forms.ChoiceField(choices=COUNTRIES, widget=forms.Select(attrs={'class': 'form-input'}))
+    country       = forms.CharField(max_length=100, widget=forms.Select(attrs={'class':'form-input'}))
     password1     = forms.CharField(
         label='Password',
         widget=forms.PasswordInput(attrs={'placeholder': 'Create a strong password', 'class': 'form-input', 'id': 'pw1'}),
@@ -168,7 +158,7 @@ class ProfileUpdateForm(forms.ModelForm):
     first_name = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-input'}))
     last_name  = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'form-input'}))
     phone      = forms.CharField(max_length=30, required=False, widget=forms.TextInput(attrs={'class': 'form-input'}))
-    country    = forms.ChoiceField(choices=COUNTRIES, widget=forms.Select(attrs={'class': 'form-input'}))
+    country    = forms.CharField(max_length=100, widget=forms.Select(attrs={'class':'form-input'}))
 
     class Meta:
         model  = UserProfile

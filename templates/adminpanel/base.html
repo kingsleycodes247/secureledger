@@ -66,6 +66,37 @@
     .sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;display:none}
     .sidebar-overlay.show{display:block}
     @media(min-width:769px){.sidebar-overlay{display:none!important}}
+
+@media (max-width: 768px) {
+  /* Stack all multi-column inline grids */
+  [style*="grid-template-columns:1fr 1fr"],
+  [style*="grid-template-columns: 1fr 1fr"],
+  [style*="grid-template-columns:380px 1fr"],
+  [style*="grid-template-columns: 380px 1fr"],
+  [style*="grid-template-columns:320px 1fr"],
+  [style*="grid-template-columns: 320px 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  .stat-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important; }
+
+  /* KEEP the panel clipping its rounded corners — do NOT set overflow:visible */
+  .panel { overflow: hidden; }
+
+  /* The scroll wrapper: constrain to full width, allow horizontal scroll */
+  .panel > div[style*="overflow-x"] {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+
+  /* The table must be allowed to exceed the wrapper width so it scrolls */
+  .panel table {
+    min-width: 520px;
+    width: max-content;
+  }
+}
+
     {% block extra_styles %}{% endblock %}
   </style>
 </head>

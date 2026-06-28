@@ -3,7 +3,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-9@_%=!i+lfqxr)#a#xl_a333(5z%oavg@t18vpo_la-%7t58dq'
+SECRET_KEY = ''
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -64,9 +64,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 AUTH_USER_MODEL = 'accounts.User'
 
-LOGIN_URL = '/auth/login/'
+LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
-LOGOUT_REDIRECT_URL = '/auth/login/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 
 # Database
@@ -76,8 +76,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'secureledgerdb',
-        'USER': 'kadmin01',
-        'PASSWORD': 'postgres1999',
+        'USER': '',
+        'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '5434',
     }
@@ -130,12 +130,13 @@ EMAIL_BACKEND = ('django.core.mail.backends.smtp.EmailBackend')
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'support@secureledge.net'
-EMAIL_HOST_PASSWORD = 'xjga pivl xgaz iaka'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
 #EMAIL_TIMEOUT = 60
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-#DEFAULT_FROM_EMAIL = 'SecureLedger <noreply@secureledger.com>'
 
+
+CONTACT_EMAIL = 'dreamstechsolutions001@gmail.com' #'info@secureledge.net'
 
 # ─── Session ─────────────────────────────────────────────────────────────────
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 3   # 3 days

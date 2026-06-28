@@ -54,6 +54,66 @@
     /* Success toast */
     .toast{position:fixed;bottom:2rem;right:2rem;background:#0D1620;border:1px solid rgba(0,200,150,.4);border-radius:1rem;padding:1rem 1.5rem;display:flex;align-items:center;gap:.75rem;z-index:999;transform:translateY(100px);opacity:0;transition:all .4s ease}
     .toast.show{transform:translateY(0);opacity:1}
+
+        /* Hide Google's own widget + banner entirely */
+    .goog-te-banner-frame.skiptranslate,
+    .skiptranslate iframe { display: none !important; }
+    body { top: 0 !important; position: static !important; }
+    #google_translate_element { display: none !important; }
+    .goog-te-gadget { height: 0; overflow: hidden; }
+
+    /* ── Custom language switcher ── */
+    .lang-switch { position: relative; }
+    .lang-trigger {
+      display: flex; align-items: center; gap: 6px;
+      background: #0D1620;
+      border: 1px solid rgba(0,200,150,0.25);
+      color: #E2E8F0;
+      border-radius: 8px;
+      padding: 7px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: border-color .2s;
+    }
+    .lang-trigger:hover { border-color: rgba(0,200,150,0.6); }
+    .lang-trigger .fa-globe { color: #00C896; font-size: 13px; }
+    .lang-caret { font-size: 9px; color: #64748B; transition: transform .2s; }
+    .lang-switch.open .lang-caret { transform: rotate(180deg); }
+
+    .lang-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: #111D2B;
+      border: 1px solid rgba(0,200,150,0.2);
+      border-radius: 10px;
+      padding: 6px;
+      min-width: 170px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+      z-index: 1000;
+      display: none;
+      max-height: 320px;
+      overflow-y: auto;
+    }
+    .lang-switch.open .lang-menu { display: block; }
+    .lang-menu button {
+      display: flex; align-items: center; gap: 10px;
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: #94A3B8;
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      padding: 9px 12px;
+      border-radius: 7px;
+      cursor: pointer;
+      text-align: left;
+      transition: all .15s;
+    }
+    .lang-menu button:hover { background: rgba(0,200,150,0.08); color: #00C896; }
+
   </style>
 </head>
 <body>
@@ -76,6 +136,26 @@
       <div class="hidden lg:flex items-center gap-3">
         <a href="{% url 'accounts:login' %}" class="text-slate-300 text-sm font-semibold border border-slate-700 hover:border-primary/50 hover:text-primary px-4 py-2 rounded-full transition">Sign In</a>
         <a href="{% url 'accounts:register' %}" class="bg-primary text-dark font-bold text-sm px-5 py-2.5 rounded-full glow-btn flex items-center gap-2"><i class="fas fa-phone text-xs"></i> Get In Touch</a>
+        <!-- Language selector (DESKTOP) -->
+        <div class="lang-switch" id="langSwitchDesktop">
+          <button type="button" class="lang-trigger" onclick="toggleLangMenu('langSwitchDesktop')">
+            <i class="fas fa-globe"></i>
+            <span class="langCurrent">EN</span>
+            <i class="fas fa-chevron-down lang-caret"></i>
+          </button>
+          <div class="lang-menu">
+            <button type="button" onclick="setLang('en','EN')">🇬🇧 English</button>
+            <button type="button" onclick="setLang('es','ES')">🇪🇸 Español</button>
+            <button type="button" onclick="setLang('fr','FR')">🇫🇷 Français</button>
+            <button type="button" onclick="setLang('de','DE')">🇩🇪 Deutsch</button>
+            <button type="button" onclick="setLang('pt','PT')">🇵🇹 Português</button>
+            <button type="button" onclick="setLang('ar','AR')">🇸🇦 العربية</button>
+            <button type="button" onclick="setLang('zh-CN','ZH')">🇨🇳 中文</button>
+            <button type="button" onclick="setLang('ru','RU')">🇷🇺 Русский</button>
+            <button type="button" onclick="setLang('hi','HI')">🇮🇳 हिन्दी</button>
+            <button type="button" onclick="setLang('it','IT')">🇮🇹 Italiano</button>
+          </div>
+        </div>
       </div>
       <button id="hamburger" class="lg:hidden text-slate-300 hover:text-primary p-2" onclick="toggleMenu()"><i class="fas fa-bars text-xl" id="hamburger-icon"></i></button>
     </div>
@@ -89,10 +169,32 @@
     <div class="pt-3 flex flex-col gap-2">
       <a href="{% url 'accounts:login' %}" class="w-full text-center text-primary border border-primary/40 py-2.5 rounded-full font-semibold text-sm">Sign In</a>
       <a href="{% url 'accounts:register' %}" class="w-full text-center bg-primary text-dark font-bold py-2.5 rounded-full text-sm">Get Started</a>
+       <!-- Language selector (MOBILE) -->
+      <div class="lang-switch" id="langSwitchMobile" style="width:100%">
+        <button type="button" class="lang-trigger" style="width:100%;justify-content:center" onclick="toggleLangMenu('langSwitchMobile')">
+          <i class="fas fa-globe"></i>
+          <span class="langCurrent">EN</span>
+          <i class="fas fa-chevron-down lang-caret"></i>
+        </button>
+        <div class="lang-menu">
+          <button type="button" onclick="setLang('en','EN')">🇬🇧 English</button>
+          <button type="button" onclick="setLang('es','ES')">🇪🇸 Español</button>
+          <button type="button" onclick="setLang('fr','FR')">🇫🇷 Français</button>
+          <button type="button" onclick="setLang('de','DE')">🇩🇪 Deutsch</button>
+          <button type="button" onclick="setLang('pt','PT')">🇵🇹 Português</button>
+          <button type="button" onclick="setLang('ar','AR')">🇸🇦 العربية</button>
+          <button type="button" onclick="setLang('zh-CN','ZH')">🇨🇳 中文</button>
+          <button type="button" onclick="setLang('ru','RU')">🇷🇺 Русский</button>
+          <button type="button" onclick="setLang('hi','HI')">🇮🇳 हिन्दी</button>
+          <button type="button" onclick="setLang('it','IT')">🇮🇹 Italiano</button>
+        </div>
+      </div>
     </div>
   </div>
 </nav>
 
+<!-- Hidden Google Translate element (do not remove) -->
+<div id="google_translate_element" style="display:none"></div>
 
  <!-- Page content -->
   <main class="page-body">
@@ -107,10 +209,10 @@
         <div class="flex items-center gap-2 mb-4"><div class="w-9 h-9 rounded-lg bg-primary flex items-center justify-center"><i class="fas fa-shield-halved text-dark"></i></div><span class="font-display font-bold text-xl text-white">Secure<span class="text-primary">Ledger</span></span></div>
         <p class="text-slate-500 text-sm leading-relaxed mb-5">SecureLedger is a modern investment and digital asset protection platform dedicated to growing and securing wealth for investors worldwide.</p>
         <div class="flex gap-3">
-          <a href="#" class="w-9 h-9 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-facebook-f text-sm"></i></a>
-          <a href="#" class="w-9 h-9 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-x-twitter text-sm"></i></a>
-          <a href="#" class="w-9 h-9 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-instagram text-sm"></i></a>
-          <a href="#" class="w-9 h-9 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-youtube text-sm"></i></a>
+          <a href="https://wa.me/+14156108259" class="w-9 h-9 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-whatsapp text-sm"></i></a>
+          <a href="https://x.com/SecureledgerCP" class="w-9 h-9 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-x-twitter text-sm"></i></a>
+          <a href="https://vm.tiktok.com/ZS9jHR8DGjHYF-clOQD/" class="w-9 h-9 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-tiktok text-sm"></i></a>
+          <a href="https://t.me/SecureLedgerCorp" class="w-9 h-9 rounded-full bg-primary text-dark flex items-center justify-center hover:scale-110 transition"><i class="fab fa-telegram text-sm"></i></a>
         </div>
       </div>
       <div>
@@ -152,22 +254,78 @@
   <div><div class="text-white font-semibold text-sm">Message Sent!</div><div class="text-slate-400 text-xs">We'll get back to you within 24 hours.</div></div>
 </div>
 
+<!-- ═══ Google Translate init (KEEP THIS) ═══ -->
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'en',
+      includedLanguages: 'en,es,fr,de,pt,ar,zh-CN,ru,hi,it',
+      autoDisplay: false
+    }, 'google_translate_element');
+  }
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 <script>
   function toggleMenu(){const m=document.getElementById('mobile-menu'),i=document.getElementById('hamburger-icon'),o=m.classList.toggle('hidden');i.className=o?'fas fa-bars text-xl':'fas fa-xmark text-xl'}
+  
   function handleSubmit(e){
-    e.preventDefault();
-    const btn=document.getElementById('submitBtn');
-    btn.innerHTML='<i class="fas fa-spinner fa-spin text-sm"></i> Sending…';btn.disabled=true;
-    setTimeout(()=>{
-      btn.innerHTML='<i class="fas fa-check text-sm"></i> Message Sent!';
-      const toast=document.getElementById('toast');toast.classList.add('show');
-      setTimeout(()=>toast.classList.remove('show'),4000);
-      setTimeout(()=>{btn.innerHTML='<i class="fas fa-paper-plane text-sm"></i> Submit Message';btn.disabled=false},2000);
-    },1600);
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  const form = btn.closest('form');
+
+  // Let the browser run native validation first (required fields)
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
   }
+
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin text-sm"></i> Sending…';
+  btn.disabled = true;
+
+  // Play the effect briefly, then actually submit to Django
+  setTimeout(() => {
+    btn.innerHTML = '<i class="fas fa-check text-sm"></i> Message Sent!';
+    form.submit();   // ← real POST to your contact view
+  }, 1600);
+}
+
   const io=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('visible');io.unobserve(x.target)}})},{threshold:.12});
   document.querySelectorAll('.fade-up').forEach(el=>io.observe(el));
   window.addEventListener('scroll',()=>{document.getElementById('navbar').style.boxShadow=window.scrollY>40?'0 4px 30px rgba(0,0,0,.4)':'none'});
+
+  /* ── Language switcher ── */
+  function toggleLangMenu(id){
+    const sw = document.getElementById(id);
+    document.querySelectorAll('.lang-switch.open').forEach(el => { if (el !== sw) el.classList.remove('open'); });
+    sw.classList.toggle('open');
+  }
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.lang-switch')) {
+      document.querySelectorAll('.lang-switch.open').forEach(el => el.classList.remove('open'));
+    }
+  });
+  function setLang(code, label){
+    const domain = window.location.hostname;
+    const value = code === 'en' ? '/en/en' : '/en/' + code;
+    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' + domain + ';';
+    if (code !== 'en') {
+      document.cookie = 'googtrans=' + value + '; path=/;';
+      document.cookie = 'googtrans=' + value + '; path=/; domain=.' + domain + ';';
+    }
+    document.querySelectorAll('.langCurrent').forEach(el => el.textContent = label);
+    document.querySelectorAll('.lang-switch.open').forEach(el => el.classList.remove('open'));
+    location.reload();
+  }
+  (function(){
+    const m = document.cookie.match(/googtrans=\/en\/([\w-]+)/);
+    if (m) {
+      const map = {es:'ES',fr:'FR',de:'DE',pt:'PT',ar:'AR','zh-CN':'ZH',ru:'RU',hi:'HI',it:'IT',en:'EN'};
+      const lbl = map[m[1]] || m[1].toUpperCase();
+      document.querySelectorAll('.langCurrent').forEach(el => el.textContent = lbl);
+    }
+  })();
 </script>
 </body>
 </html>
